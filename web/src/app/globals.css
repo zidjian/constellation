@@ -43,15 +43,32 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --animate-star-pulse: star-pulse 2.4s var(--ease-out-quint) infinite;
-  @keyframes star-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 0 0 oklch(0.47 0.13 258 / 0.35);
-    }
-    50% {
-      box-shadow: 0 0 0 6px oklch(0.47 0.13 258 / 0);
-    }
+}
+
+/* Pulso de la estrella siguiente: anillo en un pseudo-elemento, con transform y opacity
+   (animar box-shadow repinta en cada frame). */
+.star-pulse::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-accent);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .star-pulse::before {
+    animation: star-pulse 2.4s var(--ease-out-quint) infinite;
+  }
+}
+@keyframes star-pulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
   }
 }
 

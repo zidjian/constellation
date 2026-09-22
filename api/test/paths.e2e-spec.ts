@@ -179,6 +179,8 @@ describe('Rutas de aprendizaje (e2e, Postgres)', () => {
       DISCORD_CLIENT_ID: 'e2e',
       DISCORD_CLIENT_SECRET: 'e2e',
       DISCORD_CALLBACK_URL: 'http://localhost:3001/v1/auth/discord/callback',
+      // Nunca la clave real del .env local: estos e2e no deben gastar en Anthropic.
+      LLM_PROVIDER: 'rules',
       PATH_STREAM_DELAY_MS: '60',
     });
     app = await buildApp(env);

@@ -1,139 +1,107 @@
-# Plantilla de proyecto asistido por Claude
+# DevTalles Constellation
 
-Un punto de partida para tu **próxima idea de desarrollo**, destilado de lo que funciona (y de los errores que costaron tiempo) en proyectos reales con Claude Code. No es un boilerplate de código: es el **andamiaje de documentación y proceso** que hace que el desarrollo asistido sea coherente entre sesiones y entre personas.
+Rutas de aprendizaje personales sobre el catálogo real de [DevTalles](https://cursos.devtalles.com). Entras con Discord, pasas una entrevista corta con mini-retos de código y obtienes una **constelación**: tus cursos en el orden que tiene sentido, con el porqué de cada paso, que vas encendiendo a medida que los completas.
 
----
+Proyecto para la hackathon **Code Quest 2026** de DevTalles.
 
-## Por qué existe (la idea de fondo)
+- **App:** https://constellation.waldirmaidana.com
+- **API:** https://backend.constellation.waldirmaidana.com/v1
 
-La documentación de un proyecto tiende a correr a **tres velocidades**: el código avanza rápido, el `CLAUDE.md` lo sigue a medias, y las specs/agentes se congelan el primer día y empiezan a **mentir**. Un agente que lee documentación falsa toma malas decisiones.
+![Landing de Constellation](docs/capturas/landing.png)
 
-Esta plantilla impone una disciplina simple:
+## Qué resuelve
 
-> **El código es la verdad. `CLAUDE.md` es el SSOT vivo que la describe. Todo lo demás se subordina a ellos y se reconcilia.**
+El catálogo tiene más de 70 cursos y nadie sabe por dónde empezar. Constellation te pregunta a dónde quieres llegar (con tus palabras, o pegando una oferta de trabajo), mide lo que ya sabes con mini-retos verificables, y traza la ruta exacta: solo cursos que existen, en un orden que respeta los prerrequisitos y sin repetir lo que ya dominas.
 
-Y un **circuito de retroalimentación** para que el conocimiento no se pierda: cada cosa no obvia que aprendes tiene un lugar donde vivir.
+| Entrevista con mini-retos | Generación en vivo |
+|---|---|
+| ![Mini-reto de código](docs/capturas/entrevista.png) | ![Ruta generándose en streaming](docs/capturas/generando.png) |
 
----
+| Constelación y progreso | Tus rutas |
+|---|---|
+| ![Constelación con el panel del curso](docs/capturas/constelacion.png) | ![Lista de rutas con progreso](docs/capturas/rutas.png) |
 
-## Qué incluye
-
-```
-.
-├── CLAUDE.md                      # SSOT vivo: invariantes, comandos, gotchas, Definition of Done
-├── README.md                      # (esta guía)
-├── .claude/
-│   ├── agents/                    # architect · implementer · reviewer (+ cómo especializar)
-│   └── commands/                  # /nueva-feature /cambio-db /verificar /sync-docs
-├── docs/
-│   └── adr/                       # decisiones con su porqué (inmutables) + plantilla
-└── specs/
-    ├── 00_especificaciones.md     # diseño CONGELADO de la fase inicial
-    └── 05_extensiones.md          # spec VIVA (toda feature nueva añade entrada)
-```
-
-Por paquete/servicio, además, puedes crear un `CLAUDE.md` delgado con los *gotchas* locales (apunta al raíz).
-
----
-
-## Cómo empezar
-
-1. **Copia** el contenido de `template/` a la raíz de tu repo nuevo.
-2. **Reemplaza los placeholders** `{{...}}` (lista abajo) y borra las notas marcadas con _«TEMPLATE: …»_.
-3. **Llena `CLAUDE.md`**: visión, stack, invariantes, comandos. Deja «Gotchas» vacía — se llena sola con el tiempo.
-4. **Escribe `specs/00_especificaciones.md`** antes de implementar (el diseño de la fase). Congélalo al arrancar.
-5. **Especializa los agentes** si tu proyecto tiene capas diferenciadas (clona `implementer` en `backend`/`frontend`/…).
-6. **Primer commit incluye el ADR 0000** (ya viene) — deja constancia de que usarás ADRs.
-7. A partir de ahí, sigue el flujo de abajo.
-
-### Placeholders a reemplazar
-
-`{{PROYECTO}}` · `{{stack}}` · puertos y comandos en `CLAUDE.md` · `{{AAAA-MM-DD}}` en los ADR · descripciones de los agentes.
-
----
-
-## El flujo de desarrollo asistido
+## Cómo funciona
 
 ```
-   idea
-    │
-    ▼
-[architect]  diseña → análisis / ADR.  Pregunta lo que es del negocio (no asume).
-    │                                   ⟵ usa AskUserQuestion para decisiones del usuario
-    ▼
-[implementer]  ejecuta el diseño: código + tests. Respeta invariantes y gotchas.
-    │
-    ▼
- verificar     build + tests + SMOKE REAL (no "debería funcionar").  → /verificar
-    │
-    ▼
-[reviewer]   revisa el diff contra invariantes + gotchas + Definition of Done.
-    │
-    ▼
- reconciliar  ¿aprendí algo no obvio? → al lugar correcto (ver matriz).  → /sync-docs
+Discord OAuth ──► Entrevista adaptativa ──► SkillProfile ──► PathPlanner ──► Constelación
+                  (preguntas + retos)       (niveles y        (determinista)   (guardada, con
+                                             objetivos)                         progreso)
 ```
 
-Para tareas pequeñas puedes saltarte architect/reviewer; para features que tocan varias capas, no.
+1. **Entrevista adaptativa.** Objetivo en texto libre, área, tecnología, autoevaluación derivada del catálogo y mini-retos de código. La escalera sube de dificultad si aciertas y se detiene si fallas: como máximo 10 preguntas.
+2. **Perfil.** Niveles por skill (0–3) y las skills que quieres aprender.
+3. **`PathPlanner`, determinista.** Elige un curso por objetivo, añade los prerrequisitos que te faltan, quita lo que ya dominas y ordena topológicamente. **Es la única pieza que decide qué cursos entran.**
+4. **Constelación.** Se dibuja en streaming (SSE) mientras se genera, se guarda y la enciendes curso a curso.
 
----
+### La IA no decide la ruta
 
-## ¿Dónde va cada conocimiento? (la matriz)
+Decisión central del proyecto ([ADR-0001](docs/adr/0001-ia-interpreta-motor-determinista-genera.md)): un LLM que arma la ruta puede inventar cursos o ignorar prerrequisitos. Aquí Claude **interpreta y explica**, y un motor determinista **genera**:
 
-| Lo que aprendiste | Dónde vive | Por qué |
-|---|---|---|
-| Convención no obvia de un punto (gotcha) | `CLAUDE.md` → **Gotchas** | Se consulta siempre; evita repetir el error |
-| Decisión con alternativas / *porqué* | `docs/adr/` | Para no re-litigar; histórico inmutable |
-| Feature nueva (qué se construyó) | `specs/05_extensiones.md` | Spec viva; mapa del sistema |
-| Diseño inicial de la fase | `specs/00_*` (congelado) | Intención original; no se edita |
-| Estado real operativo (comandos, invariantes…) | `CLAUDE.md` (raíz/paquete) | SSOT vivo |
-| Preferencia del usuario / contexto de proyecto | memoria del agente (`.claude/agent-memory/`) | Persiste entre conversaciones; no es del código |
+- **Interpretar:** de tu texto libre o de una oferta de trabajo saca las tecnologías que necesitas, y deduce niveles que la entrevista no midió. Nunca pisa lo que midieron los retos; su salida se valida contra los slugs del catálogo.
+- **Explicar:** redacta el porqué de cada paso **ya decidido**. No puede añadir ni quitar cursos.
+- **Sin IA funciona igual.** Ante error, timeout o rechazo se usan las reglas, y la base guarda quién respondió (`interpreted_by`, `generated_by`). Con `LLM_PROVIDER=rules` no se hace ninguna llamada externa.
 
-Regla de prioridad ante conflicto: **código → CLAUDE.md → ADR → specs/agentes**.
+## Stack
 
----
+| Servicio | Tecnología |
+|---|---|
+| `web` | Next.js 16 (App Router, `standalone`), React 19, Tailwind 4, React Flow, Motion |
+| `api` | NestJS 11, TypeORM 1.x, PostgreSQL 18, Zod, JWT en cookie, SSE |
+| IA | SDK de Anthropic, `claude-opus-5` con salida estructurada, detrás de puertos con adaptador `rules` |
+| Infra | AWS Lightsail · Nginx + certbot · PM2 · GitHub Actions |
 
-## Mejores prácticas
+Arquitectura por contextos (`identity`, `catalog`, `assessment`, `learning-path`) con capas `domain / application / infrastructure / presentation`.
 
-1. **CLAUDE.md primero, siempre.** Todo agente lo lee antes de tocar nada. Si no está documentado, propón y decide con el usuario antes de improvisar.
-2. **Diseña antes de construir** las features grandes. Un buen análisis hace la implementación mecánica.
-3. **Pregunta lo que es del negocio.** Alcance, qué datos exponer, permisos: usa preguntas explícitas en vez de asumir. Asumir mal cuesta más que preguntar.
-4. **Verifica de verdad.** Levanta el servicio y prueba el endpoint/página reales. "Compila" no es "funciona".
-5. **Captura lo no obvio al cerrar cada feature.** El último paso de implementar algo no trivial es preguntarte *"¿qué no era evidente aquí?"* y mandarlo a su lugar (gotcha / ADR / spec viva).
-6. **Nada de datos quemados.** Lo configurable va a config/entorno o BD, no al código.
-7. **Subordina specs y agentes al código.** Trátalos como "foto del día que se escribieron". Corre `/sync-docs` cada cierto tiempo para cazar la deriva.
-8. **Esquema solo por migración** versionada y reversible; nunca auto-sync. Seeds idempotentes con backfill explícito.
-9. **Seguridad por defecto.** Permisos explícitos por ruta, no exponer campos internos, validar/re-procesar uploads, rate-limit donde duela.
-10. **Reporta honestamente.** Si un test falla o algo quedó sin probar, dilo con su salida. La confianza se construye con precisión, no con optimismo.
+## Correrlo en local
 
----
+Necesitas Node ≥ 22.13, pnpm 11 y PostgreSQL.
 
-## Anti-patrones (errores reales que esta plantilla previene)
+```bash
+# Base de datos
+createdb constellation
+psql -d postgres -c "create role constellation login password 'constellation'"
 
-- **Documentación a tres velocidades** → specs/agentes que mienten. _Mitigación: matriz + `/sync-docs`._
-- **Agentes obsoletos** que afirman un stack que ya cambió. _Mitigación: subordinar al código; banner de "estado real" cuando deriven._
-- **Caché que oculta la frescura** (cachear datos mutables y creer que "no se guardó"). _Mitigación: datos mutables = dinámicos, sin caché silenciosa._
-- **"Debería funcionar"** sin haberlo corrido. _Mitigación: smoke real en la Definition of Done._
-- **Upsert que ignora conflictos para backfill** (no actualiza filas existentes). _Mitigación: backfill explícito._
-- **Asumir el comportamiento de un guard/framework** sin verificar. _Mitigación: leer el código antes de proponer._
+# API (puerto 3001)
+cd api
+cp .env.example .env          # completa DISCORD_* y JWT_SECRET
+pnpm install
+pnpm migration:run
+pnpm seed                     # catálogo: 74 cursos y 63 skills
+pnpm start:dev
 
----
+# Web (puerto 3000)
+cd ../web
+cp .env.example .env.local
+pnpm install
+pnpm dev
+```
 
-## Agentes y comandos
+Para el login necesitas una app de Discord con la redirect URI `http://localhost:3001/v1/auth/discord/callback`. La IA es opcional: sin `LLM_PROVIDER=claude` todo funciona por reglas.
 
-**Agentes** (`.claude/agents/`): `architect` (diseña), `implementer` (construye), `reviewer` (revisa/verifica). Ver `.claude/agents/README.md` para cómo especializarlos por capa.
+### Comprobaciones
 
-**Comandos** (`.claude/commands/`, se invocan como `/nombre`):
-- `/nueva-feature <nombre>` — andamia una feature respetando convenciones.
-- `/cambio-db <descripción>` — crea y aplica una migración con el naming del proyecto.
-- `/verificar [feature]` — verificación end-to-end contra la Definition of Done.
-- `/sync-docs [área]` — detecta deriva docs ↔ código.
+```bash
+cd api && pnpm lint && pnpm test && pnpm test:e2e   # e2e contra Postgres real
+cd web && pnpm lint && pnpm build
+node tools/catalog/validate-catalog.mjs             # catálogo: referencias, DAG, niveles
+```
 
----
+## El catálogo
 
-## Mantenimiento
+`api/src/catalog/infrastructure/seed/catalog.json` tiene 74 cursos reales con sus skills, niveles y prerrequisitos. Sale de un snapshot del sitio público de DevTalles (`tools/catalog/extract-devtalles.mjs`), curado a mano: los prerrequisitos parten de las **rutas oficiales** que DevTalles publica ([ADR-0004](docs/adr/0004-catalogo-extraido-offline-del-sitio-publico.md)). La app nunca consulta devtalles.com en ejecución, y un validador comprueba que el grafo no tenga ciclos.
 
-- **Cada feature** termina actualizando el lugar correcto (matriz). Es parte de la Definition of Done.
-- **Periódicamente** (o antes de un hito) corre `/sync-docs` para reconciliar.
-- **La memoria del agente** es para lo no obvio y duradero (preferencias, contexto), no para lo que ya está en el código o en CLAUDE.md.
+## Documentación
 
-> Mantener esto vivo cuesta minutos por feature y ahorra horas de re-derivar lo mismo. Esa es toda la apuesta.
+| Archivo | Qué contiene |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Verdad operativa: invariantes, comandos, gotchas y Definition of Done |
+| [`PRODUCT.md`](PRODUCT.md) · [`DESIGN.md`](DESIGN.md) | Estrategia de producto y sistema visual |
+| [`specs/00_especificaciones.md`](specs/00_especificaciones.md) | Diseño congelado: esquema, contratos y criterios de aceptación |
+| [`specs/02_plan_implementacion.md`](specs/02_plan_implementacion.md) | Plan por fases, con desvíos y trazabilidad |
+| [`docs/adr/`](docs/adr/) | Decisiones con su porqué y las alternativas descartadas |
+| [`deploy/README.md`](deploy/README.md) | Despliegue, variables de producción y respaldos |
+
+## Licencia
+
+[MIT](LICENSE).
