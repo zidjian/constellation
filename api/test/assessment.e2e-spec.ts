@@ -3,8 +3,12 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { DataSource } from 'typeorm';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { AppModule } from '../src/app.module';
 import { CHALLENGES } from '../src/assessment/domain/challenge-bank';
+import { parseCatalogFile } from '../src/catalog/infrastructure/seed/catalog-file.schema';
+import { seedCatalog } from '../src/catalog/infrastructure/seed/catalog-seeder';
 import type { Question } from '../src/assessment/domain/questions';
 import {
   SESSION_TOKENS,
@@ -89,6 +93,18 @@ describe('Entrevista (e2e, Postgres)', () => {
     await app.init();
     const db = app.get(DataSource);
     await db.runMigrations();
+    // La entrevista se deriva del catálogo: en una BD limpia (CI) hay que sembrarlo antes.
+    await seedCatalog(
+      db,
+      parseCatalogFile(
+        JSON.parse(
+          readFileSync(
+            join(__dirname, '../src/catalog/infrastructure/seed/catalog.json'),
+            'utf8',
+          ),
+        ),
+      ),
+    );
 
     const tokens = app.get<SessionTokens>(SESSION_TOKENS);
     const user = async (discordId: string) => {
