@@ -1,4 +1,5 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { parseEnv } from 'node:util';
 import { z } from 'zod';
 
 // Cada feature añade aquí sus variables al llegar (Discord y JWT en identity, LLM en F3b).
@@ -30,6 +31,12 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
 }
 
 // Carga .env del directorio actual si existe; nunca sobrescribe variables ya definidas.
+// parseEnv + asignación (en vez de process.loadEnvFile) para que también funcione bajo Jest.
 export function loadDotEnv(path = '.env'): void {
-  if (existsSync(path)) process.loadEnvFile(path);
+  if (!existsSync(path)) return;
+  for (const [key, value] of Object.entries(
+    parseEnv(readFileSync(path, 'utf8')),
+  )) {
+    process.env[key] ??= value;
+  }
 }
