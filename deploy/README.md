@@ -34,6 +34,15 @@ Obligatorias (la API no arranca sin ellas). `reload-constellation.sh` las valida
 | `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | de la app de Discord |
 | `DISCORD_CALLBACK_URL` | `https://backend.constellation.waldirmaidana.com/v1/auth/discord/callback`, registrada **exacta** en Discord → OAuth2 → Redirects |
 
+Opcionales (IA, ADR-0001):
+
+| Variable | Valor |
+|---|---|
+| `LLM_PROVIDER` | `claude` para activar Claude; sin ella, `rules` (la app funciona igual) |
+| `ANTHROPIC_API_KEY` | Obligatoria si `LLM_PROVIDER=claude`. Nunca en el repo ni en logs |
+| `ANTHROPIC_MODEL` | Por defecto `claude-opus-5` |
+| `LLM_TIMEOUT_MS` | Por defecto `8000`; al superarlo se usan reglas |
+
 La web (PM2, `ecosystem.config.js`) recibe `API_INTERNAL_URL=http://127.0.0.1:3011`.
 
 ## Secretos de GitHub (environment `production`)

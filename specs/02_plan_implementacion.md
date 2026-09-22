@@ -200,12 +200,12 @@ Algoritmo (spec §3):
 
 ### 6.2 Adaptadores `claude` — `backend-implementer` · `feature/llm-adapters` (D9)
 
-- [ ] Consultar la skill `claude-api` para modelo vigente, SDK y salida estructurada antes de escribir código.
-- [ ] `ClaudeSkillInterpreter`: prompt con la lista cerrada de slugs de skills; salida validada con `zod`; skills desconocidas descartadas; niveles fuera de rango recortados.
-- [ ] `ClaudeRationaleWriter`: recibe los pasos ya decididos y el perfil; devuelve texto por `courseId` validado; no puede añadir ni quitar pasos.
-- [ ] Decorador `WithFallback(primary, rules, timeoutMs)`: timeout de 8 s, error o validación fallida ⇒ adaptador `rules`, log con motivo, `interpreted_by` / `generated_by` reflejan quién respondió realmente.
-- [ ] Selección por `LLM_PROVIDER`; la API key nunca se loguea ni se devuelve.
-- [ ] Tests: fallback por timeout, por excepción y por salida inválida (cliente de Anthropic simulado).
+- [x] Consultar la skill `claude-api` para modelo vigente, SDK y salida estructurada antes de escribir código.
+- [x] `ClaudeSkillInterpreter`: prompt con la lista cerrada de slugs de skills; salida validada con `zod`; skills desconocidas descartadas; niveles fuera de rango recortados.
+- [x] `ClaudeRationaleWriter`: recibe los pasos ya decididos y el perfil; devuelve texto por `courseId` validado; no puede añadir ni quitar pasos.
+- [x] Decorador `WithFallback(primary, rules, timeoutMs)`: timeout de 8 s, error o validación fallida ⇒ adaptador `rules`, log con motivo, `interpreted_by` / `generated_by` reflejan quién respondió realmente.
+- [x] Selección por `LLM_PROVIDER`; la API key nunca se loguea ni se devuelve.
+- [x] Tests: fallback por timeout, por excepción y por salida inválida (cliente de Anthropic simulado).
 
 **Verificación:** criterio **6** — con `LLM_PROVIDER=rules` y con una API key inválida, los criterios 3–5 siguen pasando.
 
@@ -264,6 +264,8 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | OAuth de Discord a mano (sin `passport-discord`); el `state` va en una cookie. El callback redirige siempre a `/paths` hasta que existan rutas (F3) | `passport` necesita `express-session` para el `state`, y la librería no se mantiene desde 2018 |
 | 2026-09-22 | Entrevista: `GET /v1/assessments/current` (retomar) y `result: { correct }` al responder un reto, además de lo que pide la spec §6. La autoevaluación se deriva del catálogo en vez de un banco fijo por área | La web necesita retomar la entrevista, y la respuesta inmediata a los retos es parte de la experiencia. Derivarla del catálogo la mantiene coherente con él |
+| 2026-09-22 | IA **híbrida** en el intérprete: Claude no reemplaza lo medido (retos y autoevaluación), solo aporta objetivos y niveles del texto libre. El porqué se pide al empezar el stream | Los retos son evidencia verificable; que el LLM los contradiga sería peor que las reglas. Pedir el porqué en paralelo da más margen al timeout de 8 s |
+| 2026-09-22 | Regla de nivel: si falla un reto en dificultad d, nivel = máx(aprobado, mín(autoevaluación, d−1)) | La escalera puede empezar alta; antes quedaba en 0 sin haber probado el nivel 1 |
 | 2026-09-22 | Constelación en **zigzag por orden de ruta** con líneas rectas (prerrequisito continuo, orden sugerido punteado) en vez de layout automático (dagre/elk) | Muchas rutas tienen cursos sin prerrequisitos entre sí: dagre los apilaba como una lista y en móvil los ponía en una sola fila ilegible |
 | 2026-09-22 | El planner no expande los prerrequisitos de los cursos dominados | En un smoke apareció "Programación para principiantes" a alguien que aprobó los retos de JS |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |

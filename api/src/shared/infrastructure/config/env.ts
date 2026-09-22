@@ -25,7 +25,22 @@ const envSchema = z
     DISCORD_CALLBACK_URL: z.url(),
     // learning-path: pausa entre eventos del stream para que la constelación se dibuje paso a paso.
     PATH_STREAM_DELAY_MS: z.coerce.number().int().min(0).max(2000).default(150),
+    // IA (ADR-0001): 'rules' = sin red. 'claude' = Claude con fallback a reglas ante error o timeout.
+    LLM_PROVIDER: z.enum(['claude', 'rules']).default('rules'),
+    ANTHROPIC_API_KEY: z
+      .string()
+      .optional()
+      .transform((v) => v || undefined),
+    ANTHROPIC_MODEL: z.string().min(1).default('claude-opus-5'),
+    LLM_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60000).default(8000),
   })
+  .refine(
+    (env) => env.LLM_PROVIDER !== 'claude' || Boolean(env.ANTHROPIC_API_KEY),
+    {
+      path: ['ANTHROPIC_API_KEY'],
+      message: 'LLM_PROVIDER=claude requiere ANTHROPIC_API_KEY',
+    },
+  )
   .refine(
     (env) =>
       env.NODE_ENV !== 'production' ||

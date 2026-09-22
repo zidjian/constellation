@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { CatalogModule } from '../catalog/catalog.module';
 import { AssessmentUseCases } from './application/assessment.use-cases';
 import { ASSESSMENT_REPOSITORY, SKILL_INTERPRETER } from './domain/ports';
+import { ENV } from '../shared/infrastructure/config/config.module';
+import type { Env } from '../shared/infrastructure/config/env';
+import { ClaudeSkillInterpreter } from './infrastructure/claude-skill-interpreter';
 import { RulesSkillInterpreter } from './infrastructure/rules-skill-interpreter';
 import { TypeOrmAssessmentRepository } from './infrastructure/typeorm-assessment.repository';
 import { AssessmentController } from './presentation/assessment.controller';
@@ -12,8 +15,18 @@ import { AssessmentController } from './presentation/assessment.controller';
   providers: [
     AssessmentUseCases,
     { provide: ASSESSMENT_REPOSITORY, useClass: TypeOrmAssessmentRepository },
-    // F3b: adaptador Claude con fallback a este.
-    { provide: SKILL_INTERPRETER, useClass: RulesSkillInterpreter },
+    RulesSkillInterpreter,
+    ClaudeSkillInterpreter,
+    // LLM_PROVIDER=claude: Claude con fallback a reglas. Si no, solo reglas (ADR-0001).
+    {
+      provide: SKILL_INTERPRETER,
+      inject: [ENV, RulesSkillInterpreter, ClaudeSkillInterpreter],
+      useFactory: (
+        env: Env,
+        rules: RulesSkillInterpreter,
+        claude: ClaudeSkillInterpreter,
+      ) => (env.LLM_PROVIDER === 'claude' ? claude : rules),
+    },
   ],
   exports: [ASSESSMENT_REPOSITORY],
 })

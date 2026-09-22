@@ -132,6 +132,22 @@ export class GeneratePathUseCase {
     const slugs = planned.steps.map((s) => s.courseSlug);
     const edges = pathEdges(slugs, graph);
 
+    // Se pide ya: la redacción (Claude, hasta LLM_TIMEOUT_MS) corre mientras se emiten los pasos.
+    const rationaleWork = this.rationale.write({
+      profile,
+      skillNames: Object.fromEntries(
+        graph.catalog.skills.map((s) => [s.slug, s.name]),
+      ),
+      steps: planned.steps.map((s, position) => ({
+        position,
+        course: graph.course(s.courseSlug)!,
+        reason: s.reason,
+        dependents:
+          s.reason.kind === 'prerequisite'
+            ? s.reason.for.map((d) => graph.course(d)!)
+            : [],
+      })),
+    });
     yield {
       event: 'profile',
       data: {
@@ -156,21 +172,7 @@ export class GeneratePathUseCase {
       };
     }
 
-    const texts = await this.rationale.write({
-      profile,
-      skillNames: Object.fromEntries(
-        graph.catalog.skills.map((s) => [s.slug, s.name]),
-      ),
-      steps: planned.steps.map((s, position) => ({
-        position,
-        course: graph.course(s.courseSlug)!,
-        reason: s.reason,
-        dependents:
-          s.reason.kind === 'prerequisite'
-            ? s.reason.for.map((d) => graph.course(d)!)
-            : [],
-      })),
-    });
+    const { texts, by } = await rationaleWork;
     for (const [position, text] of texts.entries()) {
       await delay();
       yield {
@@ -186,7 +188,7 @@ export class GeneratePathUseCase {
       sessionId: plan.sessionId,
       name: plan.name,
       goal: profile.goal ?? '',
-      generatedBy: this.rationale.name,
+      generatedBy: by,
       steps: planned.steps.map((s, position) => ({
         id: this.paths.newId(),
         courseSlug: s.courseSlug,
@@ -196,9 +198,7 @@ export class GeneratePathUseCase {
       now: new Date(),
     });
     await this.paths.create(path);
-    this.logger.log(
-      `Ruta ${path.id} creada: ${slugs.length} pasos (${this.rationale.name})`,
-    );
+    this.logger.log(`Ruta ${path.id} creada: ${slugs.length} pasos (${by})`);
     yield {
       event: 'done',
       data: {

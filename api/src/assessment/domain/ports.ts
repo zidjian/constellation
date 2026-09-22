@@ -28,8 +28,13 @@ export interface InterpreterInput {
   knownSkills: { slug: string; name: string }[];
 }
 
+export interface Interpretation {
+  profile: SkillProfile;
+  /** Quién produjo el perfil de verdad (con fallback puede ser 'rules' aunque se pidiera Claude). */
+  by: 'claude' | 'rules';
+}
+
 export const SKILL_INTERPRETER = Symbol('SkillInterpreterPort');
 export interface SkillInterpreterPort {
-  readonly name: 'claude' | 'rules';
-  interpret(input: InterpreterInput): Promise<SkillProfile>;
+  interpret(input: InterpreterInput): Promise<Interpretation>;
 }

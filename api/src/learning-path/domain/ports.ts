@@ -30,7 +30,8 @@ export interface RationaleRequest {
 
 export const RATIONALE_WRITER = Symbol('RationaleWriterPort');
 export interface RationaleWriterPort {
-  readonly name: 'claude' | 'rules';
   /** Texto del "por qué" de cada paso ya decidido, en el mismo orden. No puede añadir ni quitar pasos. */
-  write(request: RationaleRequest): Promise<string[]>;
+  write(
+    request: RationaleRequest,
+  ): Promise<{ texts: string[]; by: 'claude' | 'rules' }>;
 }
