@@ -3,6 +3,10 @@ import { loadEnv } from './env';
 const valid = {
   DATABASE_URL: 'postgres://u:p@localhost:5432/db',
   WEB_ORIGIN: 'http://localhost:3000',
+  JWT_SECRET: 'x'.repeat(32),
+  DISCORD_CLIENT_ID: 'id',
+  DISCORD_CLIENT_SECRET: 'secret',
+  DISCORD_CALLBACK_URL: 'http://localhost:3001/v1/auth/discord/callback',
 };
 
 describe('loadEnv', () => {

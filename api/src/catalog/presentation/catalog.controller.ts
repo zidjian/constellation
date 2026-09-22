@@ -5,7 +5,7 @@ import { GetCatalogUseCase } from '../application/get-catalog.use-case';
 export class CatalogController {
   constructor(private readonly getCatalog: GetCatalogUseCase) {}
 
-  // Requerirá sesión en cuanto exista el guard global de identity (plan §4.2).
+  // Exige sesión: lo aplica el guard global de identity.
   @Get('courses')
   courses() {
     return this.getCatalog.execute();

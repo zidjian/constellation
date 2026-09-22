@@ -1,7 +1,9 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { DataSource } from 'typeorm';
+import { Public } from '../identity/presentation/public.decorator';
 
+@Public()
 @Controller('health')
 export class HealthController {
   constructor(private readonly dataSource: DataSource) {}

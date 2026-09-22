@@ -128,19 +128,19 @@ Fuente y proceso según **ADR-0004**: extracción offline del sitio público →
 
 ### 4.2 Identidad — `backend-implementer` · `feature/identity-discord`
 
-- [ ] Migración `CreateUsers` (`discord_id` único, `username`, `avatar_url`).
-- [ ] `passport-discord` con `state: true` y scope `identify`; los tokens de Discord no salen de la estrategia.
-- [ ] Caso de uso `LoginWithDiscord`: upsert de usuario (solo `discordId`, `username`, `avatar`), emite JWT (7 días, `sub = userId`).
-- [ ] Callback: `Set-Cookie cst_session` (`HttpOnly`, `Secure` en prod, `SameSite=Lax`, `Domain` solo si `COOKIE_DOMAIN`), redirige a `WEB_ORIGIN/paths` si tiene rutas o `/assessment` si no. Error de OAuth → redirige a `/?error=auth`.
-- [ ] `JwtAuthGuard` **global** con decorador `@Public()` para las excepciones; `@CurrentUser()`; sin cookie o inválida → `401 UNAUTHENTICATED`.
-- [ ] `GET /v1/me` → `{ id, discordId, username, avatarUrl }`. `POST /v1/auth/logout` borra la cookie con el mismo `Domain`/`Path`.
-- [ ] Tests: e2e de `401` sin cookie, `/me` con JWT firmado en test, logout.
+- [x] Migración `CreateUsers` (`discord_id` único, `username`, `avatar_url`).
+- [x] `passport-discord` con `state: true` y scope `identify`; los tokens de Discord no salen de la estrategia.
+- [x] Caso de uso `LoginWithDiscord`: upsert de usuario (solo `discordId`, `username`, `avatar`), emite JWT (7 días, `sub = userId`).
+- [x] Callback: `Set-Cookie cst_session` (`HttpOnly`, `Secure` en prod, `SameSite=Lax`, `Domain` solo si `COOKIE_DOMAIN`), redirige a `WEB_ORIGIN/paths` si tiene rutas o `/assessment` si no. Error de OAuth → redirige a `/?error=auth`.
+- [x] `JwtAuthGuard` **global** con decorador `@Public()` para las excepciones; `@CurrentUser()`; sin cookie o inválida → `401 UNAUTHENTICATED`.
+- [x] `GET /v1/me` → `{ id, discordId, username, avatarUrl }`. `POST /v1/auth/logout` borra la cookie con el mismo `Domain`/`Path`.
+- [x] Tests: e2e de `401` sin cookie, `/me` con JWT firmado en test, logout.
 
 ### 4.3 Auth en la web — `frontend-implementer` · `feature/web-auth`
 
-- [ ] `middleware.ts`: sin cookie `cst_session` en `/assessment` o `/paths/*` → redirige a `/`. (Solo presencia; la validez la decide la API.)
-- [ ] Layout del grupo protegido: Server Component que pide `/v1/me` reenviando la cookie; `401` → redirige a `/`.
-- [ ] Landing mínima con "Entrar con Discord" → `NEXT_PUBLIC_API_URL/v1/auth/discord`; avatar + logout en el header.
+- [x] `middleware.ts`: sin cookie `cst_session` en `/assessment` o `/paths/*` → redirige a `/`. (Solo presencia; la validez la decide la API.)
+- [x] Layout del grupo protegido: Server Component que pide `/v1/me` reenviando la cookie; `401` → redirige a `/`.
+- [x] Landing mínima con "Entrar con Discord" → `NEXT_PUBLIC_API_URL/v1/auth/discord`; avatar + logout en el header.
 
 **Verificación de salida F1 (en producción):** criterios de aceptación **1 y 2**. Revisar en DevTools que la cookie tiene `Domain=.constellation.waldirmaidana.com` y que `/me` no contiene tokens.
 
@@ -262,6 +262,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-21 | F0 (scaffolds) arranca en D5: el calendario va ~4 días atrasado | Tiempo dedicado al diseño y al catálogo; reajustar el calendario antes de F1 |
 | 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
 | 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
+| 2026-09-21 | OAuth de Discord a mano (sin `passport-discord`); el `state` va en una cookie. El callback redirige siempre a `/paths` hasta que existan rutas (F3) | `passport` necesita `express-session` para el `state`, y la librería no se mantiene desde 2018 |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación

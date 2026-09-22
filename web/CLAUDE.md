@@ -11,4 +11,6 @@ Lee primero el `CLAUDE.md` raíz. Aquí solo lo específico de la web.
 - **`API_INTERNAL_URL` (runtime, solo servidor):** `api.server.ts` la usa para llamar a la API por `127.0.0.1:3011` en producción. Sin ella usa `NEXT_PUBLIC_API_URL`. En local no hace falta.
 - **Cliente API:** `src/lib/api.ts` es para el navegador (`credentials: 'include'`). `src/lib/api.server.ts` es para Server Components (reenvía la cookie `cst_session`) y es `server-only`. Ambos devuelven `data` o lanzan `ApiError` con `code`.
 - **Streaming:** `src/lib/sse.ts` (`readSse`) lee SSE desde `fetch`. Si la respuesta no es `text/event-stream` (401, 429…), lanza `ApiError`; si se aborta, lanza `AbortError`. `EventSource` no se usa porque solo hace GET.
+- **Auth en la web:** `src/proxy.ts` solo mira si existe la cookie `cst_session` en `/assessment` y `/paths`. El layout de `src/app/(app)/` valida la sesión contra `/v1/me` (`getCurrentUser`) y redirige a `/` si da 401. El login es un enlace (navegación completa) a `API/v1/auth/discord`, nunca un `fetch`.
+- **`next-server` cambia el título del proceso:** `pkill -f server.js` no lo encuentra. Para pararlo en local, usa `lsof -tiTCP:3000 -sTCP:LISTEN | xargs kill`.
 - **pnpm 11:** `sharp` y `unrs-resolver` quedan en `allowBuilds: false` (`pnpm-workspace.yaml`).
