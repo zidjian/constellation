@@ -63,6 +63,12 @@ describe('PathPlanner', () => {
     expect(slugs(p)).toEqual(['nest', 'graphql']);
   });
 
+  it('no pide los prerrequisitos de un curso que ya domina', () => {
+    // Domina TS (aunque no marcó JS): no hace falta volver a JS.
+    const p = planner(stack).plan(profile(['nest'], { ts: 2 }));
+    expect(slugs(p)).toEqual(['nest']);
+  });
+
   it('un nivel por debajo del umbral no cuenta como dominado', () => {
     expect(slugs(planner(stack).plan(profile(['ts'], { js: 1 })))).toEqual([
       'js',
