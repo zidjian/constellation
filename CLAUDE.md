@@ -88,6 +88,8 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 - **`prerequisites` es duro y `requires` es informativo** (incluye lo recomendado). El `PathPlanner` cierra solo sobre `prerequisites`, nunca sobre `requires`.
 - **Los slugs de curso son los de la URL real** de DevTalles, con mayúsculas, `_` y `%XX` (p. ej. `NestJS-Testing`, `Ingenier%C3%ADa-de-prompts`). Se comparan exactos: no se pasan a minúsculas ni se decodifican. Los slugs de skill sí van en kebab-case y minúsculas.
 - **Hay skills que enseñan varios cursos** (p. ej. `llm-apps` lo enseñan 7). El `PathPlanner` elige **un** curso por skill objetivo (plan §5.1 y §12); no los mete todos.
+- **La instancia Lightsail es compartida** con otras apps (ver `deploy/README.md`). En producción la API escucha en **3011** y la web en **3010**, porque 3001 y 3003 ya están ocupados. Nunca se recarga ni se modifica nada ajeno a Constellation.
+- **DNS en Cloudflare con la nube gris (DNS only).** Con proxy, el certificado gratuito de Cloudflare no cubre `backend.constellation.waldirmaidana.com` (dos niveles) y además corta el SSE a los 100 s. El TLS lo emite certbot en el servidor.
 - **PostgreSQL solo escucha en `localhost`**; el puerto 5432 **no** se abre en el firewall de Lightsail. Acceso remoto por túnel SSH.
 
 ## Documentación del proyecto y flujo de agentes
