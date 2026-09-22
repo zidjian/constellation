@@ -19,6 +19,8 @@ export interface StructuredRequest<T> {
   /** Validación posterior: la salida del modelo es un dato, no se confía en ella sin validar. */
   schema: z.ZodType<T>;
   maxTokens: number;
+  /** Tope de la petición HTTP; debe acompañar al del AbortSignal del llamador. */
+  timeoutMs: number;
   signal: AbortSignal;
 }
 
@@ -57,7 +59,7 @@ export class ClaudeStructured {
         betas: ['server-side-fallback-2026-07-01'],
         fallbacks: 'default',
       },
-      { signal: req.signal, timeout: this.env.LLM_TIMEOUT_MS },
+      { signal: req.signal, timeout: req.timeoutMs },
     );
 
     if (response.stop_reason === 'refusal')

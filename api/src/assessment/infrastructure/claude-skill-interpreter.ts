@@ -103,6 +103,7 @@ export class ClaudeSkillInterpreter implements SkillInterpreterPort {
       },
       schema: outputSchema,
       maxTokens: 2048,
+      timeoutMs: this.env.LLM_TIMEOUT_MS,
       signal,
     });
     return mergeProfiles(base, out, new Set(slugs), input.stackTargets);
