@@ -160,7 +160,7 @@ Algoritmo (spec §3):
 5. Si el resultado supera 15 pasos, se toma el **prefijo** del orden topológico (un prefijo es cerrado bajo prerrequisitos).
 6. Resultado vacío → `DomainError PATH_NOTHING_TO_LEARN`.
 
-- [ ] Tests unitarios obligatorios: solo cursos del catálogo · prerrequisito siempre antes · cierre transitivo de varios niveles · quitar lo dominado sin romper el orden del resto · desempates estables (misma entrada ⇒ misma salida) · tope de 15 · vacío ⇒ error · skill objetivo sin curso ⇒ se ignora · test de propiedad sobre el catálogo real: para cada skill objetivo posible se cumple el criterio 5.
+- [x] Tests unitarios obligatorios: solo cursos del catálogo · prerrequisito siempre antes · cierre transitivo de varios niveles · quitar lo dominado sin romper el orden del resto · desempates estables (misma entrada ⇒ misma salida) · tope de 15 · vacío ⇒ error · skill objetivo sin curso ⇒ se ignora · test de propiedad sobre el catálogo real: para cada skill objetivo posible se cumple el criterio 5.
 
 ### 5.2 Assessment — `backend-implementer` · `feature/assessment`
 
@@ -305,8 +305,8 @@ Resolver antes de la fase indicada; la respuesta se registra en §9 (y en ADR si
 
 | Decisión | Propuesta por defecto | Antes de |
 |---|---|---|
-| Curso elegido cuando varios enseñan la misma skill objetivo | Menos prerrequisitos no dominados → nivel → duración → slug | F2 (D4) |
-| Umbral de "skill dominada" y escala de niveles | Escala 0–3; dominada si ≥ 2 | F2 (D4) |
+| ~~Curso elegido cuando varios enseñan la misma skill objetivo~~ | **Resuelta:** el que añade menos cursos nuevos no dominados → nivel → duración → slug (`path-planner.ts`) | F2 (D4) |
+| ~~Umbral de "skill dominada" y escala de niveles~~ | **Resuelta:** escala 0–3, dominada si ≥ 2 (`skill-profile.ts`) | F2 (D4) |
 | ~~Fuente de datos del catálogo~~ | **Resuelta → ADR-0004:** snapshot del sitio público + rutas oficiales; un export oficial, si llega, manda | F1 (D1) |
 | Modelo de Claude para interpretar y redactar | El que indique la skill `claude-api` para salida estructurada con buena latencia | F3b (D9) |
 | Plan de Lightsail (memoria) | El existente; subir solo si PM2 + Postgres superan ~80 % de RAM | F0 (D1) |
