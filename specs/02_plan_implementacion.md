@@ -80,7 +80,7 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 - [x] `shared/infrastructure/config`: env validado con `zod` al arrancar (falla rápido): `PORT`, `DATABASE_URL`, `JWT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_CALLBACK_URL`, `WEB_ORIGIN`, `COOKIE_DOMAIN` (vacío en local), `LLM_PROVIDER` (`claude`|`rules`), `ANTHROPIC_API_KEY` (opcional si `rules`), `ANTHROPIC_MODEL`, `LLM_TIMEOUT_MS=8000`. `.env.example` versionado.
 - [x] `main.ts`: prefijo global `v1`, `trust proxy 1`, `cookie-parser`, `helmet`, CORS con `origin: WEB_ORIGIN` + `credentials: true`, `ValidationPipe({ whitelist, forbidNonWhitelisted, transform })`.
 - [x] Formato único de API: interceptor `{ data }` y filtro de excepciones `{ error: { code, message } }`. Clase base `DomainError(code, message)` con mapeo a HTTP en `presentation`; errores no controlados → `500 INTERNAL_ERROR` sin stack.
-- [x] TypeORM con `DataSource` compartido por app y CLI, `synchronize: false`, scripts `migration:generate|run|revert`, `seed`.
+- [x] TypeORM con `DataSource` compartido por app y CLI, `synchronize: false`, scripts `migration:generate|run|revert` (el script `seed` llega con el catálogo, §4.1).
 - [x] `GET /v1/health` (público) y `GET /v1/health/stream` (SSE de prueba, 5 eventos a 1 s) — este último se elimina en F3.
 - [x] Tests: e2e del formato de éxito/error.
 
