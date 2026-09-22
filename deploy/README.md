@@ -9,6 +9,8 @@ La instancia `34.200.218.45` (alias SSH `lightsail-backends`) también aloja otr
 | Nginx | `nginx/constellation.conf` y `nginx/backend.constellation.conf` → `/etc/nginx/sites-available/` + symlink en `sites-enabled/`; TLS con `certbot --nginx` |
 | Secretos | `/home/ubuntu/constellation/api/.env` (lo carga la API). Nunca en el repo |
 | BD | PostgreSQL 18 local; BD y rol `constellation` |
+| Respaldo | `respaldo.sh` por cron a las 04:15 → `/home/ubuntu/respaldos/constellation-*.sql.gz`, 14 días de retención. Restaurar: `gunzip -c <archivo> \| psql "$DATABASE_URL"` |
+| Arranque | `pm2 startup` (servicio `pm2-ubuntu`) restaura la lista de `pm2 save` al reiniciar. Cada deploy ejecuta `pm2 save` |
 | DNS | Cloudflare con la nube **gris (DNS only)**. Con proxy, el certificado de Cloudflare no cubre `backend.constellation.` (dos niveles) y corta el SSE a los 100 s |
 
 ## Flujo

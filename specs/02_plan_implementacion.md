@@ -71,7 +71,7 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 
 ### 3.1 Repositorio y proceso
 - [x] `git init`, `.gitignore` (node, `.env*`, `dist`, `.next`), `LICENSE` MIT, commit inicial con docs existentes en `main`.
-- [x] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde). _(protección de ramas pendiente)_
+- [x] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde).
 - [x] Plantilla de PR con checklist de la Definition of Done.
 - [x] Registrar la app en Discord Developer Portal con las **dos** redirect URIs (local y producción, sin `/` final).
 
@@ -261,7 +261,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-16 | Se adelanta la extracción del catálogo a D0 y se decide la fuente (ADR-0004) | No hay API pública; el sitio publica rutas oficiales con prerrequisitos |
 | 2026-09-21 | F0 (scaffolds) arranca en D5: el calendario va ~4 días atrasado | Tiempo dedicado al diseño y al catálogo; reajustar el calendario antes de F1 |
 | 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
-| 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario y protección de ramas pendientes | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
+| 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación
