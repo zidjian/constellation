@@ -254,6 +254,7 @@ describe('ClaudeStructured', () => {
     jsonSchema: { type: 'object' },
     schema: z.object({ ok: z.boolean() }),
     maxTokens: 100,
+    timeoutMs: 1234,
     signal: new AbortController().signal,
   };
 
@@ -276,7 +277,7 @@ describe('ClaudeStructured', () => {
         format: { type: 'json_schema', schema: { type: 'object' } },
       },
     });
-    expect(options).toMatchObject({ timeout: env.LLM_TIMEOUT_MS });
+    expect(options).toMatchObject({ timeout: 1234 });
   });
 
   it.each([
