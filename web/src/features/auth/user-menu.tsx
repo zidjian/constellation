@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
 import type { CurrentUser } from "./types";
 
@@ -26,28 +27,20 @@ export function UserMenu({ user }: { user: CurrentUser }) {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       {user.avatarUrl ? (
-        <Image src={user.avatarUrl} alt="" width={32} height={32} className="rounded-full" />
+        <Image src={user.avatarUrl} alt="" width={28} height={28} className="rounded-full" />
       ) : (
-        <span
-          aria-hidden
-          className="grid size-8 place-items-center rounded-full bg-foreground/10 text-sm font-medium"
-        >
+        <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">
           {user.username.slice(0, 1).toUpperCase()}
         </span>
       )}
-      <span className="text-sm">{user.username}</span>
-      <button
-        type="button"
-        onClick={logout}
-        disabled={leaving}
-        className="rounded-md px-2 py-1 text-sm underline-offset-4 hover:underline disabled:opacity-50"
-      >
+      <span className="hidden max-w-40 truncate text-sm sm:inline">{user.username}</span>
+      <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
         {leaving ? "Saliendo…" : "Salir"}
-      </button>
+      </Button>
       {error && (
-        <span role="alert" className="text-sm text-red-500">
+        <span role="alert" className="text-sm text-danger">
           No se pudo cerrar sesión. Reintenta.
         </span>
       )}
