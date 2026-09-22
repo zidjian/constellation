@@ -160,18 +160,18 @@ Algoritmo (spec §3):
 5. Si el resultado supera 15 pasos, se toma el **prefijo** del orden topológico (un prefijo es cerrado bajo prerrequisitos).
 6. Resultado vacío → `DomainError PATH_NOTHING_TO_LEARN`.
 
-- [ ] Tests unitarios obligatorios: solo cursos del catálogo · prerrequisito siempre antes · cierre transitivo de varios niveles · quitar lo dominado sin romper el orden del resto · desempates estables (misma entrada ⇒ misma salida) · tope de 15 · vacío ⇒ error · skill objetivo sin curso ⇒ se ignora · test de propiedad sobre el catálogo real: para cada skill objetivo posible se cumple el criterio 5.
+- [x] Tests unitarios obligatorios: solo cursos del catálogo · prerrequisito siempre antes · cierre transitivo de varios niveles · quitar lo dominado sin romper el orden del resto · desempates estables (misma entrada ⇒ misma salida) · tope de 15 · vacío ⇒ error · skill objetivo sin curso ⇒ se ignora · test de propiedad sobre el catálogo real: para cada skill objetivo posible se cumple el criterio 5.
 
 ### 5.2 Assessment — `backend-implementer` · `feature/assessment`
 
-- [ ] Dominio `AssessmentSession`: `in_progress → completed | abandoned` irreversible; máx. 10 respuestas; `complete()` exige ≥ 5; responder o completar en estado final → `ASSESSMENT_ALREADY_COMPLETED` (409).
-- [ ] `question-bank.ts` curado: pregunta de objetivo (texto libre, admite oferta de trabajo pegada), elección de área, autoevaluación por área, y **mini-retos** por área y dificultad con respuesta verificable (opción múltiple: "¿qué imprime?", "¿qué falla?"). Cada reto referencia los slugs de skill que evalúa.
-- [ ] Selección adaptativa pura `nextQuestion(bank, answers)`: el área elegida fija la rama; acierto sube dificultad, fallo baja; termina al llegar a 10 o al agotar la rama. Tests unitarios.
-- [ ] Puntuación determinista de retos → `score` en `assessment_answers`.
-- [ ] `SkillInterpreterPort` + **adaptador `rules`**: niveles por skill a partir de autoevaluación + retos; `targetSkills` por área elegida y palabras clave del texto libre (diccionario skill ↔ términos). Salida validada contra slugs existentes.
-- [ ] Migraciones `CreateAssessment`: `assessment_sessions`, `assessment_answers`, `skill_profiles`.
-- [ ] Casos de uso con **ownership** (sesión de otro usuario → `404 ASSESSMENT_NOT_FOUND`): `StartAssessment` (abandona la `in_progress` previa), `AnswerQuestion` (valida que `question_key` es la pregunta esperada), `CompleteAssessment` (persiste `SkillProfile` con `interpreted_by`).
-- [ ] Endpoints `POST /assessments`, `POST /assessments/:id/answers`, `POST /assessments/:id/complete`. La pregunta enviada al cliente **no incluye** la respuesta correcta.
+- [x] Dominio `AssessmentSession`: `in_progress → completed | abandoned` irreversible; máx. 10 respuestas; `complete()` exige ≥ 5; responder o completar en estado final → `ASSESSMENT_ALREADY_COMPLETED` (409).
+- [x] `question-bank.ts` curado: pregunta de objetivo (texto libre, admite oferta de trabajo pegada), elección de área, autoevaluación por área, y **mini-retos** por área y dificultad con respuesta verificable (opción múltiple: "¿qué imprime?", "¿qué falla?"). Cada reto referencia los slugs de skill que evalúa.
+- [x] Selección adaptativa pura `nextQuestion(bank, answers)`: el área elegida fija la rama; acierto sube dificultad, fallo baja; termina al llegar a 10 o al agotar la rama. Tests unitarios.
+- [x] Puntuación determinista de retos → `score` en `assessment_answers`.
+- [x] `SkillInterpreterPort` + **adaptador `rules`**: niveles por skill a partir de autoevaluación + retos; `targetSkills` por área elegida y palabras clave del texto libre (diccionario skill ↔ términos). Salida validada contra slugs existentes.
+- [x] Migraciones `CreateAssessment`: `assessment_sessions`, `assessment_answers`, `skill_profiles`.
+- [x] Casos de uso con **ownership** (sesión de otro usuario → `404 ASSESSMENT_NOT_FOUND`): `StartAssessment` (abandona la `in_progress` previa), `AnswerQuestion` (valida que `question_key` es la pregunta esperada), `CompleteAssessment` (persiste `SkillProfile` con `interpreted_by`).
+- [x] Endpoints `POST /assessments`, `POST /assessments/:id/answers`, `POST /assessments/:id/complete`. La pregunta enviada al cliente **no incluye** la respuesta correcta.
 
 **Verificación de salida F2:** criterio **3** por `curl` con cookie real; tests de planner verdes contra el catálogo real.
 
@@ -263,6 +263,8 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
 | 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | OAuth de Discord a mano (sin `passport-discord`); el `state` va en una cookie. El callback redirige siempre a `/paths` hasta que existan rutas (F3) | `passport` necesita `express-session` para el `state`, y la librería no se mantiene desde 2018 |
+| 2026-09-22 | Entrevista: `GET /v1/assessments/current` (retomar) y `result: { correct }` al responder un reto, además de lo que pide la spec §6. La autoevaluación se deriva del catálogo en vez de un banco fijo por área | La web necesita retomar la entrevista, y la respuesta inmediata a los retos es parte de la experiencia. Derivarla del catálogo la mantiene coherente con él |
+| 2026-09-22 | El planner no expande los prerrequisitos de los cursos dominados | En un smoke apareció "Programación para principiantes" a alguien que aprobó los retos de JS |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación
@@ -305,8 +307,8 @@ Resolver antes de la fase indicada; la respuesta se registra en §9 (y en ADR si
 
 | Decisión | Propuesta por defecto | Antes de |
 |---|---|---|
-| Curso elegido cuando varios enseñan la misma skill objetivo | Menos prerrequisitos no dominados → nivel → duración → slug | F2 (D4) |
-| Umbral de "skill dominada" y escala de niveles | Escala 0–3; dominada si ≥ 2 | F2 (D4) |
+| ~~Curso elegido cuando varios enseñan la misma skill objetivo~~ | **Resuelta:** el que añade menos cursos nuevos no dominados → nivel → duración → slug (`path-planner.ts`) | F2 (D4) |
+| ~~Umbral de "skill dominada" y escala de niveles~~ | **Resuelta:** escala 0–3, dominada si ≥ 2 (`skill-profile.ts`) | F2 (D4) |
 | ~~Fuente de datos del catálogo~~ | **Resuelta → ADR-0004:** snapshot del sitio público + rutas oficiales; un export oficial, si llega, manda | F1 (D1) |
 | Modelo de Claude para interpretar y redactar | El que indique la skill `claude-api` para salida estructurada con buena latencia | F3b (D9) |
 | Plan de Lightsail (memoria) | El existente; subir solo si PM2 + Postgres superan ~80 % de RAM | F0 (D1) |
