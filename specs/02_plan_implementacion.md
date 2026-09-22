@@ -70,24 +70,24 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 **Agentes:** `devops` (repo, CI, instancia), `backend-implementer` y `frontend-implementer` (scaffolds). **Ramas:** `feature/bootstrap-api`, `feature/bootstrap-web`, `feature/infra-skeleton`.
 
 ### 3.1 Repositorio y proceso
-- [ ] `git init`, `.gitignore` (node, `.env*`, `dist`, `.next`), `LICENSE` MIT, commit inicial con docs existentes en `main`.
+- [x] `git init`, `.gitignore` (node, `.env*`, `dist`, `.next`), `LICENSE` MIT, commit inicial con docs existentes en `main`.
 - [ ] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde).
 - [ ] Plantilla de PR con checklist de la Definition of Done.
 - [ ] Registrar la app en Discord Developer Portal con las **dos** redirect URIs (local y producción, sin `/` final).
 
 ### 3.2 Scaffold `api/`
-- [ ] Nest + pnpm + TypeScript estricto, ESLint/Prettier, Jest.
-- [ ] `shared/infrastructure/config`: env validado con `zod` al arrancar (falla rápido): `PORT`, `DATABASE_URL`, `JWT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_CALLBACK_URL`, `WEB_ORIGIN`, `COOKIE_DOMAIN` (vacío en local), `LLM_PROVIDER` (`claude`|`rules`), `ANTHROPIC_API_KEY` (opcional si `rules`), `ANTHROPIC_MODEL`, `LLM_TIMEOUT_MS=8000`. `.env.example` versionado.
-- [ ] `main.ts`: prefijo global `v1`, `trust proxy 1`, `cookie-parser`, `helmet`, CORS con `origin: WEB_ORIGIN` + `credentials: true`, `ValidationPipe({ whitelist, forbidNonWhitelisted, transform })`.
-- [ ] Formato único de API: interceptor `{ data }` y filtro de excepciones `{ error: { code, message } }`. Clase base `DomainError(code, message)` con mapeo a HTTP en `presentation`; errores no controlados → `500 INTERNAL_ERROR` sin stack.
-- [ ] TypeORM con `DataSource` compartido por app y CLI, `synchronize: false`, scripts `migration:generate|run|revert`, `seed`.
-- [ ] `GET /v1/health` (público) y `GET /v1/health/stream` (SSE de prueba, 5 eventos a 1 s) — este último se elimina en F3.
-- [ ] Tests: e2e del formato de éxito/error.
+- [x] Nest + pnpm + TypeScript estricto, ESLint/Prettier, Jest.
+- [x] `shared/infrastructure/config`: env validado con `zod` al arrancar (falla rápido): `PORT`, `DATABASE_URL`, `JWT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_CALLBACK_URL`, `WEB_ORIGIN`, `COOKIE_DOMAIN` (vacío en local), `LLM_PROVIDER` (`claude`|`rules`), `ANTHROPIC_API_KEY` (opcional si `rules`), `ANTHROPIC_MODEL`, `LLM_TIMEOUT_MS=8000`. `.env.example` versionado.
+- [x] `main.ts`: prefijo global `v1`, `trust proxy 1`, `cookie-parser`, `helmet`, CORS con `origin: WEB_ORIGIN` + `credentials: true`, `ValidationPipe({ whitelist, forbidNonWhitelisted, transform })`.
+- [x] Formato único de API: interceptor `{ data }` y filtro de excepciones `{ error: { code, message } }`. Clase base `DomainError(code, message)` con mapeo a HTTP en `presentation`; errores no controlados → `500 INTERNAL_ERROR` sin stack.
+- [x] TypeORM con `DataSource` compartido por app y CLI, `synchronize: false`, scripts `migration:generate|run|revert`, `seed`.
+- [x] `GET /v1/health` (público) y `GET /v1/health/stream` (SSE de prueba, 5 eventos a 1 s) — este último se elimina en F3.
+- [x] Tests: e2e del formato de éxito/error.
 
 ### 3.3 Scaffold `web/`
-- [ ] Next.js App Router + TypeScript + Tailwind + ESLint, `output: 'standalone'`.
-- [ ] `src/lib/api.ts`: cliente `fetch` con `credentials: 'include'` y desempaquetado `{ data } / { error }` a un error tipado con `code`; variante server-side que reenvía la cookie `cst_session`.
-- [ ] Página `/` provisional que llama a `/v1/health` y consume `/v1/health/stream` con `fetch` + `ReadableStream`.
+- [x] Next.js App Router + TypeScript + Tailwind + ESLint, `output: 'standalone'`.
+- [x] `src/lib/api.ts`: cliente `fetch` con `credentials: 'include'` y desempaquetado `{ data } / { error }` a un error tipado con `code`; variante server-side que reenvía la cookie `cst_session`.
+- [x] Página `/` provisional que llama a `/v1/health` y consume `/v1/health/stream` con `fetch` + `ReadableStream`.
 
 ### 3.4 Infra y CI
 - [ ] Lightsail: DNS `A` de ambos subdominios, firewall solo 22/80/443, Nginx con un `server` por subdominio, certbot, PM2 con `ecosystem.config.js` y `pm2 startup`.
@@ -259,6 +259,9 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | Fecha | Desvío | Motivo |
 |---|---|---|
 | 2026-09-16 | Se adelanta la extracción del catálogo a D0 y se decide la fuente (ADR-0004) | No hay API pública; el sitio publica rutas oficiales con prerrequisitos |
+| 2026-09-21 | F0 (scaffolds) arranca en D5: el calendario va ~4 días atrasado | Tiempo dedicado al diseño y al catálogo; reajustar el calendario antes de F1 |
+| 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
+| 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación
 
