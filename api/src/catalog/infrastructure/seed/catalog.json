@@ -1,0 +1,1659 @@
+{
+  "version": "2026-09-21",
+  "skills": [
+    {
+      "slug": "programming-basics",
+      "name": "Fundamentos de programación",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "git",
+      "name": "Git y GitHub",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "vscode",
+      "name": "Visual Studio Code",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "clean-code",
+      "name": "Clean Code y principios SOLID",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "design-patterns",
+      "name": "Patrones de diseño",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "javascript",
+      "name": "JavaScript",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "typescript",
+      "name": "TypeScript",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "python",
+      "name": "Python",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "java",
+      "name": "Java",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "java-advanced",
+      "name": "Java avanzado: funcional, concurrencia y reactividad",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "csharp",
+      "name": "C#",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "dart",
+      "name": "Dart",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "go",
+      "name": "Go",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "php",
+      "name": "PHP",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "prompt-engineering",
+      "name": "Ingeniería de prompts",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "ai-assisted-coding",
+      "name": "Desarrollo asistido por IA (vibe coding y agentes de código)",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "n8n-automation",
+      "name": "Automatización con n8n",
+      "area": "fundamentals"
+    },
+    {
+      "slug": "angular",
+      "name": "Angular",
+      "area": "frontend"
+    },
+    {
+      "slug": "angular-ngmodules",
+      "name": "Angular con NgModules",
+      "area": "frontend"
+    },
+    {
+      "slug": "angular-advanced",
+      "name": "Angular avanzado: SSR, testing y librerías",
+      "area": "frontend"
+    },
+    {
+      "slug": "rxjs",
+      "name": "RxJS y programación reactiva",
+      "area": "frontend"
+    },
+    {
+      "slug": "react",
+      "name": "React",
+      "area": "frontend"
+    },
+    {
+      "slug": "react-patterns",
+      "name": "Patrones avanzados de React",
+      "area": "frontend"
+    },
+    {
+      "slug": "nextjs",
+      "name": "Next.js",
+      "area": "frontend"
+    },
+    {
+      "slug": "react-router",
+      "name": "React Router",
+      "area": "frontend"
+    },
+    {
+      "slug": "tanstack-query",
+      "name": "TanStack Query",
+      "area": "frontend"
+    },
+    {
+      "slug": "zustand",
+      "name": "Zustand",
+      "area": "frontend"
+    },
+    {
+      "slug": "shadcn-ui",
+      "name": "shadcn/ui",
+      "area": "frontend"
+    },
+    {
+      "slug": "tailwindcss",
+      "name": "Tailwind CSS",
+      "area": "frontend"
+    },
+    {
+      "slug": "vue",
+      "name": "Vue.js (Composition API)",
+      "area": "frontend"
+    },
+    {
+      "slug": "vue-options-api",
+      "name": "Vue.js con Options API y Vuex",
+      "area": "frontend"
+    },
+    {
+      "slug": "vue-advanced",
+      "name": "Vue avanzado: composables, Pinia y Vue Query",
+      "area": "frontend"
+    },
+    {
+      "slug": "nuxt",
+      "name": "Nuxt",
+      "area": "frontend"
+    },
+    {
+      "slug": "astro",
+      "name": "Astro",
+      "area": "frontend"
+    },
+    {
+      "slug": "flutter-web",
+      "name": "Flutter Web",
+      "area": "frontend"
+    },
+    {
+      "slug": "blazor",
+      "name": "Blazor",
+      "area": "frontend"
+    },
+    {
+      "slug": "flutter",
+      "name": "Flutter",
+      "area": "mobile"
+    },
+    {
+      "slug": "flutter-native",
+      "name": "Recursos nativos en Flutter",
+      "area": "mobile"
+    },
+    {
+      "slug": "flutter-ui",
+      "name": "Diseño y animaciones en Flutter",
+      "area": "mobile"
+    },
+    {
+      "slug": "flutter-state",
+      "name": "Gestión de estado en Flutter (Riverpod, BLoC)",
+      "area": "mobile"
+    },
+    {
+      "slug": "flutter-advanced",
+      "name": "Flutter avanzado: tiempo real, mapas y pagos",
+      "area": "mobile"
+    },
+    {
+      "slug": "react-native",
+      "name": "React Native con Expo",
+      "area": "mobile"
+    },
+    {
+      "slug": "nodejs",
+      "name": "Node.js",
+      "area": "backend"
+    },
+    {
+      "slug": "rest-api",
+      "name": "APIs REST",
+      "area": "backend"
+    },
+    {
+      "slug": "nestjs",
+      "name": "NestJS",
+      "area": "backend"
+    },
+    {
+      "slug": "graphql",
+      "name": "GraphQL",
+      "area": "backend"
+    },
+    {
+      "slug": "microservices",
+      "name": "Arquitectura de microservicios",
+      "area": "backend"
+    },
+    {
+      "slug": "automated-testing",
+      "name": "Pruebas automatizadas de backend (unitarias, integración, e2e)",
+      "area": "backend"
+    },
+    {
+      "slug": "pdf-reports",
+      "name": "Generación de reportes PDF",
+      "area": "backend"
+    },
+    {
+      "slug": "clean-architecture",
+      "name": "Clean Architecture y arquitectura hexagonal",
+      "area": "backend"
+    },
+    {
+      "slug": "dotnet",
+      "name": ".NET (ASP.NET Core)",
+      "area": "backend"
+    },
+    {
+      "slug": "spring-boot",
+      "name": "Spring Boot",
+      "area": "backend"
+    },
+    {
+      "slug": "fastapi",
+      "name": "FastAPI",
+      "area": "backend"
+    },
+    {
+      "slug": "django",
+      "name": "Django",
+      "area": "backend"
+    },
+    {
+      "slug": "laravel",
+      "name": "Laravel",
+      "area": "backend"
+    },
+    {
+      "slug": "go-backend",
+      "name": "Backend con Go",
+      "area": "backend"
+    },
+    {
+      "slug": "sql",
+      "name": "SQL y PostgreSQL",
+      "area": "backend"
+    },
+    {
+      "slug": "websockets",
+      "name": "Aplicaciones en tiempo real con WebSockets",
+      "area": "backend"
+    },
+    {
+      "slug": "llm-apps",
+      "name": "Integración de LLMs en aplicaciones",
+      "area": "backend"
+    },
+    {
+      "slug": "rag",
+      "name": "RAG (Retrieval Augmented Generation)",
+      "area": "backend"
+    },
+    {
+      "slug": "ai-agents",
+      "name": "Agentes de IA",
+      "area": "backend"
+    },
+    {
+      "slug": "docker",
+      "name": "Docker y contenedores",
+      "area": "devops"
+    },
+    {
+      "slug": "kubernetes",
+      "name": "Kubernetes",
+      "area": "devops"
+    }
+  ],
+  "courses": [
+    {
+      "slug": "programacion-para-principiantes",
+      "title": "Programación para principiantes",
+      "url": "https://cursos.devtalles.com/courses/programacion-para-principiantes",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/slRm7OvQRZySnHeaaw0w_PROGRAMACION%20PARA%20PRINCIPIANTES.jpg",
+      "summary": "Este curso de programación para principiantes, tiene por objetivo brindarte una base para comenzar tu camino en el desarrollo de aplicaciones de cualquier tipo.",
+      "level": "beginner",
+      "durationHours": 8,
+      "teaches": [
+        "programming-basics"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "visual-studio-code",
+      "title": "Visual Studio Code:Velocidad en codificar",
+      "url": "https://cursos.devtalles.com/courses/visual-studio-code",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ozPWxfNjQBKugksdaogB_VSCODE.jpg",
+      "summary": "Este curso se enfoca en 2 áreas principales: Aumentar tu velocidad de desarrollo y conocer más sobre VSCode.",
+      "level": "beginner",
+      "durationHours": 2,
+      "teaches": [
+        "vscode"
+      ],
+      "requires": [],
+      "prerequisites": [
+        "programacion-para-principiantes"
+      ]
+    },
+    {
+      "slug": "git-github-control-versiones-desde-cero",
+      "title": "GIT+GitHub: Control de versiones desde Cero",
+      "url": "https://cursos.devtalles.com/courses/git-github-control-versiones-desde-cero",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/vyhm8XioTSeV0KPWLzrI_COVER-DEVTALLES-github2026.jpg",
+      "summary": "Domina GIT y GitHub para gestionar y colaborar en proyectos de forma eficiente. Aprende desde lo básico hasta flujos de trabajo avanzados.",
+      "level": "beginner",
+      "durationHours": 11.5,
+      "teaches": [
+        "git"
+      ],
+      "requires": [],
+      "prerequisites": [
+        "programacion-para-principiantes"
+      ]
+    },
+    {
+      "slug": "solid-clean-code",
+      "title": "Principios SOLID y Clean Code",
+      "url": "https://cursos.devtalles.com/courses/solid-clean-code",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/eOnxKwRKRZ2vCYGEk8Lg_SOLID.jpg",
+      "summary": "Si hablamos de diseño y desarrollo de aplicaciones, los principios S.O.L.I.D. son palabras que debes conocer. Este curso te brindará los conocimientos para lograr mejorar y escribir un código limpio, fácil de leer, expandir y mantener a futuro.",
+      "level": "intermediate",
+      "durationHours": 6.5,
+      "teaches": [
+        "clean-code"
+      ],
+      "requires": [
+        "programming-basics",
+        "javascript",
+        "typescript"
+      ],
+      "prerequisites": [
+        "typescript-guia-completa"
+      ]
+    },
+    {
+      "slug": "patrones-diseno",
+      "title": "Patrones de Diseño: Soluciones prácticas y eficientes",
+      "url": "https://cursos.devtalles.com/courses/patrones-diseno",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/GAaAh0OtQAmUmEOc5qiS_COVER-PATRONES-DE-DISE%C3%91O-DEVTALLES.jpg",
+      "summary": "Aprende 24 patrones de diseño clave para resolver problemas comunes y escribir código más limpio y escalable.",
+      "level": "intermediate",
+      "durationHours": 10,
+      "teaches": [
+        "design-patterns"
+      ],
+      "requires": [
+        "typescript"
+      ],
+      "prerequisites": [
+        "solid-clean-code"
+      ]
+    },
+    {
+      "slug": "sql-con-postgres",
+      "title": "SQL de cero: Tu guía práctica con PostgreSQL",
+      "url": "https://cursos.devtalles.com/courses/sql-con-postgres",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/k6V4tlGTXmUQS8CGxGID_SQL.jpg",
+      "summary": "El objetivo es aprender sobre bases de datos relacionales partiendo desde cero, pasando por queries, triggers, procedimientos almacenados hasta optimizaciones.",
+      "level": "beginner",
+      "durationHours": 16,
+      "teaches": [
+        "sql"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "docker-guia-practica",
+      "title": "Docker - Guía práctica de uso para desarrolladores",
+      "url": "https://cursos.devtalles.com/courses/docker-guia-practica",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/MtehrUISVW8hP7CfCWV1_DOCKER.jpg",
+      "summary": "En este curso aprenderás qué es Docker, porqué es tan popular y para qué te puede servir. Realizaremos ejercicios prácticos que te ayudarán a conocer las características que Docker ofrece y te permitirá agregar esta nueva herramienta a tu repertorio de software para convertirte en un mejor desarrollador.",
+      "level": "beginner",
+      "durationHours": 14,
+      "teaches": [
+        "docker"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "javascript-moderno",
+      "title": "JavaScript Moderno",
+      "url": "https://cursos.devtalles.com/courses/javascript-moderno",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/rfX8tJ4ZRHi6L4WFj2sW_JAVASCRIPT.jpg",
+      "summary": "Al completar el curso, tendrás la base sólida de JavaScript que necesitas y su comprensión total, mediante ejercicios prácticos y explicaciones que pondrán aprueba incluso a las personas que conocen bien el lenguaje.",
+      "level": "beginner",
+      "durationHours": 28.5,
+      "teaches": [
+        "javascript"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "typescript-guia-completa",
+      "title": "TypeScript: Guía Completa",
+      "url": "https://cursos.devtalles.com/courses/typescript-guia-completa",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/0jbP7pcMSAWjijc04uhG_TYPESCRIPT-NEW.jpg",
+      "summary": "Este curso es ideal para cualquier persona que desee entrar a trabajar con TypeScript sin importar si es Angular, React, Vue, React Native, NativeScript, Nestjs, ionic, Node o cualquier framework o librería que use TypeScript.",
+      "level": "beginner",
+      "durationHours": 8.5,
+      "teaches": [
+        "typescript"
+      ],
+      "requires": [
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "tailwindcss-para-desarrolladores",
+      "title": "TailwindCSS: Para desarrolladores de software",
+      "url": "https://cursos.devtalles.com/courses/tailwindcss-para-desarrolladores",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/8w7MKPqvQtaLpLNVTgq6_TAILWIND1.jpg",
+      "summary": "Aprende a usar Tailwind CSS orientado a desarrolladores, para crear diseños responsivos y modernos, evitando usar JavaScript para esto.",
+      "level": "beginner",
+      "durationHours": 4,
+      "teaches": [
+        "tailwindcss"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "angular-moderno",
+      "title": "Angular: De cero a experto edición 2025",
+      "url": "https://cursos.devtalles.com/courses/angular-moderno",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/LeaTjvBRI6cldshD59jw_angular-de-cero.jpg",
+      "summary": "Aprende Angular en profundidad con el nuevo paradigma Zoneless basado en señales. Comienza desde cero y realiza ejercicios prácticos para dominar lo necesario y crear aplicaciones con este framework.",
+      "level": "beginner",
+      "durationHours": 33.5,
+      "teaches": [
+        "angular"
+      ],
+      "requires": [
+        "programming-basics",
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "angular",
+      "title": "Angular: De cero a experto",
+      "url": "https://cursos.devtalles.com/courses/angular",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/a51yLvxNTUiTs5FbiBsx_COVER-DEVTALLES2.jpeg",
+      "summary": "Este curso te ayudará a aprender Angular v2023 a profundidad mediante ejercicios y tareas que tú mismo harás. Partiendo de cero conocimiento de TypeScript hasta crear un sistema robusto de autenticación, uso de mapas, consumo de servicios y mucho más.",
+      "level": "beginner",
+      "durationHours": 45.5,
+      "teaches": [
+        "angular-ngmodules"
+      ],
+      "requires": [
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "angular-pro",
+      "title": "Angular Pro: Lleva tus bases al siguiente nivel",
+      "url": "https://cursos.devtalles.com/courses/angular-pro",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/EWRrDzSVRybXmB6yJMHU_Angular%20pro%20COVER-DEVTALLES-ANGULAR-PRO.jpg",
+      "summary": "Angular PRO, es un curso que llevará tu conocimiento de Angular al siguiente nivel con SSR, SSG, Testing, Zoneless, TanStack, optimizaciones y mucho más.",
+      "level": "advanced",
+      "durationHours": 21.5,
+      "teaches": [
+        "angular-advanced"
+      ],
+      "requires": [
+        "angular",
+        "git"
+      ],
+      "prerequisites": [
+        "angular-moderno"
+      ]
+    },
+    {
+      "slug": "reactivex-rxjs",
+      "title": "ReactiveX-RxJs: De cero",
+      "url": "https://cursos.devtalles.com/courses/reactivex-rxjs",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/n80W0M1gSpizBJEEgGff_LEGACY-REACTIVE.jpg",
+      "summary": "Este curso de ReactiveX está orientado a enseñarte desde los fundamentos e interioridades de las extensiones reactivas hasta los detalles de la mayoría de los operadores y funciones que trabajan con observables.",
+      "level": "beginner",
+      "durationHours": 9.5,
+      "teaches": [
+        "rxjs"
+      ],
+      "requires": [
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "Angular_socket_bun",
+      "title": "Angular + Sockets: Aplicaciones en tiempo real con Bun",
+      "url": "https://cursos.devtalles.com/courses/Angular_socket_bun",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/abdhTcCTQCmySk3eb8Ma_ANGULAR_WEBSOCKET_BUN_DEVTALLES.png",
+      "summary": "Aprende a crear y configurar aplicaciones en tiempo real usando la implementación nativa de websockets junto a un backend en Bun.",
+      "level": "intermediate",
+      "durationHours": 14.5,
+      "teaches": [
+        "websockets"
+      ],
+      "requires": [
+        "javascript",
+        "angular"
+      ],
+      "prerequisites": [
+        "angular-moderno"
+      ]
+    },
+    {
+      "slug": "openai-angular-nestjs",
+      "title": "OpenAI: Ejercicios y asistentes con Angular + NestJS",
+      "url": "https://cursos.devtalles.com/courses/openai-angular-nestjs",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/XUcRyW81RJS3xgf1CRNf_OPENAI-ANGULAR.jpg",
+      "summary": "En este curso práctico de OpenAI, aprenderás la librería de OpenAI en Node, para consumir desde un frontend en Angular, y así consultar información, generar imágenes, editar, generar audio basado en texto, texto a audio, configurar tu asistente y más.",
+      "level": "intermediate",
+      "durationHours": 11,
+      "teaches": [
+        "llm-apps"
+      ],
+      "requires": [
+        "javascript",
+        "nodejs",
+        "angular"
+      ],
+      "prerequisites": [
+        "angular-moderno"
+      ]
+    },
+    {
+      "slug": "Astro",
+      "title": "Astro: El framework para sitios web orientados al contenido",
+      "url": "https://cursos.devtalles.com/courses/Astro",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/8b0gaETkTXeL6iB3f1Pn_ASTRO.jpg",
+      "summary": "Framework de desarrollo web diseñado para construir sitios web rápidos y eficientes con las tecnologías que ya conoces.",
+      "level": "beginner",
+      "durationHours": 25.5,
+      "teaches": [
+        "astro"
+      ],
+      "requires": [
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "nest",
+      "title": "Nest: Desarrollo backend escalable Node",
+      "url": "https://cursos.devtalles.com/courses/nest",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/T6It7zuNQPWizrBJvbaX_NEST-NEW.jpg",
+      "summary": "El curso está pensado para ayudarlos a empezar en Nest como para mejorar sus habilidades en este framework tan poderoso, adicionalmente cuenta con un cheat-sheet personalizado por mi para ayudarlos en el aprendizaje que pueden imprimir y compartir.",
+      "level": "intermediate",
+      "durationHours": 24.5,
+      "teaches": [
+        "nestjs"
+      ],
+      "requires": [
+        "javascript",
+        "typescript",
+        "nodejs"
+      ],
+      "prerequisites": [
+        "typescript-guia-completa"
+      ]
+    },
+    {
+      "slug": "nest-graphql",
+      "title": "Nest + GraphQL: Evoluciona tus APIs",
+      "url": "https://cursos.devtalles.com/courses/nest-graphql",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/DYTo4ghhS2c799ZISyNu_NEST-GRAPHQL-NEW.jpg",
+      "summary": "Nest + GraphQL: Aprende a integrar ambas tecnologías para lograr crear endpoints que le permitan auto servir la información exacta que necesita el FrontEnd.",
+      "level": "advanced",
+      "durationHours": 18,
+      "teaches": [
+        "graphql"
+      ],
+      "requires": [
+        "nestjs",
+        "typescript"
+      ],
+      "prerequisites": [
+        "nest"
+      ]
+    },
+    {
+      "slug": "nestjs-microservicios",
+      "title": "NestJS + Microservicios: Aplicaciones escalables y modulares",
+      "url": "https://cursos.devtalles.com/courses/nestjs-microservicios",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/vOOZ5j1Qta2gvaiOlMqE_MICROSERVICIOS.jpg",
+      "summary": "Es momento de crear un sistema distribuido utilizando múltiples bases de datos, transportadores y técnicas para escalar de forma independiente cada microservicio.",
+      "level": "advanced",
+      "durationHours": 21,
+      "teaches": [
+        "microservices",
+        "kubernetes"
+      ],
+      "requires": [
+        "typescript",
+        "nestjs",
+        "rest-api"
+      ],
+      "prerequisites": [
+        "nest"
+      ]
+    },
+    {
+      "slug": "nestjs-reportes",
+      "title": "NestJs + Reportes: Genera PDFs desde Node",
+      "url": "https://cursos.devtalles.com/courses/nestjs-reportes",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/wceGycQdRnSJGdIFdaO3_NEST-JS-REPORTES.jpg",
+      "summary": "Crea reportes en PDF utilizando NestJS. Aprenderás a integrar y utilizar Pdfmake y ChartJS para generar reportes profesionales y personalizados.",
+      "level": "intermediate",
+      "durationHours": 6.5,
+      "teaches": [
+        "pdf-reports"
+      ],
+      "requires": [
+        "nestjs"
+      ],
+      "prerequisites": [
+        "nest"
+      ]
+    },
+    {
+      "slug": "NestJS-Testing",
+      "title": "NestJS + Testing: Pruebas unitarias y end to end (e2e)",
+      "url": "https://cursos.devtalles.com/courses/NestJS-Testing",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ay0QQ3qaTkiHRwytCLnt_COVER-DEVTALLES-TESTING.jpg",
+      "summary": "Aquí aprenderán a realizar pruebas unitarias, integración y de extremo a extremo (E2E) de sus aplicaciones hechas en NestJS utilizando Jest, siguiendo estándares recomendados.",
+      "level": "intermediate",
+      "durationHours": 12.5,
+      "teaches": [
+        "automated-testing"
+      ],
+      "requires": [
+        "nestjs"
+      ],
+      "prerequisites": [
+        "nest"
+      ]
+    },
+    {
+      "slug": "nodejs-de-cero-a-experto",
+      "title": "Node.Js: De cero a experto",
+      "url": "https://cursos.devtalles.com/courses/nodejs-de-cero-a-experto",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/w47TVfD0T6OFrOPDxYlQ_NODE%20JS%20DE%20CERO%20A%20EXPERTO.jpg",
+      "summary": "Aprende Node.js desde los fundamentos, usos comunes y no tan comunes, despliegues, construcción de imágenes, testing y muchas más habilidades que son necesarias hoy en día con este runtime-environment de JavaScript.",
+      "level": "beginner",
+      "durationHours": 37.5,
+      "teaches": [
+        "nodejs",
+        "rest-api"
+      ],
+      "requires": [
+        "programming-basics",
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "node-clean-architecture",
+      "title": "Node - Autenticación Rest con Clean Architecture",
+      "url": "https://cursos.devtalles.com/courses/node-clean-architecture",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/QbFhQhHcRBCapBIpm9nf_NODE-AUTENTICATION-REST.jpg",
+      "summary": "El objetivo del curso es crear una autenticación y registro de usuarios mediante un Restful API utilizando Clean Architecture y diferentes patrones de desarrollo. Pasando por la configuración de Node con TypeScript hasta la verificación de nuestro Json Web Token.",
+      "level": "intermediate",
+      "durationHours": 4,
+      "teaches": [
+        "clean-architecture"
+      ],
+      "requires": [
+        "javascript",
+        "nodejs"
+      ],
+      "prerequisites": [
+        "nodejs-de-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "react-de-cero",
+      "title": "React: de cero a experto - Edición 2025",
+      "url": "https://cursos.devtalles.com/courses/react-de-cero",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/TTTUJiUVTvGC5cy5Z3UW_COVER-DEVTALLES-REACT.jpg",
+      "summary": "En este curso de React aprenderás desde los fundamentos de la librería hasta aspectos técnicos avanzados y despliegues, incorporando librerías adicionales ampliamente utilizadas en la industria. Todo el contenido está basado en TypeScript.",
+      "level": "beginner",
+      "durationHours": 46,
+      "teaches": [
+        "react"
+      ],
+      "requires": [
+        "programming-basics",
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "react-pro",
+      "title": "React PRO: lleva bases al siguiente nivel",
+      "url": "https://cursos.devtalles.com/courses/react-pro",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/sHm63uuSkiPxQqbElhTQ_REACT-PRO-NEW.jpg",
+      "summary": "El curso tiene por objetivo pulir tus habilidades existentes de React con Hooks y llevarlas a un nivel superior para que tus aplicaciones de React sean aún mejores.",
+      "level": "advanced",
+      "durationHours": 24.5,
+      "teaches": [
+        "react-patterns"
+      ],
+      "requires": [
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "nextjs",
+      "title": "Next.js: El framework de React",
+      "url": "https://cursos.devtalles.com/courses/nextjs",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/j1fWunR0QJa9diyy2e1t_NEXT-APP-ROUTER2.jpg",
+      "summary": "Este curso tiene por objetivo enseñarte Next.js de forma completa con muchas tareas y ejercicios. Al final del curso no solo aprenderás Next.js, también habrás desarrollado una tienda electrónica con cobros, mantenimientos, carga, optimizaciones para SEO, desplegarla y tenerla en tu portafolio de proyectos.",
+      "level": "intermediate",
+      "durationHours": 39,
+      "teaches": [
+        "nextjs"
+      ],
+      "requires": [
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "tanstack-query",
+      "title": "TanStack Query",
+      "url": "https://cursos.devtalles.com/courses/tanstack-query",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/flpkTdo2TwGhr9wfvr33_COVER.jpg",
+      "summary": "TanStack Query es una librería indispensable para mejorar la experiencia de usuario en nuestras aplicaciones de React. Este curso te enseñará a utilizarlo y sacarle provecho a muchas de sus funcionalidades principales.",
+      "level": "intermediate",
+      "durationHours": 6,
+      "teaches": [
+        "tanstack-query"
+      ],
+      "requires": [
+        "react",
+        "typescript"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "zustand-gestor-de-estado-para-react",
+      "title": "Zustand: Gestor de estado para React",
+      "url": "https://cursos.devtalles.com/courses/zustand-gestor-de-estado-para-react",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/OqBxBndxTD6gtxlKMoWV_ZUSTAND.jpg",
+      "summary": "Este gestor de estado a punta a ser un reemplazo directo a Redux, Redux Toolkit y el mismo Context API de React, ofreciendo funcionalidades similares a Redux sin tener que construir tanto código base para hacerlo funcionar.",
+      "level": "intermediate",
+      "durationHours": 6,
+      "teaches": [
+        "zustand"
+      ],
+      "requires": [
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "shadcn-ui",
+      "title": "Shadcn/ui: Componentes accesibles y personalizables",
+      "url": "https://cursos.devtalles.com/courses/shadcn-ui",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/UnSGHDPtQKKGytbP0iBP_SHADCN.jpg",
+      "summary": "Una librería de componentes diferente, que te da control absoluto sobre cada pieza que importes en tu proyecto, aprende a usarla y configurarla en este curso.",
+      "level": "intermediate",
+      "durationHours": 6,
+      "teaches": [
+        "shadcn-ui"
+      ],
+      "requires": [
+        "react",
+        "typescript",
+        "tailwindcss"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "react-router",
+      "title": "React Router: Navegación declarativa y framework",
+      "url": "https://cursos.devtalles.com/courses/react-router",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/0gGwQplTkS4tKB7oNc5K_COVER-DEVTALLES-REACT_ROUTER.jpg",
+      "summary": "Aprende a trabajar con React Router tanto como librería para proyectos tipo SPA o trabajarlo cómo Framework y obtener el máximo provecho de server actions, route modules, pre-rendering y mucho más!",
+      "level": "intermediate",
+      "durationHours": 7.5,
+      "teaches": [
+        "react-router"
+      ],
+      "requires": [
+        "javascript",
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "react-sockets",
+      "title": "React+Sockets: Aplicaciones en tiempo real con Bun",
+      "url": "https://cursos.devtalles.com/courses/react-sockets",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ajXXN4TCTwuZ6uhDapF1_image.png",
+      "summary": "Aprende a crear y configurar aplicaciones en tiempo real usando la implementación nativa de websockets junto a un backend en Bun.",
+      "level": "intermediate",
+      "durationHours": 15,
+      "teaches": [
+        "websockets"
+      ],
+      "requires": [
+        "javascript",
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "openai",
+      "title": "OpenAI: Ejercicios prácticos y asistentes con React + NestJS",
+      "url": "https://cursos.devtalles.com/courses/openai",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/fc1kmF7dS2SQojvt7q02_OPENAI-REACT.jpg",
+      "summary": "En este curso práctico de OpenAI, aprenderás la librería de OpenAI en Node, para consumir desde un frontend en React, y así consultar información, generar imágenes, editar, generar audio basado en texto, texto a audio, configurar tu asistente y más.",
+      "level": "intermediate",
+      "durationHours": 10,
+      "teaches": [
+        "llm-apps"
+      ],
+      "requires": [
+        "javascript",
+        "nodejs",
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "react-native-expo",
+      "title": "React Native Expo: Aplicaciones nativas para IOS y Android",
+      "url": "https://cursos.devtalles.com/courses/react-native-expo",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/1NsQU7EaRiG7xLnvaHvc_COVER-DEVTALLES.jpg",
+      "summary": "Curso completo de React Native con Expo que te dará las bases sólidas sobre este framework, con más de 42 horas de contenido en video y despliegues en la Google PlayStore y Apple AppStore incluído en el curso.",
+      "level": "intermediate",
+      "durationHours": 25.5,
+      "teaches": [
+        "react-native"
+      ],
+      "requires": [
+        "react"
+      ],
+      "prerequisites": [
+        "react-de-cero"
+      ]
+    },
+    {
+      "slug": "expo-gemini",
+      "title": "Expo + Gemini: Aplicaciones con inteligencia artificial",
+      "url": "https://cursos.devtalles.com/courses/expo-gemini",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/hVinmMVNQq6v8R7Was0K_COVER-DEVTALLES2.jpg",
+      "summary": "En este curso aprenderás a integrar la inteligencia artificial de Gemini usando la librería oficial y conectándola, a través de un backend personalizado, con nuestra aplicación de Expo.",
+      "level": "intermediate",
+      "durationHours": 7,
+      "teaches": [
+        "llm-apps"
+      ],
+      "requires": [
+        "javascript",
+        "react-native"
+      ],
+      "prerequisites": [
+        "react-native-expo"
+      ]
+    },
+    {
+      "slug": "vue-cero-a-experto",
+      "title": "Vue.js: De cero a experto - edición 2024",
+      "url": "https://cursos.devtalles.com/courses/vue-cero-a-experto",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/fGtdD0wpSv2VEXdrM6vn_VUE-COMPOSITION-API.jpg",
+      "summary": "Nueva entrega renovada del curso que se enfoca plenamente en el Composition Api, TypeScript y Vitest para crear aplicaciones modernas.",
+      "level": "beginner",
+      "durationHours": 37.5,
+      "teaches": [
+        "vue"
+      ],
+      "requires": [
+        "programming-basics",
+        "javascript"
+      ],
+      "prerequisites": [
+        "javascript-moderno"
+      ]
+    },
+    {
+      "slug": "vue-js",
+      "title": "Vue.js: De cero a experto",
+      "url": "https://cursos.devtalles.com/courses/vue-js",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/7Xfyuy5mSxKwKBzXHYEr_COVER-DEVTALLES-legacy-vue-option-api.jpg",
+      "summary": "Curso completo sobre Vue.js que parte de cero conocimiento sobre este framework hasta llevarte a un nivel profesional competitivo.",
+      "level": "beginner",
+      "durationHours": 43,
+      "teaches": [
+        "vue-options-api"
+      ],
+      "requires": [
+        "javascript"
+      ],
+      "prerequisites": [
+        "vue-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "nuxt",
+      "title": "Nuxt: El marco de trabajo web progresivo (Nuxt 4+)",
+      "url": "https://cursos.devtalles.com/courses/nuxt",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/0QSiNkebRGFH4hPY25zf_NUXT-COVER-DEVTALLES.jpg",
+      "summary": "Aprende Nuxt.js, el framework basado en Vue.js para crear aplicaciones web rápidas, modernas y optimizadas para SEO, desde los fundamentos hasta el despliegue con SSR, SSG y API Routes.",
+      "level": "intermediate",
+      "durationHours": 13.5,
+      "teaches": [
+        "nuxt"
+      ],
+      "requires": [
+        "javascript",
+        "vue"
+      ],
+      "prerequisites": [
+        "vue-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "Vue-intermedio",
+      "title": "Vue.js - Intermedio: Lleva tus bases al siguiente nivel",
+      "url": "https://cursos.devtalles.com/courses/Vue-intermedio",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/Mecj0WPdQyOMPKxtYqG1_vue_ts2.jpg",
+      "summary": "Lleva tus bases de Vue.js al siguiente nivel siguiendo recomendaciones actuales recomendadas por el equipo de Vue.js. Aquí aprenderás a trabajar con TypeScript, Pinia, TanStack Query, Script Setup y el composition API.",
+      "level": "intermediate",
+      "durationHours": 13.5,
+      "teaches": [
+        "vue-advanced"
+      ],
+      "requires": [
+        "vue",
+        "typescript"
+      ],
+      "prerequisites": [
+        "vue-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "csharp",
+      "title": "C#: Empieza tu camino en el lenguaje",
+      "url": "https://cursos.devtalles.com/courses/csharp",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ZQiNIKAJR4upzwEpMIVt_C-SHARP-COVER%20(1).jpg",
+      "summary": "Aprende C# desde cero, domina desde la sintaxis básica, estructuras de control y POO, manejo de excepciones, LINQ y manejo de archivos JSON, arquitectura MVC e introducción a desarrollo api web con ASP.NET Core.",
+      "level": "beginner",
+      "durationHours": 11.5,
+      "teaches": [
+        "csharp"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "NET-Backend",
+      "title": ".NET Backend: .NET Core, SQL Server y seguridad JWT",
+      "url": "https://cursos.devtalles.com/courses/NET-Backend",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/7c18RVDvTFezQ4VL9JeM_NET-DEVTALLES.jpg",
+      "summary": "Construye desde cero una API RESTful profesional en .NET para un e-commerce real. Aprende sobre JWT, Entity Framework, control de acceso, subida de imágenes, cache, versionado y despliegue en la nube.",
+      "level": "intermediate",
+      "durationHours": 11,
+      "teaches": [
+        "dotnet"
+      ],
+      "requires": [
+        "programming-basics",
+        "csharp"
+      ],
+      "prerequisites": [
+        "csharp"
+      ]
+    },
+    {
+      "slug": "net-pruebascompletas",
+      "title": ".NET: Pruebas completas para minimal API",
+      "url": "https://cursos.devtalles.com/courses/net-pruebascompletas",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/h80J6Pb5SHeRvZM6pdz5_NET-PRUEBAS-MINIMAL-API.jpg",
+      "summary": "Este curso te enseña a crear pruebas automatizadas para Minimal APIs en .NET de forma práctica y directa. Aprenderás a validar comportamientos, estructurar servicios y asegurar la calidad de tus aplicaciones desde el inicio.",
+      "level": "intermediate",
+      "durationHours": 6,
+      "teaches": [
+        "automated-testing"
+      ],
+      "requires": [
+        "csharp",
+        "dotnet"
+      ],
+      "prerequisites": [
+        "NET-Backend"
+      ]
+    },
+    {
+      "slug": "netfullstack",
+      "title": ".NET Fullstack: Arquitectura limpia al frontend y Blazor",
+      "url": "https://cursos.devtalles.com/courses/netfullstack",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/LcwHwtf1Q0WlRGiv9VY3_COVER-DEVTALLES%20(1).jpg",
+      "summary": "Aprende desarrollo web Fullstack con C# y .NET Core. Domina Clean Architecture, Blazor Server y WebAssembly, CQRS con MediatR, EF Core, ASP.NET Core Identity, autenticación, autorización por roles, SQL Server, Tailwind CSS y QuickGrid en un proyecto.",
+      "level": "advanced",
+      "durationHours": 14,
+      "teaches": [
+        "blazor",
+        "clean-architecture"
+      ],
+      "requires": [
+        "csharp",
+        "dotnet"
+      ],
+      "prerequisites": [
+        "NET-Backend"
+      ]
+    },
+    {
+      "slug": "dart-cero-hasta-detalles",
+      "title": "Dart: De cero hasta los detalles",
+      "url": "https://cursos.devtalles.com/courses/dart-cero-hasta-detalles",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/zCw5CYnStGlg2IlblHjd_DART-NEW.jpg",
+      "summary": "Aquí aprenderás desde lo más básico de Dart hasta temas más complejos y necesarios para trabajar con frameworks. Aquí adentro tendrás tareas, ejercicios, exámenes, explicaciones y herramientas indispensables que te ayudarán a ser un eficiente desarrollador utilizando Dart.",
+      "level": "beginner",
+      "durationHours": 10,
+      "teaches": [
+        "dart"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "flutter-movil-cero-a-experto",
+      "title": "Flutter - Móvil: De cero a experto",
+      "url": "https://cursos.devtalles.com/courses/flutter-movil-cero-a-experto",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/61TYzXMSTaKdnKUemoIn_FLUTTER-MOVIL-DE-CERO-A-EXPERTO.jpg",
+      "summary": "El curso cubre todo lo necesario de Flutter para crear aplicaciones móviles para iOS y Android hasta su despliegue en las tiendas. Cuando termines el curso, habrás creado diferentes aplicaciones móviles y comprender el proceso de publicación de las mismas.",
+      "level": "beginner",
+      "durationHours": 50,
+      "teaches": [
+        "flutter"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": [
+        "dart-cero-hasta-detalles"
+      ]
+    },
+    {
+      "slug": "riverpod-con-anotaciones",
+      "title": "Flutter Riverpod con generación de código y anotaciones",
+      "url": "https://cursos.devtalles.com/courses/riverpod-con-anotaciones",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/e2j5kc42TaKb8O9QQDSm_RIVERPOD.jpg",
+      "summary": "Curso de Flutter Riverpod para aprender este gestor de estado con anotaciones y generación de código automático.",
+      "level": "intermediate",
+      "durationHours": 2,
+      "teaches": [
+        "flutter-state"
+      ],
+      "requires": [
+        "dart",
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-movil-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "Flutter-Gemini",
+      "title": "Flutter + Gemini: Aplicaciones con inteligencia artificial",
+      "url": "https://cursos.devtalles.com/courses/Flutter-Gemini",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/dMU9FLDmQETZktVFX7gX_COVER-DEVTALLES3.jpg",
+      "summary": "Aprende a trabajar con la inteligencia artificial de Google Gemini y su SDK nativo, siguiendo buenas prácticas y recomendaciones de la documentación oficial.",
+      "level": "intermediate",
+      "durationHours": 8.5,
+      "teaches": [
+        "llm-apps"
+      ],
+      "requires": [
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-movil-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "flutter-movil-intermedio",
+      "title": "Flutter Móvil: Recursos Nativos - Nivel Intermedio",
+      "url": "https://cursos.devtalles.com/courses/flutter-movil-intermedio",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/1KaCF2nnTI2eoV6HYpum_FLUTTER-MOVIL-RECURSOS-NATIVOS.jpg",
+      "summary": "Este curso se enfoca en la utilización de recursos nativos del dispositivo móvil, que van desde el giroscopio, cámara, sensores, contactos, conexión a internet, etc. Pero también emplearemos ese conocimiento para poder crear aplicación que van más allá de peticiones HTTP y mostrar información.",
+      "level": "intermediate",
+      "durationHours": 16,
+      "teaches": [
+        "flutter-native"
+      ],
+      "requires": [
+        "dart",
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-movil-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "flutter-bloc",
+      "title": "Mini-Curso: Flutter BLoC",
+      "url": "https://cursos.devtalles.com/courses/flutter-bloc",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/If0EvY5HQpiOEvnnISAN_FLUTTER-BLOC.jpg",
+      "summary": "Este mini-curso sobre Flutter Bloc te enseñará a utilizar este gestor de estado de una forma organizada, pasando desde cubits, blocs simples y compuestos, pero también aprenderás a como comunicarlos entre sí.",
+      "level": "intermediate",
+      "durationHours": 3.5,
+      "teaches": [
+        "flutter-state"
+      ],
+      "requires": [
+        "dart",
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-movil-intermedio"
+      ]
+    },
+    {
+      "slug": "flutter-Intermedio",
+      "title": "Flutter Intermedio: Diseños profesionales y animaciones",
+      "url": "https://cursos.devtalles.com/courses/flutter-Intermedio",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/WFox0um0SWqPahhHvvsg_LEGACY-FLUTTER-INTERMEDIO.jpg",
+      "summary": "Este curso tiene por objetivo enseñarte a crear animaciones personalizadas y diseños atractivos para tus aplicaciones móviles y aplicaciones para tabletas.",
+      "level": "intermediate",
+      "durationHours": 15,
+      "teaches": [
+        "flutter-ui"
+      ],
+      "requires": [
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-movil-intermedio"
+      ]
+    },
+    {
+      "slug": "flutter-avanzado",
+      "title": "Flutter Avanzado: Lleva tu conocimiento al siguiente nivel",
+      "url": "https://cursos.devtalles.com/courses/flutter-avanzado",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/txry7kQ0TCViYkwWhMCH_LEGACY-FLUTTER-AVANZADO.jpg",
+      "summary": "Este es un curso cargado de información importante que nos ayudará a crear mejores aplicaciones con este increíble SDK de Google",
+      "level": "advanced",
+      "durationHours": 34.5,
+      "teaches": [
+        "flutter-advanced"
+      ],
+      "requires": [
+        "flutter"
+      ],
+      "prerequisites": [
+        "flutter-Intermedio"
+      ]
+    },
+    {
+      "slug": "flutter-web",
+      "title": "Flutter Web: Aplicaciones y páginas web",
+      "url": "https://cursos.devtalles.com/courses/flutter-web",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/0rSjGVxiQca8Tezfu4tG_COVER-DEVTALLES-web-legacy.jpg",
+      "summary": "En este curso nos enfocamos en expandir tu conocimiento existente sobre Flutter para crear aplicaciones nativas para IOS, Android y ahora también Web y Desktop. El curso esta construido totalmente con Null-Safety el cual es un estándar hoy en día para crear aplicaciones modernas con Flutter.",
+      "level": "intermediate",
+      "durationHours": 20.5,
+      "teaches": [
+        "flutter-web"
+      ],
+      "requires": [
+        "dart",
+        "flutter"
+      ],
+      "prerequisites": [
+        "dart-cero-hasta-detalles"
+      ]
+    },
+    {
+      "slug": "golang-fundamentos-lenguaje",
+      "title": "GoLang: Fundamentos del lenguaje",
+      "url": "https://cursos.devtalles.com/courses/golang-fundamentos-lenguaje",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/Jp4CugOyRxOPbI0IERhE_COVER_DEVTALLES_GO.png",
+      "summary": "Aprende Golang desde cero, profesional y con buenas prácticas. Tipado estático, paquetes, funciones, structs, interfaces, errores y concurrencia. Ejemplos reales para código limpio y listo para desplegar, ideal si vienes de JS/Python/PHP y más.",
+      "level": "beginner",
+      "durationHours": 23,
+      "teaches": [
+        "go"
+      ],
+      "requires": [
+        "programming-basics",
+        "git"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "golang-backend-profesional",
+      "title": "Golang: Backend Profesional",
+      "url": "https://cursos.devtalles.com/courses/golang-backend-profesional",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ChXFDCgeRKjOyfa2ppDQ_COVER-DEVTALLES-GO-BACKEND.jpg",
+      "summary": "Construye APIs REST profesionales en Go desde cero con un proyecto real desplegado en producción con criterio profesional.",
+      "level": "intermediate",
+      "durationHours": 25.5,
+      "teaches": [
+        "go-backend"
+      ],
+      "requires": [
+        "go",
+        "sql",
+        "git"
+      ],
+      "prerequisites": [
+        "golang-fundamentos-lenguaje"
+      ]
+    },
+    {
+      "slug": "n8n-mcp",
+      "title": "n8n + MCP: Automatización y agentes de IA inteligentes",
+      "url": "https://cursos.devtalles.com/courses/n8n-mcp",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/V4CDk5iUSKCh2Xw4MfX2_COVER-DEVTALLES-n8n-2.jpg",
+      "summary": "Aprende a crear automatizaciones poderosas con n8n: desde flujos simples con Google Sheets y correos, hasta proyectos avanzados con lógica, manejo de errores y agentes de IA usando MCPs, tanto localmente como en la nube.",
+      "level": "beginner",
+      "durationHours": 17.5,
+      "teaches": [
+        "n8n-automation",
+        "ai-agents"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "Ingenier%C3%ADa-de-prompts",
+      "title": "Ingeniería de prompts: Para la vida real",
+      "url": "https://cursos.devtalles.com/courses/Ingenier%C3%ADa-de-prompts",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/p5tNOanKQAeu2lWSccuA_COVER-DEVTALLES.jpg",
+      "summary": "Este es un curso donde aprenderás Prompt Engineering de forma simple, práctica y sin tecnicismos, para que puedas escribir mejores prompts y obtener excelentes resultados con herramientas de inteligencia artificial como ChatGPT, Claude, Gemini y más.",
+      "level": "beginner",
+      "durationHours": 2.5,
+      "teaches": [
+        "prompt-engineering"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "vibe-coding",
+      "title": "Vibe Coding: De forma responsable",
+      "url": "https://cursos.devtalles.com/courses/vibe-coding",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/QerNZaF2SpWnZLFLnxvR_VIBE%20CODING%20COVER%20DEVTALLES.png",
+      "summary": "Crearás aplicaciones reales usando IA como desarrollador, pero con criterio profesional. Aprenderás autenticación, carga de archivos, integración con Supabase y buenas prácticas y seguridad para llevar tus proyectos a producción con confianza.",
+      "level": "beginner",
+      "durationHours": 4.5,
+      "teaches": [
+        "ai-assisted-coding"
+      ],
+      "requires": [],
+      "prerequisites": [
+        "Ingenier%C3%ADa-de-prompts"
+      ]
+    },
+    {
+      "slug": "claude-code-guia-completa",
+      "title": "Claude Code: Guía completa para desarrolladores de software",
+      "url": "https://cursos.devtalles.com/courses/claude-code-guia-completa",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/hWQRull4RXmytJSqs3e4_COVER-DEVTALLES-CLAUDE-CODE.jpg",
+      "summary": "Aprende a usar Claude Code sin importar si ya lo has usado antes. Desde la instalación y flujos de trabajo diarios, hasta personalización con CLAUDE.md, conexión a servicios externos vía MCP, automatización con hooks y mucho más.",
+      "level": "intermediate",
+      "durationHours": 17.5,
+      "teaches": [
+        "ai-assisted-coding"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "open-code-guia-completa",
+      "title": "OpenCode: Guía completa para desarrolladores de software",
+      "url": "https://cursos.devtalles.com/courses/open-code-guia-completa",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/5VQqSJ32SE6MgrM6fHPv_COVER-DEVTALLES-OPENCODE.jpg",
+      "summary": "OpenCode, el agente de IA open source para programar desde la terminal: instalación, CLI, configuración, agentes personalizados, MCP y flujos de trabajo. Un curso práctico y orientado a proyectos reales.",
+      "level": "intermediate",
+      "durationHours": 14,
+      "teaches": [
+        "ai-assisted-coding"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "ia-para-developers",
+      "title": "IA para Developers: Claude API, RAG y Agentes con Node",
+      "url": "https://cursos.devtalles.com/courses/ia-para-developers",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/GqifE6ONSsOHYhVpNPRS_COVER-DEVTALLES.jpg",
+      "summary": "Construye un agente de IA desde cero con Claude API, RAG y function calling en Node.js. Sin frameworks, sin magia: solo Anthropic SDK, OpenAI para embedding y SQLite. Pasa de tu primera llamada a la API a un asistente desplegable en producción.",
+      "level": "intermediate",
+      "durationHours": 8,
+      "teaches": [
+        "llm-apps",
+        "rag",
+        "ai-agents"
+      ],
+      "requires": [
+        "programming-basics",
+        "typescript"
+      ],
+      "prerequisites": [
+        "nodejs-de-cero-a-experto"
+      ]
+    },
+    {
+      "slug": "Java",
+      "title": "Java: Explora el lenguaje desde cero",
+      "url": "https://cursos.devtalles.com/courses/Java",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/eGxuDHajSO2qp1HxEbvL_JAVA-COVER3.jpg",
+      "summary": "Aprende Java desde cero, dominando la sintaxis, POO, estructuras de datos y manejo de excepciones. Explora la jerarquía de clases, colecciones, archivos y el uso de patrones como MVC.",
+      "level": "beginner",
+      "durationHours": 15,
+      "teaches": [
+        "java"
+      ],
+      "requires": [
+        "programming-basics"
+      ],
+      "prerequisites": []
+    },
+    {
+      "slug": "java-avanzado",
+      "title": "Java avanzado: reactividad, concurrencia y patrones",
+      "url": "https://cursos.devtalles.com/courses/java-avanzado",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/rJCXtKQUQSmgJSQbArul_java-avanzado-devtalles.jpg",
+      "summary": "Lleva tu conocimiento de Java al siguiente nivel: código limpio, funcional y concurrente. Streams, RxJava, bases de datos, patrones, excepciones y más. Incluye proyectos prácticos y bonus de Spring MVC. Ideal para desarrolladores exigentes.",
+      "level": "advanced",
+      "durationHours": 25,
+      "teaches": [
+        "java-advanced"
+      ],
+      "requires": [
+        "java"
+      ],
+      "prerequisites": [
+        "Java"
+      ]
+    },
+    {
+      "slug": "spring-boot",
+      "title": "Java: Spring Boot - Guía definitiva",
+      "url": "https://cursos.devtalles.com/courses/spring-boot",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ueDsP3FS6aHlcy3KlSLL_SPRING5.jpg",
+      "summary": "Aprende Spring Boot desde cero: inicia con Spring MVC y Thymeleaf creando un sitio web dinámico con JdbcTemplate y controladores básicos. Luego desarrolla un API REST con seguridad, JPA, relaciones en BD y buenas prácticas MVC.",
+      "level": "advanced",
+      "durationHours": 35.5,
+      "teaches": [
+        "spring-boot"
+      ],
+      "requires": [
+        "java",
+        "java-advanced"
+      ],
+      "prerequisites": [
+        "java-avanzado"
+      ]
+    },
+    {
+      "slug": "spring-boot-patrones-arquitectura",
+      "title": "Spring Boot 4: Patrones de arquitectura",
+      "url": "https://cursos.devtalles.com/courses/spring-boot-patrones-arquitectura",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/50BIjVSQ6m0KbI6hAzlA_COVER-DEVTALLES2.jpg",
+      "summary": "Lleva tu nivel de Spring Boot de CRUD a arquitectura profesional. Construye Atlas-Bank: un proyecto que aplica SOLID, patrones GoF, DDD, arquitectura hexagonal, Keycloak, ArchUnit y AI como cliente. Clases cortas y con código real.",
+      "level": "advanced",
+      "durationHours": 20.5,
+      "teaches": [
+        "clean-architecture"
+      ],
+      "requires": [
+        "java",
+        "spring-boot"
+      ],
+      "prerequisites": [
+        "spring-boot"
+      ]
+    },
+    {
+      "slug": "springboot-mvc-hexagonal",
+      "title": "Spring Boot: De MVC a Hexagonal",
+      "url": "https://cursos.devtalles.com/courses/springboot-mvc-hexagonal",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/onRaVfSdR56WUL2jXpQz_COVER-DEVTALLES-MINI-CURSO-SPRING-BOOT.jpg",
+      "summary": "Programa intensivo de Diseño de Software con Spring Boot. Aprenderás a crear apps modulares y resilientes con Arquitectura Hexagonal. Usaremos una migración de JPA a MongoDB para mostrar el acoplamiento y aplicar Inversión de Dependencias.",
+      "level": "advanced",
+      "durationHours": 8.5,
+      "teaches": [
+        "clean-architecture"
+      ],
+      "requires": [
+        "java",
+        "java-advanced",
+        "rest-api"
+      ],
+      "prerequisites": [
+        "spring-boot"
+      ]
+    },
+    {
+      "slug": "spring-boot-microservicios",
+      "title": "Spring Boot 4: Arquitectura de Microservicios",
+      "url": "https://cursos.devtalles.com/courses/spring-boot-microservicios",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/eajq3CPwT1ovajpqVu2O_image.png",
+      "summary": "Domina microservicios con Spring Boot 4: arquitectura de capas, MongoDB, Docker, Kubernetes, comunicación entre servicios, resiliencia, seguridad OAuth2, observabilidad y patrones enterprise. Proyecto e-commerce con buenas prácticas de producción.",
+      "level": "advanced",
+      "durationHours": 21,
+      "teaches": [
+        "microservices",
+        "kubernetes"
+      ],
+      "requires": [
+        "java",
+        "spring-boot",
+        "sql",
+        "docker"
+      ],
+      "prerequisites": [
+        "spring-boot"
+      ]
+    },
+    {
+      "slug": "spring-AI",
+      "title": "Spring AI: LLMs, Tools, RAG, Agentes y Deploy en AWS",
+      "url": "https://cursos.devtalles.com/courses/spring-AI",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/is89v3RgS22dqMndJMVZ_COVER-DEVTALLES-SPRING-IA.jpg",
+      "summary": "Integra inteligencia artificial en Java con Spring AI 2.x. Construye un asistente médico educativo completo: Tool Calling, RAG, memoria persistente y agentes inteligentes. Del chatbot básico al deploy en AWS. Stack: Java 21, Spring Boot 4, Gemini.",
+      "level": "advanced",
+      "durationHours": 18.5,
+      "teaches": [
+        "llm-apps",
+        "rag",
+        "ai-agents"
+      ],
+      "requires": [
+        "java-advanced",
+        "spring-boot"
+      ],
+      "prerequisites": [
+        "spring-boot"
+      ]
+    },
+    {
+      "slug": "PHP-moderno",
+      "title": "PHP moderno: Empieza tu camino en el lenguaje",
+      "url": "https://cursos.devtalles.com/courses/PHP-moderno",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/eQFwBD7MQhivG5bVLTx1_php.png",
+      "summary": "Aprende PHP moderno desde cero y con buenas prácticas. Domina fundamentos, control de flujo, funciones, POO, Composer, APIs y base de datos, hasta desplegar tu primer backend real y listo para producción. Ideal para iniciar tu camino profesional.",
+      "level": "beginner",
+      "durationHours": 10,
+      "teaches": [
+        "php"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "laravel-ai",
+      "title": "Laravel 13: AI, REST, JWT, Repository Pattern",
+      "url": "https://cursos.devtalles.com/courses/laravel-ai",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/A9hqhmn1Qm6aYwAJAoL9_COVER-DEVTALLES%20LARAVEL.jpg",
+      "summary": "Aprende a construir una API REST profesional con Laravel desarrollando una Movie API completa desde cero. Dominarás CRUD, JWT, el Repository Pattern, la caché, el versionado y mucho más, aplicando las buenas prácticas utilizadas en proyectos reales.",
+      "level": "intermediate",
+      "durationHours": 13.5,
+      "teaches": [
+        "laravel"
+      ],
+      "requires": [
+        "programming-basics",
+        "php"
+      ],
+      "prerequisites": [
+        "PHP-moderno"
+      ]
+    },
+    {
+      "slug": "python",
+      "title": "Python: Fundamentos hasta los detalles",
+      "url": "https://cursos.devtalles.com/courses/python",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/gG1fvaYXRNmKMJTaMHYP_PYTHON-COVER%20(1).jpg",
+      "summary": "Aprende las bases de Python: variables, estructuras de control, ciclos, funciones, POO, errores, módulos y entornos virtuales. Ideal para principiantes o quienes desean reforzar conceptos con ejemplos prácticos y aplicar Python en distintas áreas.",
+      "level": "beginner",
+      "durationHours": 15.5,
+      "teaches": [
+        "python"
+      ],
+      "requires": [],
+      "prerequisites": []
+    },
+    {
+      "slug": "python-n8n-automatiza-rutinas",
+      "title": "Python + n8n: Automatiza rutinas cotidianas",
+      "url": "https://cursos.devtalles.com/courses/python-n8n-automatiza-rutinas",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/ZEyBqiQ2S8KjhgvA87t2_PYTHON-N8N.jpg",
+      "summary": "Aprende a utilizar Python para tus proyectos de automatización cotidiana o para tus proyectos personales. Aprende conceptos n8n, crea scripts de automatización, servicios simples con FastAPI, manipulación de datos, Scraping y mucho más.",
+      "level": "intermediate",
+      "durationHours": 9,
+      "teaches": [
+        "n8n-automation"
+      ],
+      "requires": [
+        "python"
+      ],
+      "prerequisites": [
+        "python"
+      ]
+    },
+    {
+      "slug": "fastapi",
+      "title": "FastAPI: Crea APIs eficientes con Python",
+      "url": "https://cursos.devtalles.com/courses/fastapi",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/7yccvWpWRC669uDvMnqd_FASTAPICOVER-DEVTALLES.jpg",
+      "summary": "Aprende a crear APIss modernas, seguras y rápidas con Python, Pydantic, JWT, WebSockets, Webhooks Bases de datos, subida de archivos, tests, despliegue, tareas asíncronas, seguridad, proyectos reales y mucho más.",
+      "level": "intermediate",
+      "durationHours": 36,
+      "teaches": [
+        "fastapi"
+      ],
+      "requires": [
+        "python",
+        "sql",
+        "git"
+      ],
+      "prerequisites": [
+        "python"
+      ]
+    },
+    {
+      "slug": "django",
+      "title": "Django: Crea aplicaciones web robustas con Python",
+      "url": "https://cursos.devtalles.com/courses/django",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/aA89gxXgTQGtRR7YojXB_DJANGO1.jpg",
+      "summary": "Aprende Django desde cero con este curso práctico. Crea sitios web, conecta bases de datos, desarrolla APIs REST y publica tu proyecto. Ideal para convertirte en desarrollador web backend con Django.",
+      "level": "intermediate",
+      "durationHours": 44,
+      "teaches": [
+        "django"
+      ],
+      "requires": [
+        "python"
+      ],
+      "prerequisites": [
+        "python"
+      ]
+    },
+    {
+      "slug": "python-ia-aplicada",
+      "title": "Python: Inteligencia artificial aplicada",
+      "url": "https://cursos.devtalles.com/courses/python-ia-aplicada",
+      "imageUrl": "https://import.cdn.thinkific.com/643563/S221KTnsQESSijuA5CPO_COVER-DEVTALLES-python-ia.jpg",
+      "summary": "Curso práctico de Python aplicado a IA: crea agentes, domina prompts, usa OpenAI, implementa RAG, orquesta con LangChain y despliega con FastAPI. Aprende a llevar IA real a producción con proyectos útiles.",
+      "level": "intermediate",
+      "durationHours": 18.5,
+      "teaches": [
+        "llm-apps",
+        "rag"
+      ],
+      "requires": [
+        "python",
+        "sql"
+      ],
+      "prerequisites": [
+        "python"
+      ]
+    }
+  ]
+}
