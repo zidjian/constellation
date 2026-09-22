@@ -8,8 +8,6 @@ import type { SkillProfile } from '../../assessment/domain/skill-profile';
 import { CatalogGraphProvider } from '../../catalog/application/catalog-graph.provider';
 import type { CatalogGraph } from '../../catalog/domain/catalog-graph';
 import { DomainError } from '../../shared/domain/domain-error';
-import { ENV } from '../../shared/infrastructure/config/config.module';
-import type { Env } from '../../shared/infrastructure/config/env';
 import { LearningPath, MAX_PATHS_PER_USER } from '../domain/learning-path';
 import { PathPlanner, type PlannedPath } from '../domain/path-planner';
 import {
@@ -66,7 +64,6 @@ export class GeneratePathUseCase {
     @Inject(LEARNING_PATH_REPOSITORY)
     private readonly paths: LearningPathRepository,
     @Inject(RATIONALE_WRITER) private readonly rationale: RationaleWriterPort,
-    @Inject(ENV) private readonly env: Env,
     private readonly catalog: CatalogGraphProvider,
   ) {}
 
@@ -123,31 +120,34 @@ export class GeneratePathUseCase {
   async *run(
     plan: GenerationPlan,
     signal: AbortSignal,
+    /** Pausa entre eventos: ritmo de presentación, lo decide el controller. */
+    delayMs: number,
   ): AsyncGenerator<GenerationEvent> {
     const { graph, planned, profile } = plan;
     const delay = () =>
-      this.env.PATH_STREAM_DELAY_MS
-        ? sleep(this.env.PATH_STREAM_DELAY_MS, undefined, { signal })
-        : null;
+      delayMs ? sleep(delayMs, undefined, { signal }) : null;
     const slugs = planned.steps.map((s) => s.courseSlug);
     const edges = pathEdges(slugs, graph);
 
     // Se pide ya: la redacción (Claude, hasta LLM_TIMEOUT_MS) corre mientras se emiten los pasos.
-    const rationaleWork = this.rationale.write({
-      profile,
-      skillNames: Object.fromEntries(
-        graph.catalog.skills.map((s) => [s.slug, s.name]),
-      ),
-      steps: planned.steps.map((s, position) => ({
-        position,
-        course: graph.course(s.courseSlug)!,
-        reason: s.reason,
-        dependents:
-          s.reason.kind === 'prerequisite'
-            ? s.reason.for.map((d) => graph.course(d)!)
-            : [],
-      })),
-    });
+    const rationaleWork = this.rationale.write(
+      {
+        profile,
+        skillNames: Object.fromEntries(
+          graph.catalog.skills.map((s) => [s.slug, s.name]),
+        ),
+        steps: planned.steps.map((s, position) => ({
+          position,
+          course: graph.course(s.courseSlug)!,
+          reason: s.reason,
+          dependents:
+            s.reason.kind === 'prerequisite'
+              ? s.reason.for.map((d) => graph.course(d)!)
+              : [],
+        })),
+      },
+      signal,
+    );
     yield {
       event: 'profile',
       data: {

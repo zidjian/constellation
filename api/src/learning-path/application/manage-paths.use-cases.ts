@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CatalogGraphProvider } from '../../catalog/application/catalog-graph.provider';
 import { DomainError } from '../../shared/domain/domain-error';
 import type { LearningPath, PathStatus } from '../domain/learning-path';
@@ -14,6 +14,8 @@ const notFound = () =>
 // Ownership en cada caso de uso: una ruta de otro usuario no existe para quien la pide.
 @Injectable()
 export class ManagePathsUseCases {
+  private readonly logger = new Logger(ManagePathsUseCases.name);
+
   constructor(
     @Inject(LEARNING_PATH_REPOSITORY)
     private readonly paths: LearningPathRepository,
@@ -25,7 +27,17 @@ export class ManagePathsUseCases {
   }
 
   async get(userId: string, id: string) {
-    return pathDetail(await this.load(userId, id), await this.catalog.get());
+    const detail = pathDetail(
+      await this.load(userId, id),
+      await this.catalog.get(),
+    );
+    // Solo pasaría si el catálogo en memoria quedara desfasado respecto a la BD: no se oculta en silencio.
+    const missing = detail.steps.filter((s) => s.course === null).length;
+    if (missing)
+      this.logger.warn(
+        `Ruta ${id}: ${missing} paso(s) sin curso en el catálogo`,
+      );
+    return detail;
   }
 
   async update(

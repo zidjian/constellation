@@ -12,15 +12,18 @@ export async function withFallback<T>(
   primary: (signal: AbortSignal) => Promise<T>,
   fallback: () => Promise<T>,
   logger: Logger,
+  /** Señal del llamador: si el cliente corta, la petición al LLM se aborta (y no se paga de más). */
+  caller?: AbortSignal,
 ): Promise<{ value: T; by: LlmSource }> {
-  const signal = AbortSignal.timeout(timeoutMs);
+  const timeout = AbortSignal.timeout(timeoutMs);
+  const signal = caller ? AbortSignal.any([caller, timeout]) : timeout;
   const started = Date.now();
   try {
     const value = await primary(signal);
     logger.log(`${label}: claude en ${Date.now() - started} ms`);
     return { value, by: 'claude' };
   } catch (err) {
-    const reason = signal.aborted
+    const reason = timeout.aborted
       ? `timeout de ${timeoutMs} ms`
       : err instanceof Error
         ? err.message

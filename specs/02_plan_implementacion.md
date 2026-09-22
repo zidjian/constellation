@@ -239,13 +239,13 @@ Algoritmo (spec §3):
 
 ## 8. Fase 5 — Endurecimiento, producción y entrega (D10–D11)
 
-- [ ] Release `develop → main` y deploy por Actions; verificar criterios **1–9** en producción uno por uno y anotar resultado en §10.
+- [x] Release `develop → main` y deploy por Actions; verificar criterios **1–9** en producción uno por uno y anotar resultado en §10.
 - [ ] Segundo usuario de Discord real para el criterio 7 (ownership cruzado).
-- [ ] `reviewer` sobre el conjunto: invariantes, gotchas, seguridad (guards, ownership, campos filtrados, rate limit), DoD.
+- [x] `reviewer` sobre el conjunto: invariantes, gotchas, seguridad (guards, ownership, campos filtrados, rate limit), DoD.
 - [ ] Motion: `find-animation-opportunities` → `animate` en los momentos clave (aparición de estrellas, completar paso); el usuario corre `/review-animations`.
 - [ ] Estados de error y vacíos revisados (API caída, sesión expirada, ruta inexistente).
 - [ ] Datos demo: cuenta preparada con 2–3 rutas en distintos niveles de progreso; guion de demo que funcione con `LLM_PROVIDER=rules`.
-- [ ] `README.md` del proyecto (reemplaza el de la plantilla): qué es, capturas, arquitectura, cómo correrlo, enlaces de producción, licencia.
+- [x] `README.md` del proyecto (reemplaza el de la plantilla): qué es, capturas, arquitectura, cómo correrlo, enlaces de producción, licencia.
 - [ ] `CLAUDE.md`: comandos reales, gotchas descubiertos, estructura final. `api/CLAUDE.md` y `web/CLAUDE.md` con gotchas locales.
 - [ ] Video demo y envío a la hackathon con enlaces al repo y a producción.
 - [ ] **Code freeze domingo 27 noche.** El lunes solo se tocan fallos que bloqueen la demo.
@@ -264,6 +264,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | OAuth de Discord a mano (sin `passport-discord`); el `state` va en una cookie. El callback redirige siempre a `/paths` hasta que existan rutas (F3) | `passport` necesita `express-session` para el `state`, y la librería no se mantiene desde 2018 |
 | 2026-09-22 | Entrevista: `GET /v1/assessments/current` (retomar) y `result: { correct }` al responder un reto, además de lo que pide la spec §6. La autoevaluación se deriva del catálogo en vez de un banco fijo por área | La web necesita retomar la entrevista, y la respuesta inmediata a los retos es parte de la experiencia. Derivarla del catálogo la mantiene coherente con él |
+| 2026-09-22 | Revisión final: `main` sí tenía el código (la alarma venía de un ref local desactualizado). Corregidos mensajes de error en inglés, rate limit en completar la entrevista, e2e que gastaban la clave real, cancelación del LLM al cortar el stream y capas cruzadas | Hallazgos de `reviewer` sobre el repo completo |
 | 2026-09-22 | IA **híbrida** en el intérprete: Claude no reemplaza lo medido (retos y autoevaluación), solo aporta objetivos y niveles del texto libre. El porqué se pide al empezar el stream | Los retos son evidencia verificable; que el LLM los contradiga sería peor que las reglas. Pedir el porqué en paralelo da más margen al timeout de 8 s |
 | 2026-09-22 | Regla de nivel: si falla un reto en dificultad d, nivel = máx(aprobado, mín(autoevaluación, d−1)) | La escalera puede empezar alta; antes quedaba en 0 sin haber probado el nivel 1 |
 | 2026-09-22 | Constelación en **zigzag por orden de ruta** con líneas rectas (prerrequisito continuo, orden sugerido punteado) en vez de layout automático (dagre/elk) | Muchas rutas tienen cursos sin prerrequisitos entre sí: dagre los apilaba como una lista y en móvil los ponía en una sola fila ilegible |
@@ -274,15 +275,15 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 
 | # | Criterio (spec §8) | Test automático | Smoke manual | Fase | Prod ✔ |
 |---|---|---|---|---|---|
-| 1 | Sin sesión: `401 UNAUTHENTICATED` y `/paths` redirige | e2e guard | navegador incógnito | F1 | [ ] |
-| 2 | Login deja `cst_session`; `/me` sin tokens | e2e `/me` | login real + DevTools | F1 | [ ] |
-| 3 | Entrevista ≥5 ⇒ `SkillProfile`; responder `completed` ⇒ 409 | unit sesión + e2e | `curl` con cookie | F2 | [ ] |
-| 4 | Generate emite `step` incremental y cierra con `done` | e2e secuencia | navegador en prod tras Nginx | F3 | [ ] |
-| 5 | Solo cursos del catálogo y prerrequisito antes | unit + propiedad `PathPlanner` | consulta SQL sobre rutas generadas | F2/F3 | [ ] |
-| 6 | Con `rules` o Anthropic caída, 3–5 se cumplen | unit fallback | prod con key inválida | F3b | [ ] |
-| 7 | 2+ rutas, progreso persiste; otro usuario ⇒ 404 | e2e ownership | dos cuentas de Discord | F3/F4 | [ ] |
-| 8 | 6ª generación en una hora ⇒ 429 | e2e throttler | `curl` en bucle | F3 | [ ] |
-| 9 | HTTPS válido; 5432 cerrado | — | `curl -v`, `nc -zv` | F0 | [ ] |
+| 1 | Sin sesión: `401 UNAUTHENTICATED` y `/paths` redirige | e2e guard | navegador incógnito | F1 |[x] |
+| 2 | Login deja `cst_session`; `/me` sin tokens | e2e `/me` | login real + DevTools | F1 |[x] |
+| 3 | Entrevista ≥5 ⇒ `SkillProfile`; responder `completed` ⇒ 409 | unit sesión + e2e | `curl` con cookie | F2 |[x] |
+| 4 | Generate emite `step` incremental y cierra con `done` | e2e secuencia | navegador en prod tras Nginx | F3 |[x] |
+| 5 | Solo cursos del catálogo y prerrequisito antes | unit + propiedad `PathPlanner` | consulta SQL sobre rutas generadas | F2/F3 |[x] |
+| 6 | Con `rules` o Anthropic caída, 3–5 se cumplen | unit fallback | prod con key inválida | F3b |[ ] |
+| 7 | 2+ rutas, progreso persiste; otro usuario ⇒ 404 | e2e ownership | dos cuentas de Discord | F3/F4 |[ ] |
+| 8 | 6ª generación en una hora ⇒ 429 | e2e throttler | `curl` en bucle | F3 |[ ] |
+| 9 | HTTPS válido; 5432 cerrado | — | `curl -v`, `nc -zv` | F0 |[x] |
 
 ## 11. Riesgos y plan de recorte
 

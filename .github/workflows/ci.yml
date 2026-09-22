@@ -74,6 +74,7 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm build
         env:
           NEXT_PUBLIC_API_URL: https://backend.constellation.waldirmaidana.com

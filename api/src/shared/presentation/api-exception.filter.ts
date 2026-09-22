@@ -18,6 +18,17 @@ const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
   rate_limited: HttpStatus.TOO_MANY_REQUESTS,
 };
 
+// Mensajes propios: lo que llega de Express o de Nest viene en inglés y con detalle interno.
+const MESSAGE_BY_STATUS: Record<number, string> = {
+  400: 'Petición inválida',
+  401: 'Inicia sesión para continuar',
+  403: 'No tienes acceso a esto',
+  404: 'No encontramos lo que buscas',
+  409: 'La operación no se puede completar en este estado',
+  413: 'El contenido enviado es demasiado grande',
+  429: 'Demasiadas peticiones seguidas. Espera un momento y vuelve a intentarlo.',
+};
+
 const CODE_BY_STATUS: Record<number, string> = {
   400: 'VALIDATION_ERROR',
   401: 'UNAUTHENTICATED',
@@ -67,7 +78,10 @@ export class ApiExceptionFilter implements ExceptionFilter {
         body: {
           error: {
             code: custom?.code ?? CODE_BY_STATUS[status] ?? 'HTTP_ERROR',
-            message: custom?.message ?? exception.message,
+            message:
+              custom?.message ??
+              MESSAGE_BY_STATUS[status] ??
+              'No pudimos completar la operación',
           },
         },
       };
@@ -80,7 +94,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
         body: {
           error: {
             code: CODE_BY_STATUS[clientStatus] ?? 'BAD_REQUEST',
-            message: 'Petición inválida',
+            message: MESSAGE_BY_STATUS[clientStatus] ?? 'Petición inválida',
           },
         },
       };

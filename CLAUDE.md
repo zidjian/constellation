@@ -59,6 +59,7 @@ cd api && pnpm migration:run
 cd api && pnpm seed                # catálogo desde catalog.json (idempotente; 2ª ejecución = 0 cambios)
 cd web && pnpm dev                 # web en :3000
 cd api && pnpm test:e2e && pnpm lint
+cd web && pnpm test            # lógica pura: constelación, layout y lector SSE
 cd web && pnpm build && pnpm lint
 node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.json (existe; ~2 min, 1 req/s)
 node tools/catalog/validate-catalog.mjs    # valida catalog.json: referencias, DAG, niveles (exit ≠ 0 si falla)
@@ -69,6 +70,8 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 
 - **Auth:** el flujo OAuth2 de Discord lo resuelve la **API**, implementado a mano con `fetch` (`identity/infrastructure/discord-oauth.client.ts`). No se usa `passport-discord`: su `state` exige `express-session` y la librería no se mantiene. El `state` anti-CSRF va en la cookie `cst_oauth_state` (httpOnly, 10 min, solo en `/v1/auth/discord`). En el callback la API emite un JWT propio (HS256, 7 días) en `cst_session` y redirige a la web. Un **guard global** exige sesión en todo salvo `@Public()`. Next lee la misma cookie en `proxy.ts` (Next 16 renombró `middleware.ts`) y en Server Components para proteger rutas (ADR-0002).
 - **IA híbrida (ADR-0001):** `SkillInterpreterPort` (LLM → `SkillProfile` estructurado) + `PathPlanner` (servicio de dominio **determinista**: skills objetivo → cursos → cierre de prerrequisitos → quitar lo dominado → orden topológico) + `RationaleWriterPort` (LLM redacta el "por qué" de cada paso). Cada puerto tiene adaptador `claude` y adaptador `rules`.
+- **Rate limit por usuario y hora** (`shared/presentation/user-throttler.guard.ts`, contadores en memoria): 5 generaciones de ruta y 20 `complete` de entrevista, porque ambas llaman al LLM. Reiniciar la API pone los contadores a cero.
+- **Errores hacia fuera siempre en español:** el filtro traduce por status (`MESSAGE_BY_STATUS`); nunca sale el mensaje de Nest o de Express (salían cosas como «ThrottlerException: Too Many Requests»).
 - **IA con Claude (`LLM_PROVIDER=claude`):** modelo `ANTHROPIC_MODEL` (por defecto `claude-opus-5`), salida estructurada (`output_config.format` con JSON Schema y enum de slugs del catálogo), `effort: low`, `fallbacks: "default"` (beta `server-side-fallback-2026-07-01`) ante rechazos, y sin reintentos del SDK.
   - Cualquier fallo (red, timeout, rechazo, JSON inválido o fuera de esquema) pasa a reglas (`withFallback`), y `interpreted_by`/`generated_by` guardan quién respondió de verdad.
   - **Dos topes distintos:** `LLM_TIMEOUT_MS` (8 s) para el intérprete, que bloquea la respuesta de completar la entrevista, y `LLM_RATIONALE_TIMEOUT_MS` (25 s) para el redactor, que corre en paralelo al stream. Medido con Opus 5: intérprete 2–3 s; redactor ~5 s con 4 pasos y ~9 s con 8.

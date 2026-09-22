@@ -31,6 +31,7 @@ export class ClaudeRationaleWriter implements RationaleWriterPort {
 
   async write(
     request: RationaleRequest,
+    caller?: AbortSignal,
   ): Promise<{ texts: string[]; by: 'claude' | 'rules' }> {
     const { value, by } = await withFallback(
       'RationaleWriter',
@@ -38,6 +39,7 @@ export class ClaudeRationaleWriter implements RationaleWriterPort {
       (signal) => this.ask(request, signal),
       () => Promise.resolve(this.rules.texts(request)),
       this.logger,
+      caller,
     );
     return { texts: value, by };
   }
