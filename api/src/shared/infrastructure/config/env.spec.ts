@@ -21,4 +21,12 @@ describe('loadEnv', () => {
       /DATABASE_URL[\s\S]*WEB_ORIGIN|PORT/,
     );
   });
+
+  it('rechaza el JWT_SECRET de ejemplo en producción', () => {
+    const example = 'cambia-esto-por-openssl-rand-hex-32-xxxxxxxxxxxxxxxx';
+    expect(() =>
+      loadEnv({ ...valid, NODE_ENV: 'production', JWT_SECRET: example }),
+    ).toThrow(/JWT_SECRET/);
+    expect(() => loadEnv({ ...valid, JWT_SECRET: example })).not.toThrow();
+  });
 });

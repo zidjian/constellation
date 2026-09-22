@@ -8,6 +8,10 @@ echo "==> API: dependencias de producción"
 cd "$ROOT/api"
 pnpm install --frozen-lockfile --prod
 
+echo "==> API: validar variables de entorno (antes de tocar nada)"
+# Si falta una variable, la API no arrancaría: se aborta aquí, con la versión anterior todavía en marcha.
+node -e "require('./dist/shared/infrastructure/config/env').loadDotEnv(); require('./dist/shared/infrastructure/config/env').loadEnv()"
+
 echo "==> API: migraciones"
 pnpm migration:run:prod
 

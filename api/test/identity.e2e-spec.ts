@@ -202,16 +202,82 @@ describe('Identidad (e2e, Postgres)', () => {
     expect(b.username).toBe('ada-lovelace');
   });
 
-  it('rechaza un JWT firmado con otro secreto', async () => {
-    const forged = await new JwtService({
-      secret: 'otro-secreto'.padEnd(40, 'y'),
-    }).signAsync({
-      sub: '00000000-0000-0000-0000-000000000000',
-    });
-    await request(app.getHttpServer())
+  it('solo acepta JWT HS256 firmados con el secreto y vigentes (usuario real)', async () => {
+    const session = await login();
+    const me = await request(app.getHttpServer())
       .get('/v1/me')
-      .set('Cookie', `cst_session=${forged}`)
+      .set('Cookie', session.split(';')[0]);
+    const sub = (me.body as { data: { id: string } }).data.id;
+    const secret = env.JWT_SECRET;
+    const forge = (opts: {
+      secret?: string;
+      algorithm?: 'HS256' | 'HS512';
+      expiresIn?: number;
+    }) =>
+      new JwtService({ secret: opts.secret ?? secret }).signAsync(
+        { sub },
+        {
+          algorithm: opts.algorithm ?? 'HS256',
+          expiresIn: opts.expiresIn ?? 60,
+        },
+      );
+    const unsigned = `${Buffer.from('{"alg":"none","typ":"JWT"}').toString('base64url')}.${Buffer.from(
+      JSON.stringify({ sub, exp: Math.floor(Date.now() / 1000) + 60 }),
+    ).toString('base64url')}.`;
+
+    const cases: [string, string][] = [
+      ['otro secreto', await forge({ secret: 'otro-secreto'.padEnd(40, 'y') })],
+      ['HS512', await forge({ algorithm: 'HS512' })],
+      ['expirado', await forge({ expiresIn: -10 })],
+      ['alg none', unsigned],
+    ];
+    // /catalog/courses no consulta al usuario en el caso de uso: el 401 solo puede venir del guard.
+    for (const [name, token] of cases) {
+      const res = await request(app.getHttpServer())
+        .get('/v1/catalog/courses')
+        .set('Cookie', `cst_session=${token}`);
+      expect({ name, status: res.status }).toEqual({ name, status: 401 });
+      expect((res.body as ApiErrorBody).error.message).toBe(
+        'Inicia sesión para continuar',
+      );
+    }
+    await request(app.getHttpServer())
+      .get('/v1/catalog/courses')
+      .set('Cookie', `cst_session=${await forge({})}`)
+      .expect(200);
+  });
+
+  it('un JWT válido de un usuario borrado no abre sesión', async () => {
+    const session = await login();
+    await app
+      .get(DataSource)
+      .query(`DELETE FROM users WHERE discord_id = 'test-1001'`);
+    await request(app.getHttpServer())
+      .get('/v1/catalog/courses')
+      .set('Cookie', session.split(';')[0])
       .expect(401);
+  });
+
+  it('si el usuario cancela en Discord (access_denied) vuelve con error y borra el state', async () => {
+    const start = await request(app.getHttpServer()).get('/v1/auth/discord');
+    const state = new URL(start.headers.location).searchParams.get('state');
+    const res = await request(app.getHttpServer())
+      .get(`/v1/auth/discord/callback?error=access_denied&state=${state}`)
+      .set('Cookie', cookie(start, 'cst_oauth_state')!.split(';')[0])
+      .expect(302);
+    expect(res.headers.location).toBe(`${env.WEB_ORIGIN}/?error=auth`);
+    expect(cookie(res, 'cst_oauth_state')).toMatch(/Expires=Thu, 01 Jan 1970/);
+  });
+
+  it('el callback siempre consume el state (no se puede reutilizar)', async () => {
+    const start = await request(app.getHttpServer()).get('/v1/auth/discord');
+    const state = new URL(start.headers.location).searchParams.get('state');
+    const cb = await request(app.getHttpServer())
+      .get(`/v1/auth/discord/callback?code=abc&state=${state}`)
+      .set('Cookie', cookie(start, 'cst_oauth_state')!.split(';')[0]);
+    expect(cookie(cb, 'cst_oauth_state')).toMatch(
+      /Path=\/v1\/auth\/discord.*Expires=Thu, 01 Jan 1970|Expires=Thu, 01 Jan 1970.*Path=\/v1\/auth\/discord/,
+    );
   });
 
   it('logout borra la cookie de sesión', async () => {
@@ -241,6 +307,15 @@ describe('Identidad (e2e, Postgres)', () => {
     expect(session).toMatch(/Secure/);
     // El state no necesita el dominio compartido.
     expect(cookie(start, 'cst_oauth_state')).not.toMatch(/Domain=/);
+
+    // El borrado debe repetir Domain y Path, o el navegador no borraría la cookie compartida.
+    const out = await request(prod.getHttpServer())
+      .post('/v1/auth/logout')
+      .expect(200);
+    const cleared = cookie(out, 'cst_session')!;
+    expect(cleared).toMatch(/Domain=\.constellation\.waldirmaidana\.com/);
+    expect(cleared).toMatch(/Path=\//);
+    expect(cleared).toMatch(/Expires=Thu, 01 Jan 1970/);
     await prod.close();
   });
 });

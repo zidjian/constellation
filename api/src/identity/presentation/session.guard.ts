@@ -6,7 +6,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { DomainError } from '../../shared/domain/domain-error';
-import { SESSION_TOKENS, type SessionTokens } from '../domain/ports';
+import {
+  SESSION_TOKENS,
+  type SessionTokens,
+  USER_REPOSITORY,
+  type UserRepository,
+} from '../domain/ports';
 import type { SessionRequest } from './current-user.decorator';
 import { IS_PUBLIC } from './public.decorator';
 import { SESSION_COOKIE } from './session-cookie';
@@ -17,6 +22,7 @@ export class SessionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     @Inject(SESSION_TOKENS) private readonly tokens: SessionTokens,
+    @Inject(USER_REPOSITORY) private readonly users: UserRepository,
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
@@ -31,13 +37,16 @@ export class SessionGuard implements CanActivate {
       Record<string, string | undefined> | undefined;
     const token = cookies?.[SESSION_COOKIE];
     const userId = token ? await this.tokens.verify(token) : null;
-    if (!userId)
+    // Un JWT válido de un usuario borrado no es una sesión: evita FKs rotas en los casos de uso.
+    const user = userId ? await this.users.findById(userId) : null;
+    if (!user) {
       throw new DomainError(
         'UNAUTHENTICATED',
         'Inicia sesión para continuar',
         'unauthenticated',
       );
-    req.userId = userId;
+    }
+    req.userId = user.id;
     return true;
   }
 }

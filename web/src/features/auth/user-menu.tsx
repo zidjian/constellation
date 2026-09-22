@@ -9,14 +9,19 @@ import type { CurrentUser } from "./types";
 export function UserMenu({ user }: { user: CurrentUser }) {
   const router = useRouter();
   const [leaving, setLeaving] = useState(false);
+  const [error, setError] = useState(false);
 
   async function logout() {
     setLeaving(true);
+    setError(false);
     try {
       await apiFetch("/auth/logout", { method: "POST" });
-    } finally {
       router.replace("/");
       router.refresh();
+    } catch {
+      // Si la API no responde, la cookie sigue viva: no se finge un logout.
+      setError(true);
+      setLeaving(false);
     }
   }
 
@@ -41,6 +46,11 @@ export function UserMenu({ user }: { user: CurrentUser }) {
       >
         {leaving ? "Saliendo…" : "Salir"}
       </button>
+      {error && (
+        <span role="alert" className="text-sm text-red-500">
+          No se pudo cerrar sesión. Reintenta.
+        </span>
+      )}
     </div>
   );
 }

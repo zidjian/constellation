@@ -129,7 +129,7 @@ Fuente y proceso según **ADR-0004**: extracción offline del sitio público →
 ### 4.2 Identidad — `backend-implementer` · `feature/identity-discord`
 
 - [x] Migración `CreateUsers` (`discord_id` único, `username`, `avatar_url`).
-- [x] `passport-discord` con `state: true` y scope `identify`; los tokens de Discord no salen de la estrategia.
+- [x] ~~`passport-discord`~~ → OAuth2 a mano (ver §9) con `state` en cookie y scope `identify`; los tokens de Discord no salen de la estrategia.
 - [x] Caso de uso `LoginWithDiscord`: upsert de usuario (solo `discordId`, `username`, `avatar`), emite JWT (7 días, `sub = userId`).
 - [x] Callback: `Set-Cookie cst_session` (`HttpOnly`, `Secure` en prod, `SameSite=Lax`, `Domain` solo si `COOKIE_DOMAIN`), redirige a `WEB_ORIGIN/paths` si tiene rutas o `/assessment` si no. Error de OAuth → redirige a `/?error=auth`.
 - [x] `JwtAuthGuard` **global** con decorador `@Public()` para las excepciones; `@CurrentUser()`; sin cookie o inválida → `401 UNAUTHENTICATED`.
@@ -138,7 +138,7 @@ Fuente y proceso según **ADR-0004**: extracción offline del sitio público →
 
 ### 4.3 Auth en la web — `frontend-implementer` · `feature/web-auth`
 
-- [x] `middleware.ts`: sin cookie `cst_session` en `/assessment` o `/paths/*` → redirige a `/`. (Solo presencia; la validez la decide la API.)
+- [x] `middleware.ts` → **`proxy.ts`** (Next 16): sin cookie `cst_session` en `/assessment` o `/paths/*` → redirige a `/`. (Solo presencia; la validez la decide la API.)
 - [x] Layout del grupo protegido: Server Component que pide `/v1/me` reenviando la cookie; `401` → redirige a `/`.
 - [x] Landing mínima con "Entrar con Discord" → `NEXT_PUBLIC_API_URL/v1/auth/discord`; avatar + logout en el header.
 
