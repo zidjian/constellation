@@ -38,7 +38,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
-          cp -r public .next/standalone/
+          [ -d public ] && cp -r public .next/standalone/
           cp -r .next/static .next/standalone/.next/
 
       - name: Configurar SSH
