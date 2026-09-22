@@ -118,7 +118,7 @@ Fuente y proceso según **ADR-0004**: extracción offline del sitio público →
   - nivel y skills `teaches`/`requires` desde `requirements`, `chapters`, `tier` y `tag`, con revisión humana curso a curso;
   - título limpio (sin el sufijo " - Fernando Herrera"), `durationHours` y `imageUrl` tal cual el snapshot.
   - Mínimo viable: todos los cursos de las rutas oficiales que no sean legacy.
-- [x] Validador del catálogo (`tools/catalog/validate-catalog.mjs`, con funciones exportables para el seed): slugs únicos, referencias existentes, sin autoprerrequisito, **grafo acíclico**, toda skill `requires` es enseñada por algún curso, todo curso enseña al menos una skill.
+- [x] Validador del catálogo (`tools/catalog/validate-catalog.mjs`, con funciones exportables para el seed) + tests (`validate-catalog.test.mjs`, `node --test`): slugs únicos, referencias existentes, sin autoprerrequisito, **grafo acíclico**, toda skill `requires` es enseñada por algún curso, todo curso enseña al menos una skill.
 - [ ] Migración `CreateCatalog`: `skills`, `courses`, `course_skills`, `course_prerequisites` con los constraints de §4 de la spec.
 - [ ] `pnpm seed`: upsert por `slug` en transacción, reconcilia relaciones (borra las que ya no están), falla con el ciclo concreto si el grafo no es DAG. Ejecutarlo dos veces no cambia nada.
 - [ ] Dominio: `Course`, `Skill`, `CatalogGraph` (lectura en memoria del catálogo completo para el planner) y `CatalogRepository` (puerto).

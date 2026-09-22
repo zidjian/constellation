@@ -61,6 +61,7 @@ cd web && pnpm dev                 # web en :3000
 cd web && pnpm build && pnpm lint
 node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.json (existe; ~2 min, 1 req/s)
 node tools/catalog/validate-catalog.mjs    # valida catalog.json: referencias, DAG, niveles (exit ≠ 0 si falla)
+node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 ```
 
 ## Arquitectura (notas clave)

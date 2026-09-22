@@ -1360,9 +1360,7 @@
       "requires": [
         "programming-basics"
       ],
-      "prerequisites": [
-        "vibe-coding"
-      ]
+      "prerequisites": []
     },
     {
       "slug": "open-code-guia-completa",
@@ -1376,9 +1374,7 @@
         "ai-assisted-coding"
       ],
       "requires": [],
-      "prerequisites": [
-        "vibe-coding"
-      ]
+      "prerequisites": []
     },
     {
       "slug": "ia-para-developers",

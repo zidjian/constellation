@@ -15,7 +15,8 @@ export const LEVELS = Object.freeze(['beginner', 'intermediate', 'advanced']);
 export const COURSE_URL_PREFIX = 'https://cursos.devtalles.com/courses/';
 
 // Los slugs de curso son los de la URL real de DevTalles: pueden llevar mayúsculas, "_" y "%XX" (p. ej. NestJS-Testing).
-const COURSE_SLUG = /^[A-Za-z0-9][A-Za-z0-9_%-]*$/;
+// Slug real de la URL: alfanumérico, `_`, `-` y escapes %XX válidos (p. ej. Ingenier%C3%ADa-de-prompts).
+const COURSE_SLUG = /^[A-Za-z0-9](?:[A-Za-z0-9_-]|%[0-9A-F]{2})*$/;
 // Los slugs de skill son nuestros: kebab-case en minúsculas.
 const SKILL_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION = /^\d{4}-\d{2}-\d{2}$/;
@@ -231,13 +232,15 @@ export function validateCatalog(catalog) {
  * de modo que el mismo catalog.json produzca siempre el mismo conjunto de filas y relaciones.
  */
 export function normalizeCatalog(catalog) {
-  const uniqSorted = (xs) => [...new Set(xs)].sort();
+  // Orden por punto de código (no localeCompare): idéntico en cualquier máquina y locale.
+  const byCodePoint = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  const uniqSorted = (xs) => [...new Set(xs)].sort(byCodePoint);
   return {
     version: catalog.version,
-    skills: [...catalog.skills].sort((a, b) => a.slug.localeCompare(b.slug)),
+    skills: [...catalog.skills].sort((a, b) => byCodePoint(a.slug, b.slug)),
     courses: [...catalog.courses]
       .map((c) => ({ ...c, teaches: uniqSorted(c.teaches), requires: uniqSorted(c.requires), prerequisites: uniqSorted(c.prerequisites) }))
-      .sort((a, b) => a.slug.localeCompare(b.slug)),
+      .sort((a, b) => byCodePoint(a.slug, b.slug)),
   };
 }
 
