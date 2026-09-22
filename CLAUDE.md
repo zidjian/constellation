@@ -49,14 +49,14 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 
 ## Comandos
 
-> `api/` y `web/` ya existen (Fase 0). `seed` todavía es un comando planeado: llega con el catálogo (F1).
+> `api/` y `web/` existen y están desplegados. El seed del catálogo existe desde F1.
 
 ```bash
 cd api && pnpm start:dev          # API en :3001
 cd api && pnpm build && pnpm test
 cd api && pnpm migration:generate src/shared/infrastructure/database/migrations/<Nombre>
 cd api && pnpm migration:run
-cd api && pnpm seed                # catálogo (idempotente)
+cd api && pnpm seed                # catálogo desde catalog.json (idempotente; 2ª ejecución = 0 cambios)
 cd web && pnpm dev                 # web en :3000
 cd api && pnpm test:e2e && pnpm lint
 cd web && pnpm build && pnpm lint

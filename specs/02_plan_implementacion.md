@@ -71,7 +71,7 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 
 ### 3.1 Repositorio y proceso
 - [x] `git init`, `.gitignore` (node, `.env*`, `dist`, `.next`), `LICENSE` MIT, commit inicial con docs existentes en `main`.
-- [x] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde). _(protección de ramas pendiente)_
+- [x] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde).
 - [x] Plantilla de PR con checklist de la Definition of Done.
 - [x] Registrar la app en Discord Developer Portal con las **dos** redirect URIs (local y producción, sin `/` final).
 
@@ -119,10 +119,10 @@ Fuente y proceso según **ADR-0004**: extracción offline del sitio público →
   - título limpio (sin el sufijo " - Fernando Herrera"), `durationHours` y `imageUrl` tal cual el snapshot.
   - Mínimo viable: todos los cursos de las rutas oficiales que no sean legacy.
 - [x] Validador del catálogo (`tools/catalog/validate-catalog.mjs`, con funciones exportables para el seed) + tests (`validate-catalog.test.mjs`, `node --test`): slugs únicos, referencias existentes, sin autoprerrequisito, **grafo acíclico**, toda skill `requires` es enseñada por algún curso, todo curso enseña al menos una skill.
-- [ ] Migración `CreateCatalog`: `skills`, `courses`, `course_skills`, `course_prerequisites` con los constraints de §4 de la spec.
-- [ ] `pnpm seed`: upsert por `slug` en transacción, reconcilia relaciones (borra las que ya no están), falla con el ciclo concreto si el grafo no es DAG. Ejecutarlo dos veces no cambia nada.
-- [ ] Dominio: `Course`, `Skill`, `CatalogGraph` (lectura en memoria del catálogo completo para el planner) y `CatalogRepository` (puerto).
-- [ ] `GET /v1/catalog/courses` → cursos con skills y prerrequisitos (requiere sesión desde que exista el guard).
+- [x] Migración `CreateCatalog`: `skills`, `courses`, `course_skills`, `course_prerequisites` con los constraints de §4 de la spec.
+- [x] `pnpm seed`: upsert por `slug` en transacción, reconcilia relaciones (borra las que ya no están), falla con el ciclo concreto si el grafo no es DAG. Ejecutarlo dos veces no cambia nada.
+- [x] Dominio: `Course`, `Skill`, `CatalogGraph` (lectura en memoria del catálogo completo para el planner) y `CatalogRepository` (puerto).
+- [x] `GET /v1/catalog/courses` → cursos con skills y prerrequisitos (requiere sesión desde que exista el guard).
 
 **Verificación:** seed ×2 idempotente (conteo de filas igual); test de ciclo con un catálogo de fixture; `curl` al endpoint.
 
@@ -261,7 +261,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-16 | Se adelanta la extracción del catálogo a D0 y se decide la fuente (ADR-0004) | No hay API pública; el sitio publica rutas oficiales con prerrequisitos |
 | 2026-09-21 | F0 (scaffolds) arranca en D5: el calendario va ~4 días atrasado | Tiempo dedicado al diseño y al catálogo; reajustar el calendario antes de F1 |
 | 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
-| 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario y protección de ramas pendientes | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
+| 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación
