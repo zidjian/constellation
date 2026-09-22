@@ -71,9 +71,9 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 
 ### 3.1 Repositorio y proceso
 - [x] `git init`, `.gitignore` (node, `.env*`, `dist`, `.next`), `LICENSE` MIT, commit inicial con docs existentes en `main`.
-- [ ] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde).
-- [ ] Plantilla de PR con checklist de la Definition of Done.
-- [ ] Registrar la app en Discord Developer Portal con las **dos** redirect URIs (local y producción, sin `/` final).
+- [x] Crear repo en GitHub, rama `develop`, protección de `main` y `develop` (PR obligatorio, CI verde). _(protección de ramas pendiente)_
+- [x] Plantilla de PR con checklist de la Definition of Done.
+- [x] Registrar la app en Discord Developer Portal con las **dos** redirect URIs (local y producción, sin `/` final).
 
 ### 3.2 Scaffold `api/`
 - [x] Nest + pnpm + TypeScript estricto, ESLint/Prettier, Jest.
@@ -90,12 +90,12 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 - [x] Página `/` provisional que llama a `/v1/health` y consume `/v1/health/stream` con `fetch` + `ReadableStream`.
 
 ### 3.4 Infra y CI
-- [ ] Lightsail: DNS `A` de ambos subdominios, firewall solo 22/80/443, Nginx con un `server` por subdominio, certbot, PM2 con `ecosystem.config.js` y `pm2 startup`.
-- [ ] Nginx API: `proxy_buffering off`, `proxy_read_timeout 300s`, headers `X-Forwarded-*`.
-- [ ] PostgreSQL: usuario y BD `constellation` con permisos mínimos; cron de `pg_dump` diario.
-- [ ] GitHub Actions `ci.yml` (PR a `develop`/`main`): install, lint, test, build de ambos paquetes.
-- [ ] GitHub Actions `deploy.yml` (push a `main`): build en CI con `NEXT_PUBLIC_API_URL` de producción → `rsync` → `pnpm migration:run` → `pnpm seed` → `pm2 reload`.
-- [ ] Archivos de infraestructura versionados (ubicación a decidir por `devops`, p. ej. `deploy/`).
+- [x] Lightsail: DNS `A` de ambos subdominios, firewall solo 22/80/443, Nginx con un `server` por subdominio, certbot, PM2 con `ecosystem.config.js` y `pm2 startup`.
+- [x] Nginx API: `proxy_buffering off`, `proxy_read_timeout 300s`, headers `X-Forwarded-*`.
+- [x] PostgreSQL: usuario y BD `constellation` con permisos mínimos; cron de `pg_dump` diario.
+- [x] GitHub Actions `ci.yml` (PR a `develop`/`main`): install, lint, test, build de ambos paquetes.
+- [x] GitHub Actions `deploy.yml` (push a `main`): build en CI con `NEXT_PUBLIC_API_URL` de producción → `rsync` → `pnpm migration:run` → `pnpm seed` → `pm2 reload`.
+- [x] Archivos de infraestructura versionados (ubicación a decidir por `devops`, p. ej. `deploy/`).
 
 **Verificación de salida F0 (en producción):**
 - `curl https://backend.constellation.waldirmaidana.com/v1/health` → `{ "data": ... }` con TLS válido.
@@ -261,6 +261,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-16 | Se adelanta la extracción del catálogo a D0 y se decide la fuente (ADR-0004) | No hay API pública; el sitio publica rutas oficiales con prerrequisitos |
 | 2026-09-21 | F0 (scaffolds) arranca en D5: el calendario va ~4 días atrasado | Tiempo dedicado al diseño y al catálogo; reajustar el calendario antes de F1 |
 | 2026-09-21 | `middleware.ts` → **`proxy.ts`** en toda la web | Next 16 renombró la convención (ver `web/CLAUDE.md`) |
+| 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario y protección de ramas pendientes | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
 ## 10. Trazabilidad: criterios de aceptación → verificación

@@ -8,6 +8,7 @@ Lee primero el `CLAUDE.md` raíz. Aquí solo lo específico de la web.
 - **`output: 'standalone'` no copia los estáticos.** Después de `pnpm build` hay que ejecutar `cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/`. Si no, `server.js` sirve la página sin CSS ni JS. `public/` existe siempre (tiene un `.gitkeep`) para que el primer `cp` no falle.
 - **`NEXT_PUBLIC_API_URL` es obligatoria en el build de producción:** `src/lib/api.ts` lanza un error si falta, para no apuntar a localhost sin avisar.
 - **`NEXT_PUBLIC_API_URL` se incrusta en build time.** En local va en `.env.local`, copiado de `.env.example`. En producción se define en el build de CI.
+- **`API_INTERNAL_URL` (runtime, solo servidor):** `api.server.ts` la usa para llamar a la API por `127.0.0.1:3011` en producción. Sin ella usa `NEXT_PUBLIC_API_URL`. En local no hace falta.
 - **Cliente API:** `src/lib/api.ts` es para el navegador (`credentials: 'include'`). `src/lib/api.server.ts` es para Server Components (reenvía la cookie `cst_session`) y es `server-only`. Ambos devuelven `data` o lanzan `ApiError` con `code`.
 - **Streaming:** `src/lib/sse.ts` (`readSse`) lee SSE desde `fetch`. Si la respuesta no es `text/event-stream` (401, 429…), lanza `ApiError`; si se aborta, lanza `AbortError`. `EventSource` no se usa porque solo hace GET.
 - **pnpm 11:** `sharp` y `unrs-resolver` quedan en `allowBuilds: false` (`pnpm-workspace.yaml`).
