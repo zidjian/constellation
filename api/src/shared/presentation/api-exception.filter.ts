@@ -11,6 +11,7 @@ import { DomainError, DomainErrorKind } from '../domain/domain-error';
 
 const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
   validation: HttpStatus.BAD_REQUEST,
+  unauthenticated: HttpStatus.UNAUTHORIZED,
   not_found: HttpStatus.NOT_FOUND,
   conflict: HttpStatus.CONFLICT,
   forbidden: HttpStatus.FORBIDDEN,
