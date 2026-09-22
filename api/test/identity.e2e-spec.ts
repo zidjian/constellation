@@ -94,7 +94,7 @@ describe('Identidad (e2e, Postgres)', () => {
   afterAll(async () => {
     await app
       .get(DataSource)
-      .query(`DELETE FROM users WHERE discord_id LIKE 'test-%'`);
+      .query(`DELETE FROM users WHERE discord_id = 'test-1001'`);
     await app.close();
   });
 

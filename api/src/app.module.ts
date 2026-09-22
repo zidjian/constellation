@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AssessmentModule } from './assessment/assessment.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { HealthModule } from './health/health.module';
 import { IdentityModule } from './identity/identity.module';
@@ -12,6 +13,7 @@ import { DatabaseModule } from './shared/infrastructure/database/database.module
     HealthModule,
     IdentityModule,
     CatalogModule,
+    AssessmentModule,
   ],
 })
 export class AppModule {}

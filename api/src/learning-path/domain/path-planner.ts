@@ -31,7 +31,7 @@ const byCodePoint = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 /**
  * Motor determinista de rutas (ADR-0001). Única pieza que decide qué cursos entran:
  *   1. skills objetivo → un curso que las enseñe (el más barato de cursar)
- *   2. cierre transitivo de prerrequisitos
+ *   2. cierre transitivo de prerrequisitos, sin entrar por los cursos que ya domina
  *   3. quitar cursos cuyas skills ya domina
  *   4. orden topológico estable
  *   5. tope de MAX_PATH_STEPS (prefijo del orden: sigue cerrado bajo prerrequisitos)
@@ -70,14 +70,9 @@ export class PathPlanner {
       targetOf.set(chosen.slug, [...(targetOf.get(chosen.slug) ?? []), skill]);
     }
 
-    // 2. Cierre de prerrequisitos y 3. quitar lo dominado.
-    const all = new Set([
-      ...selected,
-      ...this.graph.prerequisiteClosure(selected),
-    ]);
-    const toLearn = [...all].filter(
-      (slug) => !mastered(this.graph.course(slug)!),
-    );
+    // 2. Cierre de prerrequisitos y 3. quitar lo dominado. Un curso dominado no entra ni se
+    // expanden sus prerrequisitos: si domina JavaScript, no le pedimos "programación desde cero".
+    const toLearn = this.closureThroughUnmastered(selected, mastered);
     if (!toLearn.length) {
       throw new DomainError(
         'PATH_NOTHING_TO_LEARN',
@@ -112,18 +107,31 @@ export class PathPlanner {
     return { steps, uncoveredTargets, truncated: order.length > kept.length };
   }
 
-  /** Cursos nuevos que añadiría elegir `slug`: él y su cierre, sin lo ya elegido ni lo dominado. */
+  private closureThroughUnmastered(
+    roots: Iterable<string>,
+    mastered: (c: Course) => boolean,
+  ): string[] {
+    const result = new Set<string>();
+    const stack = [...roots];
+    while (stack.length) {
+      const slug = stack.pop()!;
+      const course = this.graph.course(slug)!;
+      if (result.has(slug) || mastered(course)) continue;
+      result.add(slug);
+      stack.push(...course.prerequisites);
+    }
+    return [...result];
+  }
+
+  /** Cursos nuevos que añadiría elegir `slug`: los que tendría que cursar y aún no están elegidos. */
   private extraCost(
     slug: string,
     selected: Set<string>,
     mastered: (c: Course) => boolean,
   ): number {
-    const covered = new Set([
-      ...selected,
-      ...this.graph.prerequisiteClosure(selected),
-    ]);
-    return [slug, ...this.graph.prerequisiteClosure([slug])].filter(
-      (s) => !covered.has(s) && !mastered(this.graph.course(s)!),
+    const covered = new Set(this.closureThroughUnmastered(selected, mastered));
+    return this.closureThroughUnmastered([slug], mastered).filter(
+      (s) => !covered.has(s),
     ).length;
   }
 }
