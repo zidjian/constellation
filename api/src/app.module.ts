@@ -3,6 +3,7 @@ import { AssessmentModule } from './assessment/assessment.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { HealthModule } from './health/health.module';
 import { IdentityModule } from './identity/identity.module';
+import { LearningPathModule } from './learning-path/learning-path.module';
 import { ConfigModule } from './shared/infrastructure/config/config.module';
 import { DatabaseModule } from './shared/infrastructure/database/database.module';
 
@@ -14,6 +15,7 @@ import { DatabaseModule } from './shared/infrastructure/database/database.module
     IdentityModule,
     CatalogModule,
     AssessmentModule,
+    LearningPathModule,
   ],
 })
 export class AppModule {}

@@ -23,6 +23,8 @@ const envSchema = z
     DISCORD_CLIENT_ID: z.string().min(1),
     DISCORD_CLIENT_SECRET: z.string().min(1),
     DISCORD_CALLBACK_URL: z.url(),
+    // learning-path: pausa entre eventos del stream para que la constelación se dibuje paso a paso.
+    PATH_STREAM_DELAY_MS: z.coerce.number().int().min(0).max(2000).default(150),
   })
   .refine(
     (env) =>
