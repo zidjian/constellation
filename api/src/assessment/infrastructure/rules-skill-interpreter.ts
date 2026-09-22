@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { SKILL_LEVEL_MAX, type SkillProfile } from '../domain/skill-profile';
-import type { InterpreterInput, SkillInterpreterPort } from '../domain/ports';
+import type {
+  Interpretation,
+  InterpreterInput,
+  SkillInterpreterPort,
+} from '../domain/ports';
 
 const MAX_TARGETS = 4;
 
@@ -51,9 +55,12 @@ const mentions = (text: string, term: string) =>
  */
 @Injectable()
 export class RulesSkillInterpreter implements SkillInterpreterPort {
-  readonly name = 'rules' as const;
+  interpret(input: InterpreterInput): Promise<Interpretation> {
+    return Promise.resolve({ profile: this.profile(input), by: 'rules' });
+  }
 
-  interpret(input: InterpreterInput): Promise<SkillProfile> {
+  /** Perfil por reglas (síncrono). Base también del intérprete con Claude. */
+  profile(input: InterpreterInput): SkillProfile {
     const known = new Set(input.knownSkills.map((s) => s.slug));
 
     // Niveles: la autoevaluación como base y los retos por encima (evidencia > percepción).
@@ -73,9 +80,12 @@ export class RulesSkillInterpreter implements SkillInterpreterPort {
         Infinity,
         ...results.filter((r) => !r.correct).map((r) => r.difficulty),
       );
+      // Si falla en la dificultad d, se asume lo de debajo (la escalera pudo empezar alta), sin
+      // superar lo que dijo saber; si no falla, manda lo más alto entre lo aprobado y lo autoevaluado.
+      const self = levels[skill] ?? 0;
       levels[skill] = Number.isFinite(failedAt)
-        ? Math.min(passed, failedAt - 1)
-        : Math.max(passed, levels[skill] ?? 0);
+        ? Math.max(passed, Math.min(self || failedAt - 1, failedAt - 1))
+        : Math.max(passed, self);
     }
 
     // Objetivos: primero lo que eligió, luego lo que menciona en el texto libre.
@@ -84,7 +94,7 @@ export class RulesSkillInterpreter implements SkillInterpreterPort {
       .filter((s) => known.has(s))
       .slice(0, MAX_TARGETS);
 
-    return Promise.resolve({
+    return {
       levels: Object.fromEntries(
         Object.entries(levels)
           .filter(([s]) => known.has(s))
@@ -95,7 +105,7 @@ export class RulesSkillInterpreter implements SkillInterpreterPort {
       ),
       targetSkills,
       goal: input.goal,
-    });
+    };
   }
 
   private skillsMentioned(
