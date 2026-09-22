@@ -81,6 +81,8 @@ node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.
 - **Redirect URI de Discord debe coincidir exacto** (incluido `https` y sin `/` final) con la registrada en el Developer Portal; hay que registrar la local y la de producción.
 - **El catálogo nunca se lee de devtalles.com en ejecución** (ADR-0004). `catalog.raw.json` es un snapshot factual que no se edita a mano; la curación vive en `catalog.json`. Regenerar el snapshot **no** regenera `catalog.json`: cambiar un slug rompe rutas guardadas.
 - **Las rutas oficiales de DevTalles tienen ids de caja duplicados**, así que algunas flechas no se resuelven. El extractor las deja en `routes[].unresolvedEdges` para decidirlas a mano. Las páginas *legacy* no tienen bloque de requisitos ni de descripción (`requirements: []` es real, no un fallo del parser).
+- **La instancia Lightsail es compartida** con otras apps (ver `deploy/README.md`). En producción la API escucha en **3011** y la web en **3010**, porque 3001 y 3003 ya están ocupados. Nunca se recarga ni se modifica nada ajeno a Constellation.
+- **DNS en Cloudflare con la nube gris (DNS only).** Con proxy, el certificado gratuito de Cloudflare no cubre `backend.constellation.waldirmaidana.com` (dos niveles) y además corta el SSE a los 100 s. El TLS lo emite certbot en el servidor.
 - **PostgreSQL solo escucha en `localhost`**; el puerto 5432 **no** se abre en el firewall de Lightsail. Acceso remoto por túnel SSH.
 
 ## Documentación del proyecto y flujo de agentes
