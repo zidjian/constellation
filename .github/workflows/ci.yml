@@ -16,6 +16,20 @@ jobs:
     defaults:
       run:
         working-directory: api
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: constellation
+          POSTGRES_PASSWORD: constellation
+          POSTGRES_DB: constellation
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U constellation"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://constellation:constellation@localhost:5432/constellation
+      WEB_ORIGIN: http://localhost:3000
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -31,6 +45,12 @@ jobs:
       - run: pnpm test
       - run: pnpm test:e2e
       - run: pnpm build
+      - name: Migraciones y seed sobre BD limpia (dos veces = idempotente)
+        run: |
+          pnpm migration:run:prod
+          pnpm seed:prod
+          pnpm seed:prod | tee seed2.log
+          grep -q '"inserted":0,"updated":0,"deleted":0},"courses":{"inserted":0,"updated":0,"deleted":0}' seed2.log
 
   web:
     runs-on: ubuntu-latest
