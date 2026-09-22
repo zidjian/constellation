@@ -13,7 +13,7 @@ App para la hackathon **Code Quest 2026 (DevTalles)** — entrega: **2026-09-28 
 | Servicio | Tecnología | Puerto local | Producción |
 |---|---|---|---|
 | `api` | NestJS 11 + TypeORM 1.x + PostgreSQL, pnpm 11, Node ≥ 24.11 | 3001 | `https://backend.constellation.waldirmaidana.com` |
-| `web` | Next.js 16 (App Router, output `standalone`), Tailwind 4, React Flow, Framer Motion, pnpm 11 | 3000 | `https://constellation.waldirmaidana.com` |
+| `web` | Next.js 16 (App Router, output `standalone`), Tailwind 4, React Flow (`@xyflow/react`), Motion 13, pnpm 11 | 3000 | `https://constellation.waldirmaidana.com` |
 | db | PostgreSQL (en la misma instancia Lightsail, solo `localhost`) | 5432 | — |
 
 Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy por subdominio) → PM2 (`api`, `web`) → PostgreSQL local. Ver ADR-0003.
@@ -97,6 +97,7 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 
 - **`CLAUDE.md` (este archivo) = SSOT vivo.** Refleja el estado real.
 - **`CLAUDE.md` por paquete** (`api/`, `web/`): gotchas locales de cada servicio.
+- **`PRODUCT.md`** (estrategia: usuarios, personalidad «aventura gamificada», anti-referencias, principios) y **`DESIGN.md`** (sistema visual: tokens, estrella, constelación, motion). La skill `impeccable` los lee antes de cualquier trabajo de UI.
 - **`specs/00_especificaciones.md`**: diseño **congelado** de la fase inicial. No se edita una vez empezada la implementación.
 - **`specs/02_plan_implementacion.md`**: plan de ejecución del MVP (fases, tareas, verificación); solo se marcan casillas y desvíos.
 - **`specs/05_extensiones.md`**: **spec viva** — toda feature nueva añade su entrada aquí.

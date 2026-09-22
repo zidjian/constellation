@@ -216,22 +216,22 @@ Algoritmo (spec §3):
 **Agente:** `frontend-implementer`. Primer paso obligatorio: skill `impeccable` crea `PRODUCT.md` (tono, público, identidad "constelación"); `ui-ux-pro-max` genera el design system (tokens de color, tipografía, espaciado). Precedencia de diseño según `.claude/agents/README.md`.
 
 ### 7.1 Entrevista — `feature/web-assessment`
-- [ ] `/assessment`: inicia o retoma sesión; una pregunta a la vez; componentes por tipo (texto libre con área para pegar oferta, elección, autoevaluación, mini-reto con bloque de código resaltado).
-- [ ] Indicador de avance (n / máx.), botón "terminar" habilitado desde 5 respuestas, manejo de `409`.
-- [ ] Al completar: pedir nombre de la ruta → pantalla de generación.
+- [x] `/assessment`: inicia o retoma sesión; una pregunta a la vez; componentes por tipo (texto libre con área para pegar oferta, elección, autoevaluación, mini-reto con bloque de código resaltado).
+- [x] Indicador de avance (n / máx.), botón "terminar" habilitado desde 5 respuestas, manejo de `409`.
+- [x] Al completar: pedir nombre de la ruta → pantalla de generación.
 
 ### 7.2 Generación en streaming — `feature/web-generation`
-- [ ] Cliente SSE con `fetch` + `ReadableStream` + parser de líneas `event:` / `data:` (tolerante a chunks partidos); `AbortController` al desmontar.
-- [ ] Las estrellas aparecen conforme llegan `step`; la explicación se rellena con `rationale`; `done` navega a `/paths/[pathId]`; `error` muestra el mensaje por `code` (`PATH_NOTHING_TO_LEARN`, `PATH_LIMIT_REACHED`, `RATE_LIMITED`).
+- [x] Cliente SSE con `fetch` + `ReadableStream` + parser de líneas `event:` / `data:` (tolerante a chunks partidos); `AbortController` al desmontar.
+- [x] Las estrellas aparecen conforme llegan `step`; la explicación se rellena con `rationale`; `done` navega a `/paths/[pathId]`; `error` muestra el mensaje por `code` (`PATH_NOTHING_TO_LEARN`, `PATH_LIMIT_REACHED`, `RATE_LIMITED`).
 
 ### 7.3 Constelación — `feature/web-constellation`
-- [ ] `/paths/[pathId]`: React Flow con layout determinista (dagre/elk) de izquierda a derecha según prerrequisitos; nodo "estrella" personalizado con estados completado / disponible / con prerrequisitos pendientes.
-- [ ] Panel de detalle del curso: resumen, duración, nivel, "por qué", enlace a DevTalles, marcar/desmarcar con actualización optimista y rollback ante error.
-- [ ] Advertencia (no bloqueo) al completar un curso con prerrequisitos pendientes dentro de la ruta.
-- [ ] Progreso de la ruta visible; renombrar, archivar, eliminar (con confirmación en UI propia, no `window.confirm`).
+- [x] `/paths/[pathId]`: React Flow con layout determinista (dagre/elk) de izquierda a derecha según prerrequisitos; nodo "estrella" personalizado con estados completado / disponible / con prerrequisitos pendientes.
+- [x] Panel de detalle del curso: resumen, duración, nivel, "por qué", enlace a DevTalles, marcar/desmarcar con actualización optimista y rollback ante error.
+- [x] Advertencia (no bloqueo) al completar un curso con prerrequisitos pendientes dentro de la ruta.
+- [x] Progreso de la ruta visible; renombrar, archivar, eliminar (con confirmación en UI propia, no `window.confirm`).
 
 ### 7.4 Cielo de rutas — `feature/web-paths`
-- [ ] `/paths`: rutas activas y archivadas con progreso, CTA a nueva evaluación, estado vacío que lleva a `/assessment`, límite de 10 comunicado antes de chocar con él.
+- [x] `/paths`: rutas activas y archivadas con progreso, CTA a nueva evaluación, estado vacío que lleva a `/assessment`, límite de 10 comunicado antes de chocar con él.
 
 **Verificación de salida F4 (local y luego producción):** flujo completo en el navegador: login → entrevista → generación visible incremental → constelación → marcar pasos → recargar → progreso persiste → segunda ruta en el cielo. Responsive en móvil (sin scroll horizontal), teclado navegable, `prefers-reduced-motion` respetado. `pnpm build && pnpm lint` sin errores nuevos.
 
@@ -264,6 +264,7 @@ _Anotar aquí fecha, qué cambió respecto al plan y por qué (una línea). Si e
 | 2026-09-21 | Producción en la instancia **compartida**: API :3011, web :3010; DNS de Cloudflare en gris; `pg_dump` diario a las 04:15 (`deploy/respaldo.sh`) y protección de ramas activas | 3001/3003 ocupados; el certificado de Cloudflare no cubre dos niveles y corta el SSE |
 | 2026-09-21 | OAuth de Discord a mano (sin `passport-discord`); el `state` va en una cookie. El callback redirige siempre a `/paths` hasta que existan rutas (F3) | `passport` necesita `express-session` para el `state`, y la librería no se mantiene desde 2018 |
 | 2026-09-22 | Entrevista: `GET /v1/assessments/current` (retomar) y `result: { correct }` al responder un reto, además de lo que pide la spec §6. La autoevaluación se deriva del catálogo en vez de un banco fijo por área | La web necesita retomar la entrevista, y la respuesta inmediata a los retos es parte de la experiencia. Derivarla del catálogo la mantiene coherente con él |
+| 2026-09-22 | Constelación en **zigzag por orden de ruta** con líneas rectas (prerrequisito continuo, orden sugerido punteado) en vez de layout automático (dagre/elk) | Muchas rutas tienen cursos sin prerrequisitos entre sí: dagre los apilaba como una lista y en móvil los ponía en una sola fila ilegible |
 | 2026-09-22 | El planner no expande los prerrequisitos de los cursos dominados | En un smoke apareció "Programación para principiantes" a alguien que aprobó los retos de JS |
 | 2026-09-21 | Las variables de entorno se añaden al esquema cuando llega su feature, no todas en F0 | La app falla al arrancar si falta una variable; exigir las de Discord o del LLM antes de usarlas bloquea el desarrollo local |
 
