@@ -32,7 +32,15 @@ const envSchema = z
       .optional()
       .transform((v) => v || undefined),
     ANTHROPIC_MODEL: z.string().min(1).default('claude-opus-5'),
+    // Bloquea la respuesta de "completar entrevista": tope corto.
     LLM_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60000).default(8000),
+    // El porqué se redacta mientras se emiten los pasos, así que admite más margen.
+    LLM_RATIONALE_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(1000)
+      .max(60000)
+      .default(25000),
   })
   .refine(
     (env) => env.LLM_PROVIDER !== 'claude' || Boolean(env.ANTHROPIC_API_KEY),

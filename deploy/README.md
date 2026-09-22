@@ -41,7 +41,8 @@ Opcionales (IA, ADR-0001):
 | `LLM_PROVIDER` | `claude` para activar Claude; sin ella, `rules` (la app funciona igual) |
 | `ANTHROPIC_API_KEY` | Obligatoria si `LLM_PROVIDER=claude`. Nunca en el repo ni en logs |
 | `ANTHROPIC_MODEL` | Por defecto `claude-opus-5` |
-| `LLM_TIMEOUT_MS` | Por defecto `8000`; al superarlo se usan reglas |
+| `LLM_TIMEOUT_MS` | Por defecto `8000` (intérprete); al superarlo se usan reglas |
+| `LLM_RATIONALE_TIMEOUT_MS` | Por defecto `25000` (redactor del porqué, corre en paralelo al stream) |
 
 La web (PM2, `ecosystem.config.js`) recibe `API_INTERNAL_URL=http://127.0.0.1:3011`.
 
