@@ -1,7 +1,5 @@
-import 'reflect-metadata';
 import { join } from 'node:path';
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { loadDotEnv, loadEnv } from '../config/env';
+import type { DataSourceOptions } from 'typeorm';
 
 export function dataSourceOptions(databaseUrl: string): DataSourceOptions {
   return {
@@ -14,7 +12,3 @@ export function dataSourceOptions(databaseUrl: string): DataSourceOptions {
     migrations: [join(__dirname, 'migrations/*.{ts,js}')],
   };
 }
-
-// Usado por el CLI de TypeORM (migration:generate / run / revert).
-loadDotEnv();
-export default new DataSource(dataSourceOptions(loadEnv().DATABASE_URL));

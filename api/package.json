@@ -18,11 +18,11 @@
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/shared/infrastructure/database/data-source.ts",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/shared/infrastructure/database/data-source.cli.ts",
     "migration:create": "typeorm-ts-node-commonjs migration:create",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/shared/infrastructure/database/data-source.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/shared/infrastructure/database/data-source.ts",
-    "migration:run:prod": "typeorm migration:run -d dist/shared/infrastructure/database/data-source.js"
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/shared/infrastructure/database/data-source.cli.ts",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/shared/infrastructure/database/data-source.cli.ts",
+    "migration:run:prod": "typeorm migration:run -d dist/shared/infrastructure/database/data-source.cli.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -83,6 +83,7 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": ">=24.11.0"
-  }
+    "node": ">=22.13.0"
+  },
+  "packageManager": "pnpm@11.1.1"
 }

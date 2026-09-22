@@ -115,6 +115,24 @@ describe('Formato único de API (e2e)', () => {
     expect(errorOf(extra).message).toMatch(/admin/);
   });
 
+  it('devuelve 413 (no 500) si el body excede el límite', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/probe/echo')
+      .set('Content-Type', 'application/json')
+      .send(JSON.stringify({ name: 'x'.repeat(200_000) }))
+      .expect(413);
+    expect(errorOf(res).code).toBe('PAYLOAD_TOO_LARGE');
+  });
+
+  it('devuelve 400 con JSON malformado', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/probe/echo')
+      .set('Content-Type', 'application/json')
+      .send('{"name":')
+      .expect(400);
+    expect(errorOf(res).code).toBe('VALIDATION_ERROR');
+  });
+
   it('permite CORS con credenciales solo para WEB_ORIGIN', async () => {
     const res = await request(app.getHttpServer())
       .get('/v1/probe/ok')

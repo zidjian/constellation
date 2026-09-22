@@ -23,6 +23,7 @@ const CODE_BY_STATUS: Record<number, string> = {
   403: 'FORBIDDEN',
   404: 'NOT_FOUND',
   409: 'CONFLICT',
+  413: 'PAYLOAD_TOO_LARGE',
   429: 'RATE_LIMITED',
 };
 
@@ -70,6 +71,19 @@ export class ApiExceptionFilter implements ExceptionFilter {
         },
       };
     }
+    // Errores 4xx de middlewares de Express (p. ej. body-parser: 413, JSON malformado) no son HttpException.
+    const clientStatus = clientErrorStatus(exception);
+    if (clientStatus) {
+      return {
+        status: clientStatus,
+        body: {
+          error: {
+            code: CODE_BY_STATUS[clientStatus] ?? 'BAD_REQUEST',
+            message: 'Petición inválida',
+          },
+        },
+      };
+    }
     this.logger.error(exception);
     return {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -81,4 +95,16 @@ export class ApiExceptionFilter implements ExceptionFilter {
       },
     };
   }
+}
+
+function clientErrorStatus(exception: unknown): number | null {
+  if (typeof exception !== 'object' || exception === null) return null;
+  const { status, statusCode } = exception as {
+    status?: unknown;
+    statusCode?: unknown;
+  };
+  const value = typeof status === 'number' ? status : statusCode;
+  return typeof value === 'number' && value >= 400 && value < 500
+    ? value
+    : null;
 }
