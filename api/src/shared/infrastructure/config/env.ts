@@ -1,0 +1,35 @@
+import { existsSync } from 'node:fs';
+import { z } from 'zod';
+
+// Cada feature añade aquí sus variables al llegar (Discord y JWT en identity, LLM en F3b).
+const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'test', 'production'])
+    .default('development'),
+  PORT: z.coerce.number().int().positive().default(3001),
+  DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
+  WEB_ORIGIN: z.url(),
+  // Vacío en local: la cookie queda host-only. En producción: .constellation.waldirmaidana.com
+  COOKIE_DOMAIN: z
+    .string()
+    .optional()
+    .transform((v) => v || undefined),
+});
+
+export type Env = z.infer<typeof envSchema>;
+
+export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
+  const parsed = envSchema.safeParse(source);
+  if (!parsed.success) {
+    const issues = parsed.error.issues
+      .map((i) => `  - ${i.path.join('.')}: ${i.message}`)
+      .join('\n');
+    throw new Error(`Variables de entorno inválidas:\n${issues}`);
+  }
+  return parsed.data;
+}
+
+// Carga .env del directorio actual si existe; nunca sobrescribe variables ya definidas.
+export function loadDotEnv(path = '.env'): void {
+  if (existsSync(path)) process.loadEnvFile(path);
+}
