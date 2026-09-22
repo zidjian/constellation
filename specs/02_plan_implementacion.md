@@ -112,13 +112,13 @@ D10-D11      producción, criterios, pulido, video ◄────────�
 Fuente y proceso según **ADR-0004**: extracción offline del sitio público → snapshot → curación → seed.
 
 - [x] Extractor `tools/catalog/extract-devtalles.mjs` y snapshot `tools/catalog/catalog.raw.json` (2026-09-16: 91 cursos, 13 rutas oficiales, 89 aristas, 6 aristas sin resolver, 0 fallos).
-- [ ] `catalog-curator`: `api/src/catalog/infrastructure/seed/catalog.json` a partir del snapshot:
+- [x] `catalog-curator`: `api/src/catalog/infrastructure/seed/catalog.json` a partir del snapshot (2026-09-21: 74 cursos, 63 skills, 61 aristas; queda la revisión humana de los datos sin confirmar):
   - filtrar: fuera legacy reemplazados, en construcción, `mas-DevTalles` y duplicados (decidir minicursos y gratuitos caso a caso);
   - prerrequisitos = aristas oficiales (`routes[].edges`) sin redundancias transitivas + resolución manual de `unresolvedEdges`;
   - nivel y skills `teaches`/`requires` desde `requirements`, `chapters`, `tier` y `tag`, con revisión humana curso a curso;
   - título limpio (sin el sufijo " - Fernando Herrera"), `durationHours` y `imageUrl` tal cual el snapshot.
   - Mínimo viable: todos los cursos de las rutas oficiales que no sean legacy.
-- [ ] Validador del catálogo (script + test): slugs únicos, referencias existentes, sin autoprerrequisito, **grafo acíclico**, toda skill `requires` es enseñada por algún curso, todo curso enseña al menos una skill.
+- [x] Validador del catálogo (`tools/catalog/validate-catalog.mjs`, con funciones exportables para el seed): slugs únicos, referencias existentes, sin autoprerrequisito, **grafo acíclico**, toda skill `requires` es enseñada por algún curso, todo curso enseña al menos una skill.
 - [ ] Migración `CreateCatalog`: `skills`, `courses`, `course_skills`, `course_prerequisites` con los constraints de §4 de la spec.
 - [ ] `pnpm seed`: upsert por `slug` en transacción, reconcilia relaciones (borra las que ya no están), falla con el ciclo concreto si el grafo no es DAG. Ejecutarlo dos veces no cambia nada.
 - [ ] Dominio: `Course`, `Skill`, `CatalogGraph` (lectura en memoria del catálogo completo para el planner) y `CatalogRepository` (puerto).

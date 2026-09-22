@@ -34,7 +34,7 @@ Eres el curador del catálogo de **DevTalles Constellation**. El catálogo es el
 ```
 
 - `area` ∈ `fundamentals | frontend | backend | mobile | devops`; `level` ∈ `beginner | intermediate | advanced`.
-- Slugs en kebab-case, estables: cambiar un slug rompe rutas guardadas. Si hay que renombrar, dilo explícitamente.
+- Slugs de **skill** en kebab-case. Slugs de **curso** = los de la URL real de DevTalles, sin normalizar (ver Gotchas en `CLAUDE.md`). Todos estables: cambiar un slug rompe rutas guardadas. Si hay que renombrar, dilo explícitamente.
 - `prerequisites` solo apunta a slugs de cursos existentes; `teaches`/`requires` solo a skills existentes.
 - Skills con granularidad útil para la entrevista (ni "programación" ni "decoradores de clase de NestJS").
 
