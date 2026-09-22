@@ -63,7 +63,7 @@ function StarNode({ data }: NodeProps<Node<StarNodeData>>) {
           (data.selected ? "bg-bg shadow-[inset_0_0_0_1.5px_var(--color-accent)]" : "")
         }
       >
-        <span className={`relative rounded-full bg-bg ${data.isNext ? "animate-star-pulse" : ""}`}>
+        <span className={`relative rounded-full bg-bg ${data.isNext ? "star-pulse" : ""}`}>
           <Star state={data.state} size={30} glow />
         </span>
         {data.compact ? (

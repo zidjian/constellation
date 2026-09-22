@@ -83,6 +83,8 @@ describe('Entrevista (e2e, Postgres)', () => {
       DISCORD_CLIENT_ID: 'e2e',
       DISCORD_CLIENT_SECRET: 'e2e',
       DISCORD_CALLBACK_URL: 'http://localhost:3001/v1/auth/discord/callback',
+      // Nunca la clave real del .env local: estos e2e no deben gastar en Anthropic.
+      LLM_PROVIDER: 'rules',
     });
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ENV)

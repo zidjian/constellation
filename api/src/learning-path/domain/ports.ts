@@ -33,5 +33,7 @@ export interface RationaleWriterPort {
   /** Texto del "por qué" de cada paso ya decidido, en el mismo orden. No puede añadir ni quitar pasos. */
   write(
     request: RationaleRequest,
+    /** Señal del cliente: si corta el stream, se aborta también la llamada al LLM. */
+    signal?: AbortSignal,
   ): Promise<{ texts: string[]; by: 'claude' | 'rules' }>;
 }

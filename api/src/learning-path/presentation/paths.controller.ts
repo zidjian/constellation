@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Logger,
   Param,
   ParseUUIDPipe,
@@ -14,6 +15,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { ENV } from '../../shared/infrastructure/config/config.module';
+import type { Env } from '../../shared/infrastructure/config/env';
 import {
   IsIn,
   IsOptional,
@@ -28,7 +31,10 @@ import { DomainError } from '../../shared/domain/domain-error';
 import { GeneratePathUseCase } from '../application/generate-path.use-case';
 import { ManagePathsUseCases } from '../application/manage-paths.use-cases';
 import { PATH_NAME_MAX } from '../domain/learning-path';
-import { UserThrottlerGuard } from './user-throttler.guard';
+import {
+  RATE_LIMITS,
+  UserThrottlerGuard,
+} from '../../shared/presentation/user-throttler.guard';
 
 class GeneratePathDto {
   @IsUUID()
@@ -52,8 +58,6 @@ class UpdatePathDto {
   status?: 'active' | 'archived';
 }
 
-export const GENERATE_LIMIT = { limit: 5, ttl: 60 * 60 * 1000 };
-
 @Controller('paths')
 export class PathsController {
   private readonly logger = new Logger(PathsController.name);
@@ -61,6 +65,7 @@ export class PathsController {
   constructor(
     private readonly generatePath: GeneratePathUseCase,
     private readonly paths: ManagePathsUseCases,
+    @Inject(ENV) private readonly env: Env,
   ) {}
 
   /**
@@ -69,7 +74,7 @@ export class PathsController {
    */
   @Post('generate')
   @UseGuards(UserThrottlerGuard)
-  @Throttle({ generate: GENERATE_LIMIT })
+  @Throttle({ generate: RATE_LIMITS.generate })
   async generate(
     @CurrentUserId() userId: string,
     @Body() dto: GeneratePathDto,
@@ -95,7 +100,11 @@ export class PathsController {
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 
     try {
-      for await (const e of this.generatePath.run(plan, abort.signal))
+      for await (const e of this.generatePath.run(
+        plan,
+        abort.signal,
+        this.env.PATH_STREAM_DELAY_MS,
+      ))
         send(e.event, e.data);
     } catch (err) {
       if (abort.signal.aborted) {

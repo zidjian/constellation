@@ -6,9 +6,15 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { IsObject, IsString, MaxLength } from 'class-validator';
 import { CurrentUserId } from '../../identity/presentation/current-user.decorator';
+import {
+  RATE_LIMITS,
+  UserThrottlerGuard,
+} from '../../shared/presentation/user-throttler.guard';
 import { AssessmentUseCases } from '../application/assessment.use-cases';
 
 class AnswerDto {
@@ -45,7 +51,10 @@ export class AssessmentController {
     return this.assessments.answer(userId, id, dto.questionKey, dto.answer);
   }
 
+  // Completar dispara la interpretación con el LLM: se limita por usuario, como la generación.
   @Post(':id/complete')
+  @UseGuards(UserThrottlerGuard)
+  @Throttle({ complete: RATE_LIMITS.complete })
   @HttpCode(200)
   complete(
     @CurrentUserId() userId: string,
