@@ -18,7 +18,13 @@ module.exports = {
       script: 'server.js',
       exec_mode: 'fork',
       max_memory_restart: '300M',
-      env_production: { NODE_ENV: 'production', PORT: 3010, HOSTNAME: '127.0.0.1' },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3010,
+        HOSTNAME: '127.0.0.1',
+        // Server Components llaman a la API sin salir de la instancia.
+        API_INTERNAL_URL: 'http://127.0.0.1:3011',
+      },
     },
   ],
 };
