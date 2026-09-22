@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Se compila en CI: la instancia no tiene memoria para compilar Next (ADR-0003).
+      - name: Build API
+        working-directory: api
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm test
+          pnpm build
+
+      - name: Build web
+        working-directory: web
+        env:
+          NEXT_PUBLIC_API_URL: https://backend.constellation.waldirmaidana.com
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+          [ -d public ] && cp -r public .next/standalone/
+          cp -r .next/static .next/standalone/.next/
+
+      - name: Configurar SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Copiar artefactos
+        env:
+          TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+        run: |
+          RSYNC="rsync -az --delete -e 'ssh -i ~/.ssh/deploy_key'"
+          ssh -i ~/.ssh/deploy_key "$TARGET" 'mkdir -p ~/constellation/api ~/constellation/web ~/constellation/deploy'
+          eval $RSYNC --exclude .env --exclude node_modules \
+            api/dist api/package.json api/pnpm-lock.yaml api/pnpm-workspace.yaml "$TARGET:constellation/api/"
+          eval $RSYNC web/.next/standalone/ "$TARGET:constellation/web/"
+          eval $RSYNC deploy/ "$TARGET:constellation/deploy/"
+
+      - name: Migrar y recargar
+        env:
+          TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+        run: ssh -i ~/.ssh/deploy_key "$TARGET" 'bash ~/constellation/deploy/reload-constellation.sh'

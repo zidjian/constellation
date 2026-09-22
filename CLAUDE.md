@@ -12,8 +12,8 @@ App para la hackathon **Code Quest 2026 (DevTalles)** — entrega: **2026-09-28 
 
 | Servicio | Tecnología | Puerto local | Producción |
 |---|---|---|---|
-| `api` | NestJS + TypeORM + PostgreSQL, pnpm | 3001 | `https://backend.constellation.waldirmaidana.com` |
-| `web` | Next.js (App Router, output `standalone`), React Flow, Framer Motion, pnpm | 3000 | `https://constellation.waldirmaidana.com` |
+| `api` | NestJS 11 + TypeORM 1.x + PostgreSQL, pnpm 11, Node ≥ 24.11 | 3001 | `https://backend.constellation.waldirmaidana.com` |
+| `web` | Next.js 16 (App Router, output `standalone`), Tailwind 4, React Flow, Framer Motion, pnpm 11 | 3000 | `https://constellation.waldirmaidana.com` |
 | db | PostgreSQL (en la misma instancia Lightsail, solo `localhost`) | 5432 | — |
 
 Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy por subdominio) → PM2 (`api`, `web`) → PostgreSQL local. Ver ADR-0003.
@@ -49,7 +49,7 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 
 ## Comandos
 
-> Aún no existe código: estos son los comandos **planeados**. Actualizar al crear los paquetes.
+> `api/` y `web/` ya existen (Fase 0). `seed` todavía es un comando planeado: llega con el catálogo (F1).
 
 ```bash
 cd api && pnpm start:dev          # API en :3001
@@ -58,13 +58,16 @@ cd api && pnpm migration:generate src/shared/infrastructure/database/migrations/
 cd api && pnpm migration:run
 cd api && pnpm seed                # catálogo (idempotente)
 cd web && pnpm dev                 # web en :3000
+cd api && pnpm test:e2e && pnpm lint
 cd web && pnpm build && pnpm lint
 node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.json (existe; ~2 min, 1 req/s)
+node tools/catalog/validate-catalog.mjs    # valida catalog.json: referencias, DAG, niveles (exit ≠ 0 si falla)
+node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 ```
 
 ## Arquitectura (notas clave)
 
-- **Auth:** el flujo OAuth2 de Discord lo resuelve la **API** (`passport-discord`, con `state` anti-CSRF). En el callback emite un JWT propio en cookie `httpOnly` y redirige a la web. Next lee la misma cookie en `middleware.ts` y en Server Components para proteger rutas (ADR-0002).
+- **Auth:** el flujo OAuth2 de Discord lo resuelve la **API** (`passport-discord`, con `state` anti-CSRF). En el callback emite un JWT propio en cookie `httpOnly` y redirige a la web. Next lee la misma cookie en `proxy.ts` (Next 16 renombró `middleware.ts`) y en Server Components para proteger rutas (ADR-0002).
 - **IA híbrida (ADR-0001):** `SkillInterpreterPort` (LLM → `SkillProfile` estructurado) + `PathPlanner` (servicio de dominio **determinista**: skills objetivo → cursos → cierre de prerrequisitos → quitar lo dominado → orden topológico) + `RationaleWriterPort` (LLM redacta el "por qué" de cada paso). Cada puerto tiene adaptador `claude` y adaptador `rules`.
 - **Streaming:** la generación de una ruta se envía por SSE sobre `POST` (eventos `profile`, `step`, `rationale`, `done`); el cliente la consume con `fetch` + `ReadableStream`.
 - **Progreso:** vive dentro del contexto `learning-path` (`PathStep.complete()` / `uncomplete()`); no hay contexto separado.
@@ -72,7 +75,7 @@ node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.
 
 ## Convenciones no obvias (gotchas)
 
-- **Cookie de sesión con `Domain=.constellation.waldirmaidana.com`**, `Secure`, `SameSite=Lax`. Si es host-only del subdominio `backend.`, el `middleware.ts` y los Server Components de Next nunca la reciben. Ambos subdominios son *same-site*, por eso `Lax` es suficiente. En local no se pone `Domain`.
+- **Cookie de sesión con `Domain=.constellation.waldirmaidana.com`**, `Secure`, `SameSite=Lax`. Si es host-only del subdominio `backend.`, el `proxy.ts` y los Server Components de Next nunca la reciben. Ambos subdominios son *same-site*, por eso `Lax` es suficiente. En local no se pone `Domain`.
 - **CORS con credenciales:** `origin` explícito (`WEB_ORIGIN`), nunca `*`, y `credentials: true`; en el cliente `credentials: 'include'`.
 - **Nest detrás de Nginx:** `app.set('trust proxy', 1)`, o las cookies `Secure` y el rate-limit por IP se comportan mal.
 - **SSE detrás de Nginx:** `proxy_buffering off`, header `X-Accel-Buffering: no` y `proxy_read_timeout` alto; si no, el streaming llega de golpe al final.
@@ -80,7 +83,13 @@ node tools/catalog/extract-devtalles.mjs   # regenera tools/catalog/catalog.raw.
 - **`NEXT_PUBLIC_*` se incrustan en build time:** el build de producción debe hacerse con `NEXT_PUBLIC_API_URL=https://backend.constellation.waldirmaidana.com`.
 - **Redirect URI de Discord debe coincidir exacto** (incluido `https` y sin `/` final) con la registrada en el Developer Portal; hay que registrar la local y la de producción.
 - **El catálogo nunca se lee de devtalles.com en ejecución** (ADR-0004). `catalog.raw.json` es un snapshot factual que no se edita a mano; la curación vive en `catalog.json`. Regenerar el snapshot **no** regenera `catalog.json`: cambiar un slug rompe rutas guardadas.
-- **Las rutas oficiales de DevTalles tienen ids de caja duplicados**, así que algunas flechas no se resuelven. El extractor las deja en `routes[].unresolvedEdges` para decidirlas a mano. Las páginas *legacy* no tienen bloque de requisitos ni de descripción (`requirements: []` es real, no un fallo del parser).
+- **Las `unresolvedEdges` de las rutas oficiales apuntan a cajas `multi-box`**: grupos de cursos alternativos (`<div class="multi-box" id>`) que el extractor todavía no parsea. No son ids rotos. Ya están resueltas a mano en `catalog.json`. Las páginas *legacy* no tienen bloque de requisitos ni de descripción (`requirements: []` es real, no un fallo del parser).
+- **Las flechas oficiales no son todas prerrequisitos.** Muchas solo marcan el orden dentro de una ruta. Al unir rutas, el curso destino exigiría todas sus flechas, así que en `catalog.json` se quitaron las que contradicen los "Requisitos previos" del curso.
+- **`prerequisites` es duro y `requires` es informativo** (incluye lo recomendado). El `PathPlanner` cierra solo sobre `prerequisites`, nunca sobre `requires`.
+- **Los slugs de curso son los de la URL real** de DevTalles, con mayúsculas, `_` y `%XX` (p. ej. `NestJS-Testing`, `Ingenier%C3%ADa-de-prompts`). Se comparan exactos: no se pasan a minúsculas ni se decodifican. Los slugs de skill sí van en kebab-case y minúsculas.
+- **Hay skills que enseñan varios cursos** (p. ej. `llm-apps` lo enseñan 7). El `PathPlanner` elige **un** curso por skill objetivo (plan §5.1 y §12); no los mete todos.
+- **La instancia Lightsail es compartida** con otras apps (ver `deploy/README.md`). En producción la API escucha en **3011** y la web en **3010**, porque 3001 y 3003 ya están ocupados. Nunca se recarga ni se modifica nada ajeno a Constellation.
+- **DNS en Cloudflare con la nube gris (DNS only).** Con proxy, el certificado gratuito de Cloudflare no cubre `backend.constellation.waldirmaidana.com` (dos niveles) y además corta el SSE a los 100 s. El TLS lo emite certbot en el servidor.
 - **PostgreSQL solo escucha en `localhost`**; el puerto 5432 **no** se abre en el firewall de Lightsail. Acceso remoto por túnel SSH.
 
 ## Documentación del proyecto y flujo de agentes
