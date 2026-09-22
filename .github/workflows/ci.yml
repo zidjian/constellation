@@ -30,6 +30,11 @@ jobs:
     env:
       DATABASE_URL: postgres://constellation:constellation@localhost:5432/constellation
       WEB_ORIGIN: http://localhost:3000
+      # Valores de prueba: los e2e sustituyen Discord por un doble.
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else-000000
+      DISCORD_CLIENT_ID: ci
+      DISCORD_CLIENT_SECRET: ci
+      DISCORD_CALLBACK_URL: http://localhost:3001/v1/auth/discord/callback
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6

@@ -67,7 +67,7 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 
 ## Arquitectura (notas clave)
 
-- **Auth:** el flujo OAuth2 de Discord lo resuelve la **API** (`passport-discord`, con `state` anti-CSRF). En el callback emite un JWT propio en cookie `httpOnly` y redirige a la web. Next lee la misma cookie en `proxy.ts` (Next 16 renombró `middleware.ts`) y en Server Components para proteger rutas (ADR-0002).
+- **Auth:** el flujo OAuth2 de Discord lo resuelve la **API**, implementado a mano con `fetch` (`identity/infrastructure/discord-oauth.client.ts`). No se usa `passport-discord`: su `state` exige `express-session` y la librería no se mantiene. El `state` anti-CSRF va en la cookie `cst_oauth_state` (httpOnly, 10 min, solo en `/v1/auth/discord`). En el callback la API emite un JWT propio (HS256, 7 días) en `cst_session` y redirige a la web. Un **guard global** exige sesión en todo salvo `@Public()`. Next lee la misma cookie en `proxy.ts` (Next 16 renombró `middleware.ts`) y en Server Components para proteger rutas (ADR-0002).
 - **IA híbrida (ADR-0001):** `SkillInterpreterPort` (LLM → `SkillProfile` estructurado) + `PathPlanner` (servicio de dominio **determinista**: skills objetivo → cursos → cierre de prerrequisitos → quitar lo dominado → orden topológico) + `RationaleWriterPort` (LLM redacta el "por qué" de cada paso). Cada puerto tiene adaptador `claude` y adaptador `rules`.
 - **Streaming:** la generación de una ruta se envía por SSE sobre `POST` (eventos `profile`, `step`, `rationale`, `done`); el cliente la consume con `fetch` + `ReadableStream`.
 - **Progreso:** vive dentro del contexto `learning-path` (`PathStep.complete()` / `uncomplete()`); no hay contexto separado.
@@ -90,6 +90,7 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 - **Hay skills que enseñan varios cursos** (p. ej. `llm-apps` lo enseñan 7). El `PathPlanner` elige **un** curso por skill objetivo (plan §5.1 y §12); no los mete todos.
 - **La instancia Lightsail es compartida** con otras apps (ver `deploy/README.md`). En producción la API escucha en **3011** y la web en **3010**, porque 3001 y 3003 ya están ocupados. Nunca se recarga ni se modifica nada ajeno a Constellation.
 - **DNS en Cloudflare con la nube gris (DNS only).** Con proxy, el certificado gratuito de Cloudflare no cubre `backend.constellation.waldirmaidana.com` (dos niveles) y además corta el SSE a los 100 s. El TLS lo emite certbot en el servidor.
+- **`@nestjs/typeorm` 12 y `@nestjs/jwt` 12 son ESM-only.** La API compila a CommonJS: en producción funcionan (Node 22.12+ hace `require(esm)`), pero Jest no puede cargarlos. Se fijan en la **v11** (compatibles con Nest 11 y TypeORM 1.x). No actualizar sin migrar la API a ESM.
 - **PostgreSQL solo escucha en `localhost`**; el puerto 5432 **no** se abre en el firewall de Lightsail. Acceso remoto por túnel SSH.
 
 ## Documentación del proyecto y flujo de agentes

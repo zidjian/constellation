@@ -25,3 +25,7 @@ El login con Discord es obligatorio. Web y API viven en subdominios distintos de
 - Identidad centralizada en el contexto `identity` de la API (coherente con DDD).
 - Requiere CORS con `origin` explícito y `credentials: true`, `trust proxy` en Nest y un `Domain` distinto en local (sin `Domain`). Recogido en «Gotchas» de `CLAUDE.md`.
 - `SameSite=Lax` basta porque ambos hosts son same-site; si algún día la web se sirve en otro dominio, este ADR debe superseder.
+
+## Enmienda (2026-09-21)
+
+La decisión se mantiene: OAuth en la API, JWT propio en una cookie compartida entre subdominios. Cambia la implementación: el flujo OAuth2 se hace a mano con `fetch`, **sin `passport-discord`**, porque su `state` requiere `express-session` y la librería no se mantiene. El `state` anti-CSRF viaja en la cookie `cst_oauth_state`. En la web, `middleware.ts` pasa a ser `proxy.ts` (Next 16). Detalle en «Arquitectura» y «Gotchas» de `CLAUDE.md`.
