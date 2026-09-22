@@ -181,20 +181,20 @@ Algoritmo (spec §3):
 
 ### 6.1 Rutas y progreso (rules) — `backend-implementer` · `feature/learning-paths` (D6)
 
-- [ ] Dominio `LearningPath` (`active ⇄ archived`, 1–15 pasos) y `PathStep.complete()` / `uncomplete()`; progreso calculado (`completados / total`), nunca almacenado.
-- [ ] Migración `CreateLearningPaths`: `learning_paths`, `path_steps` con `UNIQUE(path_id, course_id)` y `UNIQUE(path_id, position)`.
-- [ ] `RationaleWriterPort` + **adaptador `rules`**: plantillas por motivo (enseña skill objetivo / es prerrequisito de X / cubre nivel detectado).
-- [ ] `GeneratePath` (caso de uso) como `AsyncIterable` de eventos, desacoplado de HTTP:
+- [x] Dominio `LearningPath` (`active ⇄ archived`, 1–15 pasos) y `PathStep.complete()` / `uncomplete()`; progreso calculado (`completados / total`), nunca almacenado.
+- [x] Migración `CreateLearningPaths`: `learning_paths`, `path_steps` con `UNIQUE(path_id, course_id)` y `UNIQUE(path_id, position)`.
+- [x] `RationaleWriterPort` + **adaptador `rules`**: plantillas por motivo (enseña skill objetivo / es prerrequisito de X / cubre nivel detectado).
+- [x] `GeneratePath` (caso de uso) como `AsyncIterable` de eventos, desacoplado de HTTP:
   1. valida ownership y que la sesión está `completed` con `SkillProfile`;
   2. valida límite de **10 rutas** → `PATH_LIMIT_REACHED` (409) antes de emitir nada;
   3. emite `profile` → `PathPlanner` → `step` × N → `rationale` × N;
   4. persiste ruta + pasos **en una transacción** y emite `done { pathId }`;
   5. cualquier fallo → evento `error { code, message }` y nada persistido.
-- [ ] Controller SSE sobre `POST /v1/paths/generate`: `@Res()` crudo, `Content-Type: text/event-stream`, `Cache-Control: no-cache`, `X-Accel-Buffering: no`, `flushHeaders()`, cancelación si el cliente cierra la conexión. Errores previos al stream (validación, 401, 429) responden con el formato JSON normal.
-- [ ] Rate limit **5 generaciones / usuario / hora** con `@nestjs/throttler` y tracker por `userId` (memoria es suficiente: una instancia) → `429 RATE_LIMITED`.
-- [ ] `GET /paths` (con progreso), `GET /paths/:id` (pasos + cursos + aristas de prerrequisito **dentro de la ruta**), `PATCH /paths/:id` (nombre / estado), `DELETE /paths/:id`, `PUT|DELETE /paths/:id/steps/:stepId/completion` (idempotentes). Ownership en cada caso de uso → `404 PATH_NOT_FOUND`.
-- [ ] Eliminar `/health/stream`.
-- [ ] Tests: unit de `LearningPath`/`PathStep`; e2e de generate (secuencia de eventos y persistencia), ownership cruzado, límite de 10, `429` en la 6ª.
+- [x] Controller SSE sobre `POST /v1/paths/generate`: `@Res()` crudo, `Content-Type: text/event-stream`, `Cache-Control: no-cache`, `X-Accel-Buffering: no`, `flushHeaders()`, cancelación si el cliente cierra la conexión. Errores previos al stream (validación, 401, 429) responden con el formato JSON normal.
+- [x] Rate limit **5 generaciones / usuario / hora** con `@nestjs/throttler` y tracker por `userId` (memoria es suficiente: una instancia) → `429 RATE_LIMITED`.
+- [x] `GET /paths` (con progreso), `GET /paths/:id` (pasos + cursos + aristas de prerrequisito **dentro de la ruta**), `PATCH /paths/:id` (nombre / estado), `DELETE /paths/:id`, `PUT|DELETE /paths/:id/steps/:stepId/completion` (idempotentes). Ownership en cada caso de uso → `404 PATH_NOT_FOUND`.
+- [x] Eliminar `/health/stream`.
+- [x] Tests: unit de `LearningPath`/`PathStep`; e2e de generate (secuencia de eventos y persistencia), ownership cruzado, límite de 10, `429` en la 6ª.
 
 **Verificación:** criterios **4, 5, 7, 8** por API contra el server vivo; criterio 4 repetido en producción tras el siguiente deploy.
 
