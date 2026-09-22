@@ -131,13 +131,13 @@ export class AssessmentUseCases {
 
     const graph = await this.catalog.get();
     const input = this.interpreterInput(session, graph.catalog.skills);
-    const profile = await this.interpreter.interpret(input);
+    const { profile, by } = await this.interpreter.interpret(input);
     await this.sessions.save(session, {
       profile,
-      interpretedBy: this.interpreter.name,
+      interpretedBy: by,
     });
     this.logger.log(
-      `Entrevista ${session.id} completada (${this.interpreter.name}): ${profile.targetSkills.join(', ')}`,
+      `Entrevista ${session.id} completada (${by}): ${profile.targetSkills.join(', ')}`,
     );
     return { session: toView(session), profile };
   }

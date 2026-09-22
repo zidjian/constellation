@@ -227,8 +227,8 @@ describe('RulesSkillInterpreter', () => {
     knownSkills,
   };
 
-  it('los retos pesan más que la autoevaluación', async () => {
-    const p = await interpreter.interpret({
+  it('los retos pesan más que la autoevaluación', () => {
+    const p = interpreter.profile({
       ...base,
       selfLevels: { javascript: 3, typescript: 0 },
       challenges: [
@@ -242,8 +242,8 @@ describe('RulesSkillInterpreter', () => {
     expect(p.levels.typescript).toBe(2); // dijo 0, aprobó el nivel 2
   });
 
-  it('objetivos: primero el stack, luego lo que menciona el texto (con alias)', async () => {
-    const p = await interpreter.interpret({
+  it('objetivos: primero el stack, luego lo que menciona el texto (con alias)', () => {
+    const p = interpreter.profile({
       ...base,
       goal: 'Busco puesto con Docker, PostgreSQL y microservicios. Bonus: k8s',
     });
@@ -255,8 +255,8 @@ describe('RulesSkillInterpreter', () => {
     ]);
   });
 
-  it('descarta skills desconocidas y recorta niveles al rango 0..3', async () => {
-    const p = await interpreter.interpret({
+  it('descarta skills desconocidas y recorta niveles al rango 0..3', () => {
+    const p = interpreter.profile({
       ...base,
       stackTargets: ['nestjs', 'cobol'],
       selfLevels: { javascript: 7, inventada: 2 },
@@ -265,8 +265,8 @@ describe('RulesSkillInterpreter', () => {
     expect(p.levels).toEqual({ javascript: 3 });
   });
 
-  it('no confunde palabras parciales ("gol" no es go, "reactivo" no es react)', async () => {
-    const p = await interpreter.interpret({
+  it('no confunde palabras parciales ("gol" no es go, "reactivo" no es react)', () => {
+    const p = interpreter.profile({
       ...base,
       stackTargets: [],
       goal: 'Me gusta el fútbol, metí un gol; soy muy reactivo',

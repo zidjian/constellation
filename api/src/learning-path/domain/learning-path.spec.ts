@@ -87,8 +87,8 @@ describe('RulesRationaleWriter', () => {
     ...extra,
   });
 
-  it('explica objetivo, base y nociones previas en español', async () => {
-    const texts = await new RulesRationaleWriter().write({
+  it('explica objetivo, base y nociones previas en español', () => {
+    const texts = new RulesRationaleWriter().texts({
       profile: { levels: { js: 1 }, targetSkills: ['nest'] },
       skillNames: { js: 'JavaScript', nest: 'NestJS' },
       steps: [
