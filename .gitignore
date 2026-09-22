@@ -1,0 +1,22 @@
+# dependencias y builds
+node_modules/
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# entorno (solo se versiona .env.example)
+.env
+.env.*
+!.env.example
+
+# sistema / editor
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Claude Code: ajustes locales por máquina
+.claude/settings.local.json
