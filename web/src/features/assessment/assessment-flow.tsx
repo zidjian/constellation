@@ -1,12 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "@/components/ui/star";
 import { GenerationView } from "@/features/paths/generation-view";
 import { ApiError } from "@/lib/api";
-import { answerQuestion, catalogSkills, completeAssessment, currentAssessment, startAssessment } from "./api";
+import { answerQuestion, assessmentModes, completeAssessment, currentAssessment, startAssessment } from "./api";
+import { RecruiterFlow } from "./recruiter-flow";
+import { Summary } from "./summary";
 import { ChallengeQuestion, ChoiceQuestion, ScaleQuestion, TextQuestion } from "./questions";
 import type { Answer, AssessmentSession, Question, SkillProfile } from "./types";
 
@@ -22,9 +24,18 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export function AssessmentFlow() {
   const [phase, setPhase] = useState<Phase>({ kind: "loading" });
+  // El simulacro depende de la IA: si el servidor lo tiene apagado, ni se ofrece.
+  const [recruiter, setRecruiter] = useState(false);
+  const [inRecruiter, setInRecruiter] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const reduce = useReducedMotion();
+
+  useEffect(() => {
+    assessmentModes()
+      .then((m) => setRecruiter(m.recruiter))
+      .catch(() => setRecruiter(false));
+  }, []);
 
   useEffect(() => {
     currentAssessment()
@@ -69,6 +80,8 @@ export function AssessmentFlow() {
   const key =
     phase.kind === "question" ? phase.question.key : phase.kind === "feedback" ? `fb-${phase.session.answeredCount}` : phase.kind;
 
+  if (inRecruiter) return <RecruiterFlow onBack={() => setInRecruiter(false)} />;
+
   if (phase.kind === "generating") return <GenerationView assessmentId={phase.sessionId} name={phase.name} />;
 
   return (
@@ -89,6 +102,8 @@ export function AssessmentFlow() {
             <Intro
               resumable={phase.resumable}
               pending={pending}
+              recruiter={recruiter}
+              onRecruiter={() => setInRecruiter(true)}
               onStart={start}
               onResume={() => phase.resumable && goTo(phase.resumable.session, phase.resumable.question)}
             />
@@ -173,11 +188,15 @@ function ProgressDots({ session }: { session: AssessmentSession }) {
 function Intro({
   resumable,
   pending,
+  recruiter,
+  onRecruiter,
   onStart,
   onResume,
 }: {
   resumable: { session: AssessmentSession; question: Question | null } | null;
   pending: boolean;
+  recruiter: boolean;
+  onRecruiter: () => void;
   onStart: () => void;
   onResume: () => void;
 }) {
@@ -206,6 +225,18 @@ function Intro({
         <Button size="lg" onClick={onStart} loading={pending} autoFocus>
           Empezar
         </Button>
+      )}
+
+      {recruiter && (
+        <div className="mt-2 flex flex-col gap-3 border-t border-line pt-6">
+          <p className="max-w-[60ch] text-ink-muted">
+            ¿Prefieres algo más exigente? Un reclutador técnico te entrevista sobre el puesto al que apuntas, con
+            repreguntas y mini-retos, y te da una devolución antes de trazar la ruta.
+          </p>
+          <Button variant="secondary" onClick={onRecruiter} className="self-start">
+            Hacer un simulacro de entrevista
+          </Button>
+        </div>
       )}
     </section>
   );
@@ -244,80 +275,6 @@ function Feedback({ correct, pending, onContinue }: { correct: boolean; pending:
       <Button onClick={onContinue} loading={pending} autoFocus>
         Continuar
       </Button>
-    </section>
-  );
-}
-
-function Summary({ profile, onGenerate }: { profile: SkillProfile; onGenerate: (name: string) => void }) {
-  const [names, setNames] = useState<Record<string, string>>({});
-  const nameOf = (s: string) => names[s] ?? s;
-  const targets = profile.targetSkills.map(nameOf);
-  const [name, setName] = useState("");
-  const inputId = useId();
-  useEffect(() => void catalogSkills().then(setNames).catch(() => {}), []);
-  const suggested = targets.length ? `Ruta hacia ${targets[0]}` : "Mi ruta";
-  const strong = Object.entries(profile.levels).filter(([, l]) => l >= 2).map(([s]) => nameOf(s));
-
-  return (
-    <section className="flex flex-col gap-7 py-2">
-      <div>
-        <h1 className="text-3xl font-semibold">Esto es lo que vimos</h1>
-        <p className="mt-2 text-ink-muted">Con esto trazamos tu constelación sobre el catálogo real de DevTalles.</p>
-      </div>
-      <dl className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <dt className="text-sm font-medium text-ink-muted">Quieres aprender</dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
-            {targets.length ? (
-              targets.map((t) => (
-                <span key={t} className="rounded-full bg-primary-soft px-3 py-1 text-sm font-medium text-primary-strong">
-                  {t}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm">Lo que elegiste en la entrevista</span>
-            )}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-ink-muted">Ya dominas</dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
-            {strong.length ? (
-              strong.map((t) => (
-                <span key={t} className="rounded-full bg-accent-soft px-3 py-1 text-sm font-medium text-accent">
-                  {t}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm">Partimos desde la base, sin saltarnos nada.</span>
-            )}
-          </dd>
-        </div>
-      </dl>
-      <form
-        className="flex flex-col gap-3 border-t border-line pt-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onGenerate((name.trim() || suggested).slice(0, 80));
-        }}
-      >
-        <label htmlFor={inputId} className="font-medium">
-          Ponle nombre a tu ruta
-        </label>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            id={inputId}
-            value={name}
-            maxLength={80}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={suggested}
-            className="h-12 flex-1 rounded-md border border-line-strong bg-bg px-4 placeholder:text-ink-muted focus:border-accent focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
-          />
-          <Button type="submit" size="lg">
-            Trazar mi constelación
-          </Button>
-        </div>
-      </form>
     </section>
   );
 }

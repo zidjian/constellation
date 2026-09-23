@@ -258,6 +258,36 @@ describe('ClaudeStructured', () => {
     signal: new AbortController().signal,
   };
 
+  it('cachea el system y el historial cuando se pide conversación', async () => {
+    const { service, create } = withResponse({
+      stop_reason: 'end_turn',
+      content: [{ type: 'text', text: '{"ok":true}' }],
+      usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 8 },
+    });
+    await service.complete({
+      ...req,
+      model: 'claude-sonnet-5',
+      cache: true,
+      messages: [
+        { role: 'user', content: 'uno' },
+        { role: 'assistant', content: 'dos' },
+        { role: 'user', content: 'tres' },
+      ],
+    });
+    const [body] = create.mock.calls[0] as [Record<string, unknown>];
+    expect(body.model).toBe('claude-sonnet-5');
+    expect(body.system).toEqual([
+      { type: 'text', text: 's', cache_control: { type: 'ephemeral' } },
+    ]);
+    // El penúltimo mensaje marca el corte de caché: el prefijo se reutiliza en el siguiente turno.
+    const messages = body.messages as { role: string; content: unknown }[];
+    expect(messages).toHaveLength(3);
+    expect(messages[1].content).toEqual([
+      { type: 'text', text: 'dos', cache_control: { type: 'ephemeral' } },
+    ]);
+    expect(messages[2].content).toBe('tres');
+  });
+
   it('pide salida estructurada con fallbacks y sin reintentos, y valida el JSON', async () => {
     const { service, create } = withResponse({
       stop_reason: 'end_turn',

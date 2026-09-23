@@ -74,7 +74,7 @@ export class PathsController {
    */
   @Post('generate')
   @UseGuards(UserThrottlerGuard)
-  @Throttle({ generate: RATE_LIMITS.generate })
+  @Throttle({ default: RATE_LIMITS.generate })
   async generate(
     @CurrentUserId() userId: string,
     @Body() dto: GeneratePathDto,

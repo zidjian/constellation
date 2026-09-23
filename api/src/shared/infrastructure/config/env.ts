@@ -32,6 +32,13 @@ const envSchema = z
       .optional()
       .transform((v) => v || undefined),
     ANTHROPIC_MODEL: z.string().min(1).default('claude-opus-5'),
+    // Simulacro de entrevista (modo opcional): conducir la charla es barato con Sonnet y caché;
+    // el informe final, que es el entregable, se redacta con ANTHROPIC_MODEL.
+    RECRUITER_ENABLED: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+    ANTHROPIC_INTERVIEW_MODEL: z.string().min(1).default('claude-sonnet-5'),
     // Bloquea la respuesta de "completar entrevista": tope corto.
     LLM_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60000).default(8000),
     // El porqué se redacta mientras se emiten los pasos, así que admite más margen.
@@ -41,6 +48,20 @@ const envSchema = z
       .min(1000)
       .max(60000)
       .default(25000),
+    // Un turno del simulacro: conversación en vivo, pero Sonnet con historial tarda más que 8 s.
+    LLM_RECRUITER_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(1000)
+      .max(120000)
+      .default(20000),
+    // El informe final es largo y lo redacta el modelo principal: es el tope más alto.
+    LLM_REPORT_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(1000)
+      .max(120000)
+      .default(60000),
   })
   .refine(
     (env) => env.LLM_PROVIDER !== 'claude' || Boolean(env.ANTHROPIC_API_KEY),
