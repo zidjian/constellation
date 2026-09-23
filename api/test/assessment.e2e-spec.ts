@@ -280,6 +280,41 @@ describe('Entrevista (e2e, Postgres)', () => {
     ).toBeNull();
   });
 
+  it('el simulacro apagado (o sin IA) responde 409 y no crea sesión', async () => {
+    const res = await as(bob).post('/v1/assessments/recruiter', {
+      jobOffer: 'Backend semi senior con NestJS y PostgreSQL. Remoto.',
+    });
+    expect(res.status).toBe(409);
+    expect(code(res)).toBe('RECRUITER_DISABLED');
+  });
+
+  it('responder al reclutador con el simulacro apagado también es 409', async () => {
+    // Con la IA activa, una entrevista guiada devuelve ASSESSMENT_WRONG_MODE (test unitario).
+    const start = (await as(bob).post('/v1/assessments').expect(201))
+      .body as Data<StartResult>;
+    const res = await as(bob).post(
+      `/v1/assessments/${start.data.session.id}/recruiter/reply`,
+      { text: 'Hola' },
+    );
+    expect(res.status).toBe(409);
+    expect(code(res)).toBe('RECRUITER_DISABLED');
+  });
+
+  it('el límite de un endpoint no consume el de los demás', async () => {
+    // Regresión: con varios throttlers con nombre, el más estricto limitaba todas las rutas.
+    const start = (await as(alice).post('/v1/assessments').expect(201))
+      .body as Data<StartResult>;
+    await answerN(alice, start.data, 5);
+    for (let i = 0; i < 4; i++) {
+      await as(bob).post('/v1/assessments/recruiter', {
+        jobOffer: 'x'.repeat(40),
+      });
+    }
+    await as(alice)
+      .post(`/v1/assessments/${start.data.session.id}/complete`)
+      .expect(200);
+  });
+
   it('un id que no es UUID es un error de validación', async () => {
     expect(
       code(

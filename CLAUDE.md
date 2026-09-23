@@ -99,6 +99,8 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 - **La instancia Lightsail es compartida** con otras apps (ver `deploy/README.md`). En producción la API escucha en **3011** y la web en **3010**, porque 3001 y 3003 ya están ocupados. Nunca se recarga ni se modifica nada ajeno a Constellation.
 - **DNS en Cloudflare con la nube gris (DNS only).** Con proxy, el certificado gratuito de Cloudflare no cubre `backend.constellation.waldirmaidana.com` (dos niveles) y además corta el SSE a los 100 s. El TLS lo emite certbot en el servidor.
 - **`@nestjs/typeorm` 12 y `@nestjs/jwt` 12 son ESM-only.** La API compila a CommonJS: en producción funcionan (Node 22.12+ hace `require(esm)`), pero Jest no puede cargarlos. Se fijan en la **v11** (compatibles con Nest 11 y TypeORM 1.x). No actualizar sin migrar la API a ESM.
+- **Un throttler con nombre se aplica a *todas* las rutas que usan el guard**, no solo a la que lo declara: registrar varios (`generate`, `complete`, …) hacía que el más estricto limitara al resto. Se registra **uno** (`default`) y cada ruta lo sobrescribe con `@Throttle({ default: RATE_LIMITS.x })`; la clave del contador incluye la ruta, así que no se pisan.
+- **Las salidas estructuradas de Claude no admiten `maxItems` ni tamaños de array en el JSON Schema** (responde 400). El tamaño se pide en el prompt y se recorta en el adaptador; el esquema Zod deja margen para no perder la respuesta entera por una frase de más.
 - **PostgreSQL solo escucha en `localhost`**; el puerto 5432 **no** se abre en el firewall de Lightsail. Acceso remoto por túnel SSH.
 
 ## Documentación del proyecto y flujo de agentes

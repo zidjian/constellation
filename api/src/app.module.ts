@@ -8,7 +8,7 @@ import { LearningPathModule } from './learning-path/learning-path.module';
 import { ConfigModule } from './shared/infrastructure/config/config.module';
 import { DatabaseModule } from './shared/infrastructure/database/database.module';
 import { LlmModule } from './shared/infrastructure/llm/llm.module';
-import { RATE_LIMITS } from './shared/presentation/user-throttler.guard';
+import { DEFAULT_RATE_LIMIT } from './shared/presentation/user-throttler.guard';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { RATE_LIMITS } from './shared/presentation/user-throttler.guard';
     DatabaseModule,
     LlmModule,
     // Contadores en memoria: una sola instancia (ADR-0003). Se aplican donde se usa UserThrottlerGuard.
-    ThrottlerModule.forRoot({ throttlers: Object.values(RATE_LIMITS) }),
+    ThrottlerModule.forRoot({ throttlers: [DEFAULT_RATE_LIMIT] }),
     HealthModule,
     IdentityModule,
     CatalogModule,

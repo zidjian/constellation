@@ -5,8 +5,15 @@ import {
   MIN_ANSWERS_TO_COMPLETE,
   type RecordedAnswer,
 } from './questions';
+import { MAX_RECRUITER_TURNS } from './recruiter';
+
+/** El simulacro guarda varias entradas por turno (pregunta, respuesta, niveles deducidos). */
+const MAX_RECRUITER_ENTRIES = MAX_RECRUITER_TURNS * 6;
 
 export type AssessmentStatus = 'in_progress' | 'completed' | 'abandoned';
+
+/** `guided`: banco de preguntas con escalera. `recruiter`: simulacro de entrevista conducido por IA. */
+export type AssessmentMode = 'guided' | 'recruiter';
 
 /**
  * Agregado de la entrevista. Máquina de estados irreversible:
@@ -18,18 +25,24 @@ export class AssessmentSession {
   private constructor(
     readonly id: string,
     readonly userId: string,
+    readonly mode: AssessmentMode,
     private _status: AssessmentStatus,
     private readonly _answers: RecordedAnswer[],
     private _completedAt: Date | null,
   ) {}
 
-  static start(id: string, userId: string): AssessmentSession {
-    return new AssessmentSession(id, userId, 'in_progress', [], null);
+  static start(
+    id: string,
+    userId: string,
+    mode: AssessmentMode = 'guided',
+  ): AssessmentSession {
+    return new AssessmentSession(id, userId, mode, 'in_progress', [], null);
   }
 
   static restore(p: {
     id: string;
     userId: string;
+    mode: AssessmentMode;
     status: AssessmentStatus;
     answers: RecordedAnswer[];
     completedAt: Date | null;
@@ -37,6 +50,7 @@ export class AssessmentSession {
     return new AssessmentSession(
       p.id,
       p.userId,
+      p.mode,
       p.status,
       [...p.answers],
       p.completedAt,
@@ -52,11 +66,17 @@ export class AssessmentSession {
   get completedAt() {
     return this._completedAt;
   }
+  get maxAnswers() {
+    return this.mode === 'guided' ? MAX_QUESTIONS : MAX_RECRUITER_ENTRIES;
+  }
+
   get canComplete() {
-    return (
-      this._status === 'in_progress' &&
-      this._answers.length >= MIN_ANSWERS_TO_COMPLETE
-    );
+    if (this._status !== 'in_progress') return false;
+    // En el simulacro manda el reclutador: se puede cerrar cuando dijo que terminaba.
+    if (this.mode === 'recruiter') {
+      return this._answers.some((a) => a.questionKey.startsWith('end:'));
+    }
+    return this._answers.length >= MIN_ANSWERS_TO_COMPLETE;
   }
 
   /** Lanza el error de estado si la entrevista ya no admite cambios. */
@@ -70,10 +90,10 @@ export class AssessmentSession {
     score: number | null,
   ): RecordedAnswer {
     this.assertInProgress();
-    if (this._answers.length >= MAX_QUESTIONS) {
+    if (this._answers.length >= this.maxAnswers) {
       throw new DomainError(
         'ASSESSMENT_FULL',
-        `La entrevista admite como máximo ${MAX_QUESTIONS} respuestas`,
+        `La entrevista admite como máximo ${this.maxAnswers} respuestas`,
         'conflict',
       );
     }
@@ -91,10 +111,12 @@ export class AssessmentSession {
 
   complete(now: Date): void {
     this.assertInProgress();
-    if (this._answers.length < MIN_ANSWERS_TO_COMPLETE) {
+    if (!this.canComplete) {
       throw new DomainError(
         'ASSESSMENT_TOO_SHORT',
-        `Responde al menos ${MIN_ANSWERS_TO_COMPLETE} preguntas antes de terminar`,
+        this.mode === 'recruiter'
+          ? 'El reclutador todavía no terminó la entrevista'
+          : `Responde al menos ${MIN_ANSWERS_TO_COMPLETE} preguntas antes de terminar`,
         'validation',
       );
     }

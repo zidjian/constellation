@@ -15,6 +15,9 @@ export interface AssessmentRepository {
   findProfile(
     sessionId: string,
   ): Promise<{ profile: SkillProfile; interpretedBy: string } | null>;
+  /** Informe del simulacro de entrevista (solo en modo recruiter). */
+  saveReport(sessionId: string, report: unknown): Promise<void>;
+  findReport(sessionId: string): Promise<unknown>;
 }
 
 /** Lo que la entrevista sabe del usuario, ya estructurado para el intérprete. */

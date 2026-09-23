@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
   AssessmentSession,
+  type AssessmentMode,
   type AssessmentStatus,
 } from '../domain/assessment-session';
 import type { AssessmentRepository } from '../domain/ports';
@@ -14,6 +15,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 type SessionRow = {
   id: string;
   user_id: string;
+  mode: AssessmentMode;
   status: AssessmentStatus;
   completed_at: Date | null;
 };
@@ -34,7 +36,7 @@ export class TypeOrmAssessmentRepository implements AssessmentRepository {
     if (!UUID.test(id)) return null;
     // Ownership en la propia consulta: la sesión de otro usuario "no existe".
     const [row] = await this.dataSource.query<SessionRow[]>(
-      `SELECT id, user_id, status, completed_at FROM assessment_sessions WHERE id = $1 AND user_id = $2`,
+      `SELECT id, user_id, mode, status, completed_at FROM assessment_sessions WHERE id = $1 AND user_id = $2`,
       [id, userId],
     );
     return row ? this.hydrate(row) : null;
@@ -42,7 +44,7 @@ export class TypeOrmAssessmentRepository implements AssessmentRepository {
 
   async findInProgress(userId: string): Promise<AssessmentSession | null> {
     const [row] = await this.dataSource.query<SessionRow[]>(
-      `SELECT id, user_id, status, completed_at FROM assessment_sessions
+      `SELECT id, user_id, mode, status, completed_at FROM assessment_sessions
        WHERE user_id = $1 AND status = 'in_progress'`,
       [userId],
     );
@@ -56,13 +58,14 @@ export class TypeOrmAssessmentRepository implements AssessmentRepository {
     const goal = session.answers.find((a) => a.questionKey === 'goal')?.answer;
     await this.dataSource.transaction(async (tx) => {
       await tx.query(
-        `INSERT INTO assessment_sessions (id, user_id, status, goal_text, completed_at)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO assessment_sessions (id, user_id, mode, status, goal_text, completed_at)
+         VALUES ($1, $2, $3, $4, $5, $6)
          ON CONFLICT (id) DO UPDATE SET status = EXCLUDED.status, goal_text = EXCLUDED.goal_text,
            completed_at = EXCLUDED.completed_at, updated_at = now()`,
         [
           session.id,
           session.userId,
+          session.mode,
           session.status,
           goal && 'text' in goal ? goal.text : null,
           session.completedAt,
@@ -122,6 +125,22 @@ export class TypeOrmAssessmentRepository implements AssessmentRepository {
     };
   }
 
+  async saveReport(sessionId: string, report: unknown): Promise<void> {
+    await this.dataSource.query(
+      `INSERT INTO interview_reports (session_id, report) VALUES ($1, $2)
+       ON CONFLICT (session_id) DO UPDATE SET report = EXCLUDED.report`,
+      [sessionId, JSON.stringify(report)],
+    );
+  }
+
+  async findReport(sessionId: string): Promise<unknown> {
+    const [row] = await this.dataSource.query<{ report: unknown }[]>(
+      `SELECT report FROM interview_reports WHERE session_id = $1`,
+      [sessionId],
+    );
+    return row?.report ?? null;
+  }
+
   private async hydrate(row: SessionRow): Promise<AssessmentSession> {
     const answers = await this.dataSource.query<AnswerRow[]>(
       `SELECT question_key, answer, score FROM assessment_answers WHERE session_id = $1 ORDER BY position`,
@@ -130,6 +149,7 @@ export class TypeOrmAssessmentRepository implements AssessmentRepository {
     return AssessmentSession.restore({
       id: row.id,
       userId: row.user_id,
+      mode: row.mode,
       status: row.status,
       completedAt: row.completed_at,
       answers: answers.map((a): RecordedAnswer => ({
