@@ -59,7 +59,10 @@ export function sanitizeDecision(
       !ctx.askedChallengeIds.has(challengeId);
     if (!usable) {
       // Propuso un reto inexistente o repetido: se elige uno del banco o se sigue preguntando.
-      const next = CHALLENGES.find((c) => !ctx.askedChallengeIds.has(c.id));
+      // Se prefiere la skill de la que venía hablando, para que el reto no salga de la nada.
+      const wanted = new Set([...targetSkills, ...levels.map((l) => l.skill)]);
+      const free = CHALLENGES.filter((c) => !ctx.askedChallengeIds.has(c.id));
+      const next = free.find((c) => wanted.has(c.skill)) ?? free[0];
       if (next) challengeId = next.id;
       else action = 'ask';
     }

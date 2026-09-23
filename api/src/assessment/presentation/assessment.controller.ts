@@ -60,6 +60,12 @@ export class AssessmentController {
     private readonly recruiter: RecruiterUseCases,
   ) {}
 
+  /** Qué modos ofrece el servidor: la web no muestra el simulacro si está apagado. */
+  @Get('modes')
+  modes() {
+    return { recruiter: this.recruiter.available() };
+  }
+
   /** Simulacro de entrevista con reclutador (modo opcional, requiere IA). */
   @Post('recruiter')
   @UseGuards(UserThrottlerGuard)

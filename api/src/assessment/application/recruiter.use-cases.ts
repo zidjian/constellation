@@ -63,8 +63,12 @@ export class RecruiterUseCases {
   ) {}
 
   /** El simulacro depende de la IA: si está apagada, no se ofrece (la entrevista guiada sí funciona). */
+  available(): boolean {
+    return this.env.RECRUITER_ENABLED && this.env.LLM_PROVIDER === 'claude';
+  }
+
   private assertEnabled(): void {
-    if (!this.env.RECRUITER_ENABLED || this.env.LLM_PROVIDER !== 'claude') {
+    if (!this.available()) {
       throw new DomainError(
         'RECRUITER_DISABLED',
         'El simulacro de entrevista no está disponible ahora mismo. Usa la entrevista guiada.',

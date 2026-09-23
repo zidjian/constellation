@@ -1,5 +1,5 @@
 // Contrato de /v1/assessments (ver api/src/assessment). La pregunta nunca trae la respuesta correcta.
-type Option = { id: string; label: string; hint?: string };
+export type Option = { id: string; label: string; hint?: string };
 
 export type Question =
   | { key: "goal"; type: "text"; prompt: string; placeholder: string }
@@ -25,6 +25,30 @@ export interface AssessmentSession {
   maxQuestions: number;
   minToComplete: number;
   canComplete: boolean;
+}
+
+/** Simulacro de entrevista: turno del reclutador (ver api/src/assessment/application/recruiter.use-cases.ts). */
+export interface RecruiterChallenge {
+  id: string;
+  skill: string;
+  difficulty: number;
+  prompt: string;
+  code?: string;
+  language?: string;
+  options: Option[];
+}
+
+export interface RecruiterTurn {
+  session: AssessmentSession;
+  say: string;
+  challenge: RecruiterChallenge | null;
+  finished: boolean;
+}
+
+export interface InterviewReport {
+  summary: string;
+  strengths: { title: string; quote: string }[];
+  gaps: { title: string; note: string }[];
 }
 
 export interface SkillProfile {

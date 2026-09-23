@@ -71,6 +71,21 @@ describe('sanitizeDecision', () => {
     expect(CHALLENGES.some((c) => c.id === out.challengeId)).toBe(true);
   });
 
+  it('al sustituir el reto prefiere la skill de la que se venía hablando', () => {
+    const skill = CHALLENGES.find(
+      (c) => c.skill !== CHALLENGES[0].skill,
+    )!.skill;
+    const out = sanitizeDecision(
+      decision({
+        action: 'challenge',
+        challengeId: 'inventado',
+        targetSkills: [skill],
+      }),
+      ctx({ knownSkills: new Set([skill]) }),
+    );
+    expect(CHALLENGES.find((c) => c.id === out.challengeId)!.skill).toBe(skill);
+  });
+
   it('si ya se preguntaron todos los retos, sigue preguntando', () => {
     const out = sanitizeDecision(
       decision({ action: 'challenge', challengeId: 'inventado' }),
