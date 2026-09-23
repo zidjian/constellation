@@ -38,7 +38,12 @@ export type Question =
     };
 
 export type Answer =
-  { text: string } | { optionId: string } | { levels: Record<string, number> };
+  | { text: string }
+  | { optionId: string }
+  | { levels: Record<string, number> }
+  // Solo en el simulacro: lo que el reclutador dedujo, con la cita que lo respalda.
+  | { deduced: { skill: string; level: number; quote: string }[] }
+  | { targetSkills: string[] };
 
 export interface RecordedAnswer {
   questionKey: string;

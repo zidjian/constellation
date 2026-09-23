@@ -18,6 +18,7 @@ import { UserOrmEntity } from '../../identity/infrastructure/user.orm-entity';
   'assessment_sessions_status_check',
   `status IN ('in_progress', 'completed', 'abandoned')`,
 )
+@Check('assessment_sessions_mode_check', `mode IN ('guided', 'recruiter')`)
 // Máximo una entrevista en curso por usuario, garantizado también por la BD.
 @Index('uq_assessment_sessions_in_progress', ['userId'], {
   unique: true,
@@ -37,6 +38,9 @@ export class AssessmentSessionOrmEntity {
 
   @Column({ type: 'varchar', length: 20 })
   status!: string;
+
+  @Column({ type: 'varchar', length: 20, default: 'guided' })
+  mode!: string;
 
   @Column({ name: 'goal_text', type: 'text', nullable: true })
   goalText!: string | null;
@@ -98,6 +102,23 @@ export class SkillProfileOrmEntity {
 
   @Column({ name: 'interpreted_by', type: 'varchar', length: 10 })
   interpretedBy!: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt!: Date;
+}
+
+/** Informe del simulacro: fortalezas, brechas y resumen, con citas de lo que dijo la persona. */
+@Entity('interview_reports')
+export class InterviewReportOrmEntity {
+  @PrimaryColumn({ name: 'session_id', type: 'uuid' })
+  sessionId!: string;
+
+  @OneToOne(() => AssessmentSessionOrmEntity, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'session_id' })
+  session?: AssessmentSessionOrmEntity;
+
+  @Column({ type: 'jsonb' })
+  report!: unknown;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
