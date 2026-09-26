@@ -6,13 +6,14 @@ import { highlight } from "sugar-high";
 import { Button } from "@/components/ui/button";
 import { GenerationView } from "@/features/paths/generation-view";
 import { ApiError } from "@/lib/api";
-import { completeAssessment, replyRecruiter, startRecruiter } from "./api";
+import { completeAssessment, replyRecruiter, resumeRecruiter, startRecruiter } from "./api";
 import { Summary } from "./summary";
 import type { AssessmentSession, InterviewReport, RecruiterChallenge, RecruiterTurn, SkillProfile } from "./types";
 
 type Message = { from: "recruiter" | "you"; text: string };
 
 type Phase =
+  | { kind: "loading" }
   | { kind: "offer" }
   | { kind: "chat"; session: AssessmentSession; challenge: RecruiterChallenge | null; finished: boolean }
   | { kind: "report"; session: AssessmentSession; profile: SkillProfile; report: InterviewReport | null }
@@ -20,11 +21,33 @@ type Phase =
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function RecruiterFlow({ onBack }: { onBack: () => void }) {
-  const [phase, setPhase] = useState<Phase>({ kind: "offer" });
+export function RecruiterFlow({ onBack, resumeId }: { onBack: () => void; resumeId?: string }) {
+  const [phase, setPhase] = useState<Phase>(resumeId ? { kind: "loading" } : { kind: "offer" });
   const [messages, setMessages] = useState<Message[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Retomar un simulacro a medias: la conversación se reconstruye, no se vuelve a pedir al modelo.
+  useEffect(() => {
+    if (!resumeId) return;
+    let alive = true;
+    resumeRecruiter(resumeId)
+      .then((r) => {
+        if (!alive) return;
+        setMessages([
+          ...r.exchanges.flatMap((e): Message[] => [
+            { from: "recruiter", text: e.ask },
+            { from: "you", text: e.reply },
+          ]),
+          ...(r.say ? [{ from: "recruiter" as const, text: r.say }] : []),
+        ]);
+        setPhase({ kind: "chat", session: r.session, challenge: r.challenge, finished: r.finished });
+      })
+      .catch(() => alive && setPhase({ kind: "offer" }));
+    return () => {
+      alive = false;
+    };
+  }, [resumeId]);
 
   const run = async (fn: () => Promise<void>) => {
     setPending(true);
@@ -89,7 +112,9 @@ export function RecruiterFlow({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
-      {phase.kind === "offer" ? (
+      {phase.kind === "loading" ? (
+        <p className="py-6 text-ink-muted">Recuperando tu entrevista…</p>
+      ) : phase.kind === "offer" ? (
         <OfferForm pending={pending} onStart={start} onBack={onBack} />
       ) : (
         <>

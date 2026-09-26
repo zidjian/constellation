@@ -102,6 +102,36 @@ export class RecruiterUseCases {
     return this.advance(session);
   }
 
+  /**
+   * Conversación guardada, para retomar el simulacro (recarga, o volver desde la entrevista
+   * guiada). No llama al modelo: reconstruye lo que ya está en la sesión.
+   */
+  async resume(
+    userId: string,
+    sessionId: string,
+  ): Promise<RecruiterTurn & { exchanges: RecruiterExchange[] }> {
+    this.assertEnabled();
+    const session = await this.load(userId, sessionId);
+    assertRecruiterMode(session.mode);
+
+    const pending = this.pendingChallengeId(session);
+    const last = [...session.answers]
+      .reverse()
+      .find(
+        (a) =>
+          a.questionKey.startsWith('ask:') ||
+          a.questionKey.startsWith('chq:') ||
+          a.questionKey.startsWith('end:'),
+      );
+    return {
+      session: toView(session),
+      say: last ? textOf(last.answer) : '',
+      challenge: pending ? publicChallenge(pending) : null,
+      finished: session.answers.some((a) => a.questionKey.startsWith('end:')),
+      exchanges: this.exchanges(session),
+    };
+  }
+
   async reply(
     userId: string,
     sessionId: string,
@@ -266,7 +296,8 @@ export class RecruiterUseCases {
     for (const a of session.answers) {
       const value = a.answer as Answer;
       if (a.questionKey.startsWith('lvl:')) {
-        for (const l of (value.levels ?? []) as {
+        // Se guardan como `deduced` (con su cita): leerlos como `levels` dejaba el perfil vacío.
+        for (const l of (value.deduced ?? []) as {
           skill: string;
           level: number;
         }[])

@@ -1,12 +1,10 @@
 import type { AssessmentSession } from '../domain/assessment-session';
-import {
-  MAX_QUESTIONS,
-  MIN_ANSWERS_TO_COMPLETE,
-  type Question,
-} from '../domain/questions';
+import { MIN_ANSWERS_TO_COMPLETE, type Question } from '../domain/questions';
 
 export interface AssessmentView {
   id: string;
+  /** La web necesita saberlo: una sesión de simulacro no se responde con el flujo guiado. */
+  mode: AssessmentSession['mode'];
   status: AssessmentSession['status'];
   answeredCount: number;
   maxQuestions: number;
@@ -16,9 +14,10 @@ export interface AssessmentView {
 
 export const toView = (s: AssessmentSession): AssessmentView => ({
   id: s.id,
+  mode: s.mode,
   status: s.status,
   answeredCount: s.answers.length,
-  maxQuestions: MAX_QUESTIONS,
+  maxQuestions: s.maxAnswers,
   minToComplete: MIN_ANSWERS_TO_COMPLETE,
   canComplete: s.canComplete,
 });
