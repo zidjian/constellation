@@ -77,6 +77,15 @@ export class AssessmentController {
     return this.recruiter.start(userId, dto.jobOffer);
   }
 
+  /** Retomar un simulacro a medias: no gasta LLM, solo devuelve lo ya conversado. */
+  @Get(':id/recruiter')
+  resumeRecruiter(
+    @CurrentUserId() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.recruiter.resume(userId, id);
+  }
+
   @Post(':id/recruiter/reply')
   @UseGuards(UserThrottlerGuard)
   @Throttle({ default: RATE_LIMITS.recruiterReply })

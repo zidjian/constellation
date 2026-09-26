@@ -20,6 +20,8 @@ export type Answer = { text: string } | { optionId: string } | { levels: Record<
 
 export interface AssessmentSession {
   id: string;
+  /** `recruiter` = simulacro: no se responde con las preguntas del flujo guiado. */
+  mode: "guided" | "recruiter";
   status: "in_progress" | "completed" | "abandoned";
   answeredCount: number;
   maxQuestions: number;
@@ -43,6 +45,11 @@ export interface RecruiterTurn {
   say: string;
   challenge: RecruiterChallenge | null;
   finished: boolean;
+}
+
+/** Lo ya conversado, para retomar un simulacro a medias. */
+export interface RecruiterResume extends RecruiterTurn {
+  exchanges: { ask: string; reply: string }[];
 }
 
 export interface InterviewReport {

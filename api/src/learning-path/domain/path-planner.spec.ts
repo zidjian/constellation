@@ -107,6 +107,35 @@ describe('PathPlanner', () => {
     expect(slugs(p)).toEqual(['a-corto']);
   });
 
+  // Dos stacks que enseñan la misma skill ('testing') con el mismo coste en cursos nuevos.
+  const dosStacks = [
+    course('js'),
+    course('node', { teaches: ['nodejs'], prerequisites: ['js'] }),
+    course('nest-testing', {
+      teaches: ['testing'],
+      requires: ['nodejs'],
+      level: 'advanced',
+    }),
+    course('cs', { teaches: ['csharp'] }),
+    course('net-testing', {
+      teaches: ['testing'],
+      requires: ['csharp'],
+      prerequisites: ['cs'],
+    }),
+  ];
+
+  it('a igual coste, elige el curso del stack del que ya se venía hablando', () => {
+    const p = planner(dosStacks).plan(profile(['nodejs', 'testing']));
+    expect(slugs(p)).toContain('nest-testing');
+    expect(slugs(p)).not.toContain('net-testing');
+  });
+
+  it('la afinidad también mira lo que ya sabe, no solo los objetivos', () => {
+    const p = planner(dosStacks).plan(profile(['testing'], { csharp: 2 }));
+    expect(slugs(p)).toContain('net-testing');
+    expect(slugs(p)).not.toContain('nest-testing');
+  });
+
   it('reutiliza un curso ya elegido si también cubre otro objetivo', () => {
     const p = planner([
       course('full', { teaches: ['a', 'b'] }),
