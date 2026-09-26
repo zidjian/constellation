@@ -4,6 +4,7 @@ import type {
   AssessmentSession,
   InterviewReport,
   Question,
+  RecruiterResume,
   RecruiterTurn,
   SkillProfile,
 } from "./types";
@@ -32,6 +33,8 @@ export const assessmentModes = () => apiFetch<{ recruiter: boolean }>("/assessme
 
 export const startRecruiter = (jobOffer: string) =>
   apiFetch<RecruiterTurn>("/assessments/recruiter", { method: "POST", body: JSON.stringify({ jobOffer }) });
+
+export const resumeRecruiter = (id: string) => apiFetch<RecruiterResume>(`/assessments/${id}/recruiter`);
 
 export const replyRecruiter = (id: string, reply: { text: string } | { optionId: string }) =>
   apiFetch<RecruiterTurn>(`/assessments/${id}/recruiter/reply`, { method: "POST", body: JSON.stringify(reply) });

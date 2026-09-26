@@ -63,13 +63,19 @@ export class AssessmentUseCases {
     return { session: toView(session), question };
   }
 
-  /** Entrevista en curso del usuario (para retomarla), o null. */
+  /**
+   * Entrevista en curso del usuario (para retomarla), o null. En un simulacro no hay "siguiente
+   * pregunta" del flujo guiado: se retoma por el chat, y calcularla aquí devolvía una pregunta
+   * que después el guard de modo rechazaba.
+   */
   async current(userId: string): Promise<{
     session: AssessmentView;
     question: PublicQuestion | null;
   } | null> {
     const session = await this.sessions.findInProgress(userId);
     if (!session) return null;
+    if (session.mode === 'recruiter')
+      return { session: toView(session), question: null };
     const question = nextQuestion([...session.answers], {
       graph: await this.catalog.get(),
     });

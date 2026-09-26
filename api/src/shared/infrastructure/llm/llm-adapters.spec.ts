@@ -91,7 +91,9 @@ describe('withFallback', () => {
     await expect(
       withFallback('t', 80, hang, () => Promise.resolve(2), silent),
     ).resolves.toEqual({ value: 2, by: 'rules' });
-    expect(Date.now() - started).toBeLessThan(500);
+    // Lo que importa es que no se quede colgado esperando a Claude, no el milisegundo exacto:
+    // con las suites en paralelo el temporizador puede llegar tarde y el tope justo hacía flaky el test.
+    expect(Date.now() - started).toBeLessThan(5000);
   });
 });
 

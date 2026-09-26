@@ -26,7 +26,7 @@ export function AssessmentFlow() {
   const [phase, setPhase] = useState<Phase>({ kind: "loading" });
   // El simulacro depende de la IA: si el servidor lo tiene apagado, ni se ofrece.
   const [recruiter, setRecruiter] = useState(false);
-  const [inRecruiter, setInRecruiter] = useState(false);
+  const [inRecruiter, setInRecruiter] = useState<{ resumeId?: string } | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const reduce = useReducedMotion();
@@ -80,7 +80,8 @@ export function AssessmentFlow() {
   const key =
     phase.kind === "question" ? phase.question.key : phase.kind === "feedback" ? `fb-${phase.session.answeredCount}` : phase.kind;
 
-  if (inRecruiter) return <RecruiterFlow onBack={() => setInRecruiter(false)} />;
+  if (inRecruiter)
+    return <RecruiterFlow onBack={() => setInRecruiter(null)} resumeId={inRecruiter.resumeId} />;
 
   if (phase.kind === "generating") return <GenerationView assessmentId={phase.sessionId} name={phase.name} />;
 
@@ -103,7 +104,8 @@ export function AssessmentFlow() {
               resumable={phase.resumable}
               pending={pending}
               recruiter={recruiter}
-              onRecruiter={() => setInRecruiter(true)}
+              onRecruiter={() => setInRecruiter({})}
+              onResumeRecruiter={(id) => setInRecruiter({ resumeId: id })}
               onStart={start}
               onResume={() => phase.resumable && goTo(phase.resumable.session, phase.resumable.question)}
             />
@@ -190,6 +192,7 @@ function Intro({
   pending,
   recruiter,
   onRecruiter,
+  onResumeRecruiter,
   onStart,
   onResume,
 }: {
@@ -197,9 +200,12 @@ function Intro({
   pending: boolean;
   recruiter: boolean;
   onRecruiter: () => void;
+  onResumeRecruiter: (id: string) => void;
   onStart: () => void;
   onResume: () => void;
 }) {
+  // Un simulacro a medias no se responde con estas preguntas: se retoma en su chat.
+  const pendingRecruiter = resumable?.session.mode === "recruiter" ? resumable.session : null;
   return (
     <section className="flex flex-col items-start gap-5 py-6">
       <h1 className="text-3xl font-semibold sm:text-4xl">Vamos a trazar tu ruta</h1>
@@ -207,7 +213,19 @@ function Intro({
         Son hasta 10 preguntas: qué quieres lograr, qué tecnología te atrae, qué tanto sabes y unos mini-retos de código
         para medirlo de verdad. Toma unos 3 minutos.
       </p>
-      {resumable ? (
+      {pendingRecruiter ? (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-ink-muted">Tienes un simulacro de entrevista a medias.</p>
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" onClick={() => onResumeRecruiter(pendingRecruiter.id)} autoFocus>
+              Volver a la entrevista
+            </Button>
+            <Button size="lg" variant="secondary" onClick={onStart} loading={pending}>
+              Mejor hazme las preguntas
+            </Button>
+          </div>
+        </div>
+      ) : resumable ? (
         <div className="flex flex-col gap-3">
           <p className="text-sm text-ink-muted">
             Tienes una entrevista a medias ({resumable.session.answeredCount} respuestas).

@@ -280,6 +280,32 @@ describe('Entrevista (e2e, Postgres)', () => {
     ).toBeNull();
   });
 
+  it('una sesión de simulacro no se retoma como entrevista guiada', async () => {
+    // Regresión: /current devolvía la pregunta del flujo guiado y luego responderla daba 409.
+    const db = app.get(DataSource);
+    const [{ id: userId }] = await db.query<{ id: string }[]>(
+      `SELECT id FROM users WHERE discord_id = 'test-assess-bob'`,
+    );
+    await db.query(`DELETE FROM assessment_sessions WHERE user_id = $1`, [
+      userId,
+    ]);
+    const [{ id }] = await db.query<{ id: string }[]>(
+      `INSERT INTO assessment_sessions (id, user_id, status, mode) VALUES (gen_random_uuid(), $1, 'in_progress', 'recruiter') RETURNING id`,
+      [userId],
+    );
+    const res = await as(bob).get('/v1/assessments/current').expect(200);
+    const body = (
+      res.body as Data<{
+        session: { id: string; mode: string };
+        question: unknown;
+      }>
+    ).data;
+    expect(body.session.id).toBe(id);
+    expect(body.session.mode).toBe('recruiter');
+    expect(body.question).toBeNull();
+    await db.query(`DELETE FROM assessment_sessions WHERE id = $1`, [id]);
+  });
+
   it('el simulacro apagado (o sin IA) responde 409 y no crea sesión', async () => {
     const res = await as(bob).post('/v1/assessments/recruiter', {
       jobOffer: 'Backend semi senior con NestJS y PostgreSQL. Remoto.',

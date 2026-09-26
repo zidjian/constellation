@@ -57,11 +57,19 @@ export class PathPlanner {
         uncoveredTargets.push(skill);
         continue;
       }
+      const context = this.contextSkills(profile, selected, mastered);
       const chosen = candidates
-        .map((c) => ({ c, cost: this.extraCost(c.slug, selected, mastered) }))
+        .map((c) => ({
+          c,
+          cost: this.extraCost(c.slug, selected, mastered),
+          affinity: this.affinity(c.slug, context, mastered),
+        }))
         .sort(
           (a, b) =>
             a.cost - b.cost ||
+            // A igual coste, el curso del stack del que ya se viene hablando: sin esto, un
+            // "quiero testing" con perfil de Node podía entrar por el curso de pruebas de .NET.
+            b.affinity - a.affinity ||
             LEVEL_RANK[a.c.level] - LEVEL_RANK[b.c.level] ||
             a.c.durationHours - b.c.durationHours ||
             byCodePoint(a.c.slug, b.c.slug),
@@ -121,6 +129,38 @@ export class PathPlanner {
       stack.push(...course.prerequisites);
     }
     return [...result];
+  }
+
+  /** El stack del que ya se viene hablando: lo que sabe, lo que quiere y lo que ya entró en la ruta. */
+  private contextSkills(
+    profile: SkillProfile,
+    selected: Set<string>,
+    mastered: (c: Course) => boolean,
+  ): Set<string> {
+    const skills = new Set<string>(profile.targetSkills);
+    for (const [skill, level] of Object.entries(profile.levels))
+      if (level > 0) skills.add(skill);
+    for (const slug of this.closureThroughUnmastered(selected, mastered))
+      for (const s of this.skillsOf(slug)) skills.add(s);
+    return skills;
+  }
+
+  /** Cuántas skills del contexto toca el curso (con sus prerrequisitos). Más es mejor. */
+  private affinity(
+    slug: string,
+    context: Set<string>,
+    mastered: (c: Course) => boolean,
+  ): number {
+    const skills = new Set<string>();
+    for (const s of this.closureThroughUnmastered([slug], mastered))
+      for (const skill of this.skillsOf(s)) skills.add(skill);
+    return [...skills].filter((s) => context.has(s)).length;
+  }
+
+  /** Lo que enseña y lo que pide: `requires` es informativo, pero dice a qué stack pertenece. */
+  private skillsOf(slug: string): string[] {
+    const course = this.graph.course(slug)!;
+    return [...course.teaches, ...course.requires];
   }
 
   /** Cursos nuevos que añadiría elegir `slug`: los que tendría que cursar y aún no están elegidos. */
