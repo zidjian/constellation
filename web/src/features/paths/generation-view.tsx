@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
-import { Constellation } from "@/features/constellation/constellation";
+import { SkyLegend, SkyMap } from "@/features/constellation/sky-map";
 import { starStates } from "@/features/constellation/star-state";
 import { ApiError, apiUrl } from "@/lib/api";
 import { readSse } from "@/lib/sse";
@@ -93,7 +93,7 @@ export function GenerationView({ assessmentId, name }: { assessmentId: string; n
 
       {status.kind === "error" && (
         <div className="flex flex-wrap gap-3">
-          <ButtonLink href={ERROR_ACTION[status.code]?.href ?? "/paths"}>
+          <ButtonLink href={ERROR_ACTION[status.code]?.href ?? "/paths"} variant="accent">
             {ERROR_ACTION[status.code]?.label ?? "Volver a mis rutas"}
           </ButtonLink>
         </div>
@@ -101,12 +101,17 @@ export function GenerationView({ assessmentId, name }: { assessmentId: string; n
 
       {steps.length > 0 && (
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
-          <Constellation
-            stars={stars}
-            edges={edges}
-            label={`Constelación de ${steps.length} cursos en construcción`}
-            className="h-72 rounded-lg border border-line bg-surface/60 sm:h-[26rem] lg:sticky lg:top-20"
-          />
+          {/* El mismo lienzo de la ruta ya guardada: al terminar no hay salto, ya estás en tu mapa. */}
+          <div className="flex flex-col gap-3 lg:sticky lg:top-20 lg:self-start">
+            <div className="rounded-xl border border-line bg-surface/50 px-4 py-6 sm:px-6 sm:py-8">
+              <SkyMap
+                stars={stars}
+                edges={edges}
+                label={`Constelación de ${steps.length} cursos en construcción`}
+              />
+            </div>
+            <SkyLegend className="px-1" />
+          </div>
           <ol className="flex flex-col gap-3" aria-label="Pasos de la ruta">
             <AnimatePresence initial={false}>
               {steps.map((s) => (
@@ -140,7 +145,7 @@ export function GenerationView({ assessmentId, name }: { assessmentId: string; n
 
       {status.kind === "done" && (
         <div className="flex flex-wrap items-center gap-3">
-          <ButtonLink href={`/paths/${status.pathId}`} size="lg" autoFocus>
+          <ButtonLink href={`/paths/${status.pathId}`} size="lg" variant="accent" autoFocus>
             Ver mi constelación
           </ButtonLink>
           <span className="text-sm text-ink-muted">Ya está guardada en tus rutas.</span>

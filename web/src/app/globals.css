@@ -1,37 +1,39 @@
 @import "tailwindcss";
 
 /*
- * Tokens de Constellation (ver DESIGN.md). Estrategia de color "restrained":
- * blanco puro, tinta azul profunda y ámbar miel solo para progreso real y acción primaria.
- * Contraste AA verificado sobre --color-bg (#fff):
- *   ink 15:1 · ink-muted 7.2:1 · accent 7:1 · primary-strong 5.1:1 · star-off (gráfico) 3.4:1
+ * Tokens de Constellation (ver DESIGN.md · rediseño "sala de control", specs/06).
+ * Superficie carbón azulado y una regla: LA LUZ SIGNIFICA PROGRESO.
+ *   ámbar = encendido de verdad (estrella completada, barra de luz, encender)
+ *   azul  = lo que puedes hacer ahora (disponible, foco, selección, acciones)
+ * En oscuro no hay sombras: la elevación es luminancia + 1px de borde.
+ * Contraste sobre --color-bg: ink 15:1 · ink-muted 7:1 · primary 10:1 · accent 7:1 · danger 6:1
  */
 @theme {
-  --color-bg: oklch(1 0 0);
-  --color-surface: oklch(0.972 0.005 258);
-  --color-surface-2: oklch(0.945 0.008 258);
-  --color-line: oklch(0.9 0.01 258);
-  --color-line-strong: oklch(0.8 0.015 258);
+  --color-bg: oklch(0.17 0.012 258);
+  --color-surface: oklch(0.21 0.013 258);
+  --color-surface-2: oklch(0.25 0.014 258);
+  --color-line: oklch(0.32 0.012 258);
+  --color-line-strong: oklch(0.54 0.014 258);
 
-  --color-ink: oklch(0.24 0.035 258);
-  --color-ink-muted: oklch(0.46 0.025 258);
-  --color-ink-inverse: oklch(0.99 0.005 258);
+  --color-ink: oklch(0.96 0.004 258);
+  --color-ink-muted: oklch(0.74 0.012 258);
+  --color-ink-inverse: oklch(0.17 0.012 258);
 
-  /* Ámbar miel (semilla 65°): estrella encendida y acción primaria. Nunca como texto sobre blanco. */
-  --color-primary: oklch(0.8 0.16 70);
-  --color-primary-hover: oklch(0.75 0.165 66);
-  --color-primary-soft: oklch(0.955 0.045 80);
-  --color-primary-strong: oklch(0.5 0.12 55);
-  --color-glow: oklch(0.82 0.17 72 / 0.55);
+  /* Ámbar: solo lo emite el progreso real. Sobre carbón sí funciona como texto. */
+  --color-primary: oklch(0.82 0.16 72);
+  --color-primary-hover: oklch(0.87 0.15 75);
+  --color-primary-soft: oklch(0.3 0.055 70);
+  --color-primary-strong: oklch(0.88 0.14 78);
+  --color-glow: oklch(0.82 0.17 72 / 0.65);
 
-  /* Tinta de trazos y estrellas disponibles. */
-  --color-accent: oklch(0.47 0.13 258);
-  --color-accent-soft: oklch(0.95 0.025 258);
+  /* Azul: lo accionable. */
+  --color-accent: oklch(0.72 0.13 250);
+  --color-accent-soft: oklch(0.29 0.05 252);
 
-  --color-star-off: oklch(0.62 0.02 258);
-  --color-success: oklch(0.5 0.12 150);
-  --color-danger: oklch(0.52 0.19 27);
-  --color-danger-soft: oklch(0.96 0.03 27);
+  --color-star-off: oklch(0.58 0.018 258);
+  --color-success: oklch(0.75 0.14 150);
+  --color-danger: oklch(0.72 0.15 25);
+  --color-danger-soft: oklch(0.3 0.07 25);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
@@ -79,7 +81,7 @@
   --z-overlay: 30;
   --z-dialog: 40;
   --z-toast: 50;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html {
@@ -123,31 +125,17 @@ p {
   }
 }
 
-/* React Flow: el fondo y los controles adoptan los tokens. */
-.react-flow {
-  --xy-background-color: transparent;
-  --xy-edge-stroke: var(--color-line-strong);
-  --xy-controls-button-background-color: var(--color-bg);
-  --xy-controls-button-border-color: var(--color-line);
-  --xy-controls-button-color: var(--color-ink);
-}
-
 /* sugar-high: resaltado de los mini-retos con la paleta del producto. */
 .code {
-  --sh-class: oklch(0.47 0.13 258);
+  --sh-class: oklch(0.78 0.12 250);
   --sh-identifier: var(--color-ink);
-  --sh-sign: oklch(0.46 0.025 258);
-  --sh-property: oklch(0.45 0.12 300);
-  --sh-entity: oklch(0.47 0.13 258);
+  --sh-sign: oklch(0.72 0.02 258);
+  --sh-property: oklch(0.78 0.11 300);
+  --sh-entity: oklch(0.78 0.12 250);
   --sh-jsxliterals: var(--color-ink);
-  --sh-string: oklch(0.47 0.12 150);
-  --sh-keyword: oklch(0.5 0.14 20);
-  --sh-comment: oklch(0.52 0.02 258);
-}
-
-/* Al crecer la ruta en vivo, dagre recalcula posiciones: las estrellas se deslizan en lugar de saltar. */
-.react-flow__node {
-  transition: transform 320ms var(--ease-out-quint);
+  --sh-string: oklch(0.8 0.12 150);
+  --sh-keyword: oklch(0.8 0.13 20);
+  --sh-comment: oklch(0.63 0.015 258);
 }
 
 /* Hero: el trazo se dibuja al cargar; sin animación (o con reduced-motion) queda completo. */

@@ -87,7 +87,7 @@ export function AssessmentFlow() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8">
-      {(phase.kind === "question" || phase.kind === "feedback") && <ProgressDots session={phase.session} />}
+      {(phase.kind === "question" || phase.kind === "feedback") && <Horizon session={phase.session} />}
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -159,29 +159,27 @@ function QuestionSwitch({ question, pending, onSubmit }: { question: Question; p
   }
 }
 
-/** Una estrella por pregunta posible: se encienden al responder (progreso real, no decorativo). */
-function ProgressDots({ session }: { session: AssessmentSession }) {
-  const current = session.answeredCount + 1;
+/**
+ * Progreso como línea de horizonte: se llena de izquierda a derecha con cada respuesta. Al terminar
+ * la entrevista, esa línea es la primera que se dibuja entre dos estrellas de la constelación.
+ */
+function Horizon({ session }: { session: AssessmentSession }) {
+  const done = session.answeredCount;
+  const total = Math.max(session.maxQuestions, done + 1);
   return (
-    <div className="flex items-center justify-between gap-4">
-      <ol aria-label={`Pregunta ${current} de hasta ${session.maxQuestions}`} className="flex items-center gap-1.5">
-        {Array.from({ length: session.maxQuestions }, (_, i) => (
-          <li
-            key={i}
-            aria-hidden
-            className={
-              "size-2.5 rounded-full transition-[background-color,transform] duration-200 ease-out-quint " +
-              (i < session.answeredCount
-                ? "bg-primary shadow-[0_0_6px_var(--color-glow)]"
-                : i === session.answeredCount
-                  ? "scale-125 bg-accent"
-                  : "bg-line-strong")
-            }
-          />
-        ))}
-      </ol>
-      <span className="text-sm text-ink-muted tabular-nums">
-        {current} / {session.maxQuestions}
+    <div className="flex items-center gap-3">
+      <span
+        aria-hidden
+        className="relative h-px flex-1 overflow-visible bg-line"
+        role="presentation"
+      >
+        <span
+          className="absolute inset-y-0 left-0 bg-primary shadow-[0_0_12px_var(--color-glow)] transition-[width] duration-500 ease-out-quint"
+          style={{ width: `${Math.round((done / total) * 100)}%` }}
+        />
+      </span>
+      <span className="text-xs text-ink-muted tabular-nums" aria-live="polite">
+        {done + 1} / {total}
       </span>
     </div>
   );
@@ -206,57 +204,119 @@ function Intro({
 }) {
   // Un simulacro a medias no se responde con estas preguntas: se retoma en su chat.
   const pendingRecruiter = resumable?.session.mode === "recruiter" ? resumable.session : null;
-  return (
-    <section className="flex flex-col items-start gap-5 py-6">
-      <h1 className="text-3xl font-semibold sm:text-4xl">Vamos a trazar tu ruta</h1>
-      <p className="max-w-[60ch] text-lg leading-relaxed text-ink-muted">
-        Son hasta 10 preguntas: qué quieres lograr, qué tecnología te atrae, qué tanto sabes y unos mini-retos de código
-        para medirlo de verdad. Toma unos 3 minutos.
-      </p>
-      {pendingRecruiter ? (
-        <div className="flex flex-col gap-3">
-          <p className="text-sm text-ink-muted">Tienes un simulacro de entrevista a medias.</p>
-          <div className="flex flex-wrap gap-3">
-            <Button size="lg" onClick={() => onResumeRecruiter(pendingRecruiter.id)} autoFocus>
-              Volver a la entrevista
-            </Button>
-            <Button size="lg" variant="secondary" onClick={onStart} loading={pending}>
-              Mejor hazme las preguntas
-            </Button>
-          </div>
-        </div>
-      ) : resumable ? (
-        <div className="flex flex-col gap-3">
-          <p className="text-sm text-ink-muted">
-            Tienes una entrevista a medias ({resumable.session.answeredCount} respuestas).
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button size="lg" onClick={onResume} autoFocus>
-              Continuar donde la dejé
-            </Button>
-            <Button size="lg" variant="secondary" onClick={onStart} loading={pending}>
-              Empezar de nuevo
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <Button size="lg" onClick={onStart} loading={pending} autoFocus>
-          Empezar
-        </Button>
-      )}
+  const [mode, setMode] = useState<"guided" | "recruiter">("guided");
 
-      {recruiter && (
-        <div className="mt-2 flex flex-col gap-3 border-t border-line pt-6">
-          <p className="max-w-[60ch] text-ink-muted">
-            ¿Prefieres algo más exigente? Un reclutador técnico te entrevista sobre el puesto al que apuntas, con
-            repreguntas y mini-retos, y te da una devolución antes de trazar la ruta.
-          </p>
-          <Button variant="secondary" onClick={onRecruiter} className="self-start">
-            Hacer un simulacro de entrevista
+  if (pendingRecruiter || resumable) {
+    const esSimulacro = Boolean(pendingRecruiter);
+    return (
+      <section className="flex flex-col items-start gap-5 py-6">
+        <h1 className="text-2xl font-semibold sm:text-3xl">Lo dejaste a medias</h1>
+        <p className="max-w-[58ch] leading-relaxed text-ink-muted">
+          {esSimulacro
+            ? "Tu simulacro de entrevista sigue abierto: el reclutador te espera donde lo dejaste."
+            : `Llevas ${resumable!.session.answeredCount} respuestas de tu entrevista.`}
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button
+            size="lg"
+            variant="accent"
+            autoFocus
+            onClick={() => (esSimulacro ? onResumeRecruiter(pendingRecruiter!.id) : onResume())}
+          >
+            {esSimulacro ? "Volver a la entrevista" : "Continuar donde la dejé"}
+          </Button>
+          <Button size="lg" variant="secondary" onClick={onStart} loading={pending}>
+            {esSimulacro ? "Mejor hazme las preguntas" : "Empezar de nuevo"}
           </Button>
         </div>
-      )}
+      </section>
+    );
+  }
+
+  return (
+    <section className="flex flex-col gap-7 py-4">
+      <div>
+        <h1 className="text-2xl font-semibold sm:text-3xl">Empecemos</h1>
+        <p className="mt-2 max-w-[58ch] leading-relaxed text-ink-muted">
+          Necesitamos conocerte para trazar tu ruta sobre el catálogo real de DevTalles. Elige cómo prefieres contárnoslo.
+        </p>
+      </div>
+
+      <fieldset className="flex flex-col gap-3">
+        <legend className="sr-only">Cómo quieres hacer la entrevista</legend>
+        <ModeOption
+          id="guided"
+          checked={mode === "guided"}
+          onSelect={() => setMode("guided")}
+          title="Preguntas rápidas"
+          time="3 min"
+          detail="Qué quieres lograr, qué tecnología te atrae y unos mini-retos de código para medir tu nivel de verdad."
+        />
+        {recruiter && (
+          <ModeOption
+            id="recruiter"
+            checked={mode === "recruiter"}
+            onSelect={() => setMode("recruiter")}
+            title="Simulacro de entrevista"
+            time="8 min"
+            detail="Un reclutador técnico te entrevista sobre el puesto al que apuntas, repregunta y te da una devolución antes de trazar la ruta."
+          />
+        )}
+      </fieldset>
+
+      <Button
+        size="lg"
+        variant="accent"
+        className="self-start"
+        loading={pending}
+        onClick={() => (mode === "recruiter" ? onRecruiter() : onStart())}
+      >
+        {mode === "recruiter" ? "Entrar a la entrevista" : "Empezar"}
+      </Button>
     </section>
+  );
+}
+
+/** Los dos modos tienen la misma dignidad: se eligen, no compiten como CTA y botón fantasma. */
+function ModeOption({
+  id,
+  checked,
+  onSelect,
+  title,
+  time,
+  detail,
+}: {
+  id: string;
+  checked: boolean;
+  onSelect: () => void;
+  title: string;
+  time: string;
+  detail: string;
+}) {
+  return (
+    <label
+      className={
+        "flex cursor-pointer gap-3.5 rounded-xl border px-4 py-4 transition-[border-color,background-color] duration-150 ease-out-quint " +
+        "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent " +
+        (checked ? "border-accent bg-surface" : "border-line bg-surface/40 hover:border-line-strong")
+      }
+    >
+      <input
+        type="radio"
+        name="modo-entrevista"
+        value={id}
+        checked={checked}
+        onChange={onSelect}
+        className="mt-1 size-4 shrink-0 accent-[var(--color-accent)]"
+      />
+      <span className="min-w-0">
+        <span className="flex flex-wrap items-baseline gap-x-2.5">
+          <span className="font-medium">{title}</span>
+          <span className="text-xs text-ink-muted tabular-nums">{time}</span>
+        </span>
+        <span className="mt-1 block text-sm leading-relaxed text-ink-muted">{detail}</span>
+      </span>
+    </label>
   );
 }
 
