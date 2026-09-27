@@ -11,8 +11,26 @@ export class UserOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ name: 'discord_id', type: 'varchar', length: 32, unique: true })
-  discordId!: string;
+  @Column({
+    name: 'discord_id',
+    type: 'varchar',
+    length: 32,
+    unique: true,
+    nullable: true,
+  })
+  discordId!: string | null;
+
+  /** Solo en cuentas con correo; normalizado en minúsculas. */
+  @Column({ type: 'varchar', length: 320, nullable: true, unique: true })
+  email!: string | null;
+
+  @Column({
+    name: 'password_hash',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  passwordHash!: string | null;
 
   @Column({ type: 'varchar', length: 100 })
   username!: string;

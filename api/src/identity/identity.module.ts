@@ -4,13 +4,24 @@ import { JwtModule } from '@nestjs/jwt';
 import { ENV } from '../shared/infrastructure/config/config.module';
 import type { Env } from '../shared/infrastructure/config/env';
 import { CompleteDiscordLoginUseCase } from './application/complete-discord-login.use-case';
+import { EmailAuthUseCases } from './application/email-auth.use-cases';
 import { GetCurrentUserUseCase } from './application/get-current-user.use-case';
-import { DISCORD_OAUTH, SESSION_TOKENS, USER_REPOSITORY } from './domain/ports';
+import {
+  DISCORD_OAUTH,
+  MAILER,
+  PASSWORD_HASHER,
+  PASSWORD_RESET_TOKENS,
+  SESSION_TOKENS,
+  USER_REPOSITORY,
+} from './domain/ports';
 import { DiscordOAuthClient } from './infrastructure/discord-oauth.client';
 import {
   JwtSessionTokens,
   SESSION_TTL_SECONDS,
 } from './infrastructure/jwt-session-tokens';
+import { ResendMailer } from './infrastructure/resend-mailer';
+import { ScryptPasswordHasher } from './infrastructure/scrypt-password-hasher';
+import { TypeOrmPasswordResetTokens } from './infrastructure/typeorm-password-reset-tokens';
 import { TypeOrmUserRepository } from './infrastructure/typeorm-user.repository';
 import { AuthController } from './presentation/auth.controller';
 import { MeController } from './presentation/me.controller';
@@ -31,9 +42,13 @@ import { SessionGuard } from './presentation/session.guard';
   providers: [
     CompleteDiscordLoginUseCase,
     GetCurrentUserUseCase,
+    EmailAuthUseCases,
     { provide: USER_REPOSITORY, useClass: TypeOrmUserRepository },
     { provide: DISCORD_OAUTH, useClass: DiscordOAuthClient },
     { provide: SESSION_TOKENS, useClass: JwtSessionTokens },
+    { provide: PASSWORD_HASHER, useClass: ScryptPasswordHasher },
+    { provide: PASSWORD_RESET_TOKENS, useClass: TypeOrmPasswordResetTokens },
+    { provide: MAILER, useClass: ResendMailer },
     { provide: APP_GUARD, useClass: SessionGuard },
   ],
   exports: [SESSION_TOKENS],

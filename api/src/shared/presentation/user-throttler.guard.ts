@@ -16,10 +16,19 @@ export const RATE_LIMITS = {
   // Simulacro: cada turno es una llamada al LLM, así que se acota por los dos lados.
   recruiterStart: { limit: 3, ttl: HOUR },
   recruiterReply: { limit: 60, ttl: HOUR },
+  // Autenticación por correo: se cuenta por IP, porque aún no hay sesión.
+  register: { limit: 10, ttl: HOUR },
+  login: { limit: 10, ttl: 15 * 60 * 1000 },
+  forgotPassword: { limit: 5, ttl: HOUR },
+  resetPassword: { limit: 10, ttl: HOUR },
 } as const;
 
 /** Solo por si una ruta usa el guard sin @Throttle: nunca debería ser el límite efectivo. */
 export const DEFAULT_RATE_LIMIT = { name: 'default', limit: 60, ttl: HOUR };
+
+/** Rate limit por IP: para las rutas públicas, donde todavía no hay usuario. */
+@Injectable()
+export class IpThrottlerGuard extends ThrottlerGuard {}
 
 /** Rate limit por usuario (no por IP): corre después del guard global de sesión. */
 @Injectable()
