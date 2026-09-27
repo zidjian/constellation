@@ -20,3 +20,23 @@ export const resetPassword = (body: { token: string; password: string }) =>
 
 /** Mismo mínimo que el dominio de la API: los mensajes exactos los manda ella. */
 export const PASSWORD_MIN = 10;
+
+// --- Perfil ------------------------------------------------------------------------------------
+
+export const renameMe = (username: string) =>
+  apiFetch<CurrentUser>("/me", { method: "PATCH", body: JSON.stringify({ username }) });
+
+export const changeMyPassword = (body: { currentPassword?: string; newPassword: string }) =>
+  apiFetch<{ changed: true }>("/me/password", { method: "POST", body: JSON.stringify(body) });
+
+export const changeMyEmail = (body: { email: string; password?: string }) =>
+  apiFetch<{ pendingEmail: string; message: string }>("/me/email", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const confirmMyEmail = (token: string) =>
+  apiFetch<CurrentUser>("/me/email/confirm", { method: "POST", body: JSON.stringify({ token }) });
+
+export const deleteMyAccount = (body: { password?: string; confirm?: string }) =>
+  apiFetch<{ deleted: true }>("/me", { method: "DELETE", body: JSON.stringify(body) });

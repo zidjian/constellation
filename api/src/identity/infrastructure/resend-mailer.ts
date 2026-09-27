@@ -18,11 +18,32 @@ export class ResendMailer implements Mailer {
 
   constructor(@Inject(ENV) private readonly env: Env) {}
 
-  async sendPasswordReset(to: string, resetUrl: string): Promise<void> {
+  sendPasswordReset(to: string, resetUrl: string): Promise<void> {
+    return this.send(to, 'Restablece tu contraseña de Constellation', {
+      titulo: 'Restablece tu contraseña',
+      cuerpo:
+        'Pediste volver a entrar en Constellation. Elige una contraseña nueva desde aquí:',
+      boton: 'Elegir contraseña nueva',
+      pie: 'Si no lo pediste, ignora este correo: tu contraseña sigue igual.',
+      url: resetUrl,
+    });
+  }
+
+  /** Va al correo **nuevo**: confirmarlo desde ahí es la prueba de que es suyo. */
+  sendEmailChange(to: string, confirmUrl: string): Promise<void> {
+    return this.send(to, 'Confirma tu correo en Constellation', {
+      titulo: 'Confirma tu correo',
+      cuerpo:
+        'Pediste usar esta dirección en tu cuenta de Constellation. Confírmala aquí:',
+      boton: 'Confirmar mi correo',
+      pie: 'Si no lo pediste, ignora este correo: tu cuenta no cambia.',
+      url: confirmUrl,
+    });
+  }
+
+  private async send(to: string, asunto: string, texto: Correo): Promise<void> {
     if (!this.env.RESEND_API_KEY) {
-      this.logger.warn(
-        `Sin RESEND_API_KEY: enlace de recuperación para ${to} → ${resetUrl}`,
-      );
+      this.logger.warn(`Sin RESEND_API_KEY: enlace para ${to}: ${texto.url}`);
       return;
     }
 
@@ -35,9 +56,9 @@ export class ResendMailer implements Mailer {
       body: JSON.stringify({
         from: this.env.MAIL_FROM,
         to: [to],
-        subject: 'Restablece tu contraseña de Constellation',
-        text: plainText(resetUrl),
-        html: html(resetUrl),
+        subject: asunto,
+        text: plainText(texto),
+        html: html(texto),
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
@@ -49,31 +70,41 @@ export class ResendMailer implements Mailer {
         `Resend respondió ${res.status}: ${detail.slice(0, 200)}`,
       );
     }
+
+    // El id permite rastrear el envío en el panel de Resend si alguien dice que no le llegó.
+    const { id } = (await res.json().catch(() => ({}))) as { id?: string };
+    this.logger.log(`Correo aceptado por Resend: ${id ?? 'sin id'}`);
   }
 }
 
-const plainText = (url: string) => `Restablece tu contraseña de Constellation
+interface Correo {
+  titulo: string;
+  cuerpo: string;
+  boton: string;
+  pie: string;
+  url: string;
+}
 
-Pediste volver a entrar. Abre este enlace para elegir una contraseña nueva:
+const plainText = ({ titulo, cuerpo, pie, url }: Correo) => `${titulo}
+
+${cuerpo}
 ${url}
 
 El enlace caduca en 1 hora y solo sirve una vez.
-Si no lo pediste, ignora este correo: tu contraseña sigue igual.`;
+${pie}`;
 
 /** Tabla y estilos en línea: es lo único que los clientes de correo respetan de verdad. */
-const html = (url: string) => `<!doctype html>
+const html = ({ titulo, cuerpo, boton, pie, url }: Correo) => `<!doctype html>
 <html lang="es"><body style="margin:0;background:#14171d;padding:32px 16px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;margin:0 auto">
-    <tr><td style="color:#f2f4f8;font-size:20px;font-weight:600;padding-bottom:16px">Restablece tu contraseña</td></tr>
-    <tr><td style="color:#b3bac6;font-size:15px;line-height:1.6;padding-bottom:24px">
-      Pediste volver a entrar en Constellation. Elige una contraseña nueva desde aquí:
-    </td></tr>
+    <tr><td style="color:#f2f4f8;font-size:20px;font-weight:600;padding-bottom:16px">${titulo}</td></tr>
+    <tr><td style="color:#b3bac6;font-size:15px;line-height:1.6;padding-bottom:24px">${cuerpo}</td></tr>
     <tr><td style="padding-bottom:24px">
-      <a href="${url}" style="display:inline-block;background:#f5b14a;color:#14171d;font-size:15px;font-weight:600;text-decoration:none;padding:12px 20px;border-radius:10px">Elegir contraseña nueva</a>
+      <a href="${url}" style="display:inline-block;background:#f5b14a;color:#14171d;font-size:15px;font-weight:600;text-decoration:none;padding:12px 20px;border-radius:10px">${boton}</a>
     </td></tr>
     <tr><td style="color:#8b93a1;font-size:13px;line-height:1.6">
       El enlace caduca en 1 hora y solo sirve una vez.<br>
-      Si no lo pediste, ignora este correo: tu contraseña sigue igual.
+      ${pie}
     </td></tr>
   </table>
 </body></html>`;

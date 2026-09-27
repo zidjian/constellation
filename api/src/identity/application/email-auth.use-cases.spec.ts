@@ -48,6 +48,20 @@ class InMemoryUsers implements UserRepository {
     if (row) row.passwordHash = passwordHash;
     return Promise.resolve();
   }
+  setUsername(userId: string, username: string): Promise<void> {
+    const row = this.rows.get(userId);
+    if (row) row.username = username;
+    return Promise.resolve();
+  }
+  setEmail(userId: string, email: string): Promise<User | null> {
+    const row = this.rows.get(userId);
+    if (row) row.email = email;
+    return Promise.resolve(row ?? null);
+  }
+  remove(userId: string): Promise<void> {
+    this.rows.delete(userId);
+    return Promise.resolve();
+  }
 }
 
 class InMemoryResets implements PasswordResetTokens {
@@ -96,6 +110,7 @@ function build(mailer?: Mailer) {
         enviados.push({ to, url });
         return Promise.resolve();
       },
+      sendEmailChange: () => Promise.resolve(),
     },
     env,
   );
@@ -207,6 +222,7 @@ describe('Recuperar contraseña', () => {
     const { auth } = build({
       sendPasswordReset: () =>
         Promise.reject(new Error('Resend respondió 500')),
+      sendEmailChange: () => Promise.resolve(),
     });
     await auth.register({ email: 'a@b.com', password: clave });
     await expect(auth.requestPasswordReset('a@b.com')).resolves.toBeUndefined();
