@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "accent" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -10,11 +10,13 @@ const base =
   "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 select-none";
 
 const variants: Record<Variant, string> = {
-  // Ámbar con tinta: el texto blanco sobre ámbar no llega a AA.
-  primary: "bg-primary text-ink hover:bg-primary-hover shadow-[0_1px_0_0_oklch(0.5_0.12_55/0.35)]",
-  secondary: "border border-line-strong bg-bg text-ink hover:border-ink-muted hover:bg-surface",
+  // Ámbar: reservado a encender. El texto va en carbón, que es lo legible sobre ámbar.
+  primary: "bg-primary text-ink-inverse hover:bg-primary-hover",
+  // Azul de acción: todo lo demás que sea primario y no encienda nada.
+  accent: "bg-accent text-ink-inverse hover:brightness-110",
+  secondary: "border border-line-strong bg-surface text-ink hover:border-ink-muted hover:bg-surface-2",
   ghost: "text-ink hover:bg-surface",
-  danger: "border border-danger/40 bg-bg text-danger hover:bg-danger-soft",
+  danger: "border border-danger/40 bg-transparent text-danger hover:bg-danger-soft",
 };
 
 const sizes: Record<Size, string> = {

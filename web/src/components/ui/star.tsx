@@ -1,5 +1,6 @@
 // Estrella de la constelación. El estado se distingue por forma además de color (WCAG 1.4.1):
-//   completed → disco ámbar con check · available → aro de tinta con pulso · locked → aro punteado gris
+//   completed → disco ámbar con check · available → aro azul con núcleo · locked → aro punteado apagado
+// Sobre carbón el ámbar es la única luz: el disco no lleva borde, el brillo lo da `glow`.
 export type StarState = "completed" | "available" | "locked";
 
 export const STAR_LABEL: Record<StarState, string> = {
@@ -20,8 +21,15 @@ export function Star({ state, size = 28, glow = false }: { state: StarState; siz
     >
       {state === "completed" && (
         <>
-          <circle cx="14" cy="14" r="12" fill="var(--color-primary)" stroke="var(--color-primary-strong)" strokeWidth="1.5" />
-          <path d="M9 14.5l3.2 3.2L19 11" fill="none" stroke="var(--color-ink)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="14" cy="14" r="12" fill="var(--color-primary)" />
+          <path
+            d="M9 14.5l3.2 3.2L19 11"
+            fill="none"
+            stroke="var(--color-ink-inverse)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </>
       )}
       {state === "available" && (
