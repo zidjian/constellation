@@ -10,6 +10,8 @@ export const MAX_QUESTIONS = 10;
 export const MIN_ANSWERS_TO_COMPLETE = 5;
 const MAX_SCALE_ITEMS = 6;
 const MAX_CHALLENGES_PER_SKILL = 2;
+/** Lógica de programación: la base común, útil solo cuando no hay nada más específico que medir. */
+const BASE_SKILL = 'programming-basics';
 
 // --- Tipos de pregunta y respuesta -------------------------------------------------------------
 
@@ -166,13 +168,27 @@ export function selfAssessmentItems(
   ctx: FlowContext,
 ) {
   const targets = stackOf(answers)?.targets ?? [];
-  const teaching = ctx.graph.catalog.courses.filter((c) =>
-    c.teaches.some((s) => targets.includes(s)),
-  );
-  const courses = [
-    ...ctx.graph.prerequisiteClosure(teaching.map((c) => c.slug)),
-    ...teaching.map((c) => c.slug),
-  ];
+  // Un objetivo puede enseñarlo más de un curso, y de stacks distintos (`llm-apps` lo enseñan
+  // siete). Se toma **un** camino por objetivo —el más corto—, como hace el PathPlanner: si no,
+  // "quiero crear apps con LLMs" acababa preguntando por Dart, Java y Angular a la vez.
+  const chosen = targets.flatMap((skill) => {
+    const candidates = ctx.graph.catalog.courses.filter((c) =>
+      c.teaches.includes(skill),
+    );
+    const best = candidates
+      .map((c) => ({
+        c,
+        previos: ctx.graph.prerequisiteClosure([c.slug]).size,
+      }))
+      .sort(
+        (a, b) =>
+          a.previos - b.previos ||
+          a.c.durationHours - b.c.durationHours ||
+          (a.c.slug < b.c.slug ? -1 : 1),
+      )[0];
+    return best ? [best.c.slug] : [];
+  });
+  const courses = [...ctx.graph.prerequisiteClosure(chosen), ...chosen];
   const ordered = ctx.graph.topologicalOrder(courses);
   const skills: string[] = [];
   for (const slug of ordered) {
@@ -180,8 +196,7 @@ export function selfAssessmentItems(
       if (!skills.includes(s)) skills.push(s);
   }
   // Si el objetivo no tiene previos (p. ej. "desde cero"), se pregunta por la base igualmente.
-  if (!skills.includes('programming-basics'))
-    skills.unshift('programming-basics');
+  if (!skills.includes(BASE_SKILL)) skills.unshift(BASE_SKILL);
   const names = new Map(ctx.graph.catalog.skills.map((s) => [s.slug, s.name]));
   return skills
     .slice(0, MAX_SCALE_ITEMS)
@@ -198,14 +213,25 @@ function nextChallenge(
   const asked = answers.filter((a) => a.questionKey.startsWith('ch:'));
   const askedById = new Map(asked.map((a) => [a.questionKey.slice(3), a]));
 
-  const skills = selfAssessmentItems(answers, ctx)
+  const medibles = selfAssessmentItems(answers, ctx)
     .map((i) => i.skill)
     .filter((s) => SKILLS_WITH_CHALLENGES.has(s));
+  // Los retos son pocos (hasta 6): primero aquello por lo que la persona vino, luego la cadena
+  // hasta ahí, y la lógica suelta al final y una sola vez. Sin esto, quien elegía Kubernetes se
+  // quedaba sin un solo reto de Kubernetes.
+  const targets = new Set(stackOf(answers)?.targets ?? []);
+  const rank = (s: string) => (s === BASE_SKILL ? 2 : targets.has(s) ? 0 : 1);
+  const skills = medibles
+    .map((skill, i) => ({ skill, i }))
+    .sort((a, b) => rank(a.skill) - rank(b.skill) || a.i - b.i)
+    .map((x) => x.skill);
 
   for (const skill of skills) {
     const ladder = challengesFor(skill);
     const done = ladder.filter((ch) => askedById.has(ch.id));
-    if (done.length >= MAX_CHALLENGES_PER_SKILL) continue;
+    const max =
+      skill === BASE_SKILL && skills.length > 1 ? 1 : MAX_CHALLENGES_PER_SKILL;
+    if (done.length >= max) continue;
     const last = done.at(-1);
     if (last && askedById.get(last.id)!.score === 0) continue; // falló: esa skill ya está medida
     if (last?.difficulty === 3) continue;
