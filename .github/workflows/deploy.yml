@@ -59,6 +59,19 @@ jobs:
           eval $RSYNC web/.next/standalone/ "$TARGET:constellation/web/"
           eval $RSYNC deploy/ "$TARGET:constellation/deploy/"
 
+      # El .env no viaja en el rsync: los secretos del entorno "production" se escriben aquí.
+      # El valor va por stdin, no como argumento: en un servidor compartido `ps` lo vería.
+      - name: Sincronizar secretos del servidor
+        env:
+          TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        run: |
+          for VAR in RESEND_API_KEY MAIL_FROM; do
+            printf '%s' "${!VAR}" | ssh -i ~/.ssh/deploy_key "$TARGET" \
+              "bash ~/constellation/deploy/set-env-var.sh $VAR"
+          done
+
       - name: Migrar y recargar
         env:
           TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
