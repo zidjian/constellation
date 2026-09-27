@@ -1,5 +1,6 @@
 "use client";
 
+import { AtSign, KeyRound, Trash2, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,13 @@ function Section({
   description,
   children,
   danger = false,
+  Icon,
 }: {
   title: string;
   description?: ReactNode;
   children: ReactNode;
   danger?: boolean;
+  Icon: typeof UserRound;
 }) {
   return (
     <section
@@ -36,7 +39,10 @@ function Section({
       }`}
     >
       <div>
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="flex items-center gap-2 font-semibold">
+          <Icon aria-hidden size={17} strokeWidth={1.75} className={danger ? "text-danger" : "text-accent"} />
+          {title}
+        </h2>
         {description && <p className="mt-1 text-sm leading-relaxed text-ink-muted">{description}</p>}
       </div>
       {children}
@@ -121,7 +127,7 @@ function NameSection({ user }: { user: CurrentUser }) {
   const [name, setName] = useState(user.username);
 
   return (
-    <Section title="Nombre" description="Es como te llamamos en la app.">
+    <Section Icon={UserRound} title="Nombre" description="Es como te llamamos en la app.">
       <form
         className="flex flex-col gap-3"
         onSubmit={(e) => {
@@ -158,6 +164,7 @@ function EmailSection({ user, requierePassword }: { user: CurrentUser; requiereP
 
   return (
     <Section
+      Icon={AtSign}
       title={user.email ? "Correo" : "Añadir correo"}
       description={
         user.email ? (
@@ -218,6 +225,7 @@ function PasswordSection({
   if (sinCorreo) {
     return (
       <Section
+        Icon={KeyRound}
         title="Contraseña"
         description="Añade y confirma un correo arriba y después podrás poner una contraseña."
       >
@@ -228,6 +236,7 @@ function PasswordSection({
 
   return (
     <Section
+      Icon={KeyRound}
       title="Contraseña"
       description={
         tienePassword
@@ -288,6 +297,7 @@ function DeleteSection({ requierePassword }: { requierePassword: boolean }) {
 
   return (
     <Section
+      Icon={Trash2}
       title="Eliminar mi cuenta"
       danger
       description="Se borran tus rutas, tu progreso y tus entrevistas. No se puede deshacer."

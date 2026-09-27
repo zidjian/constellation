@@ -422,6 +422,64 @@ describe('Rutas de aprendizaje (e2e, Postgres)', () => {
     ).toBe('PATH_NOT_FOUND');
   });
 
+  it('los cursos terminados se juntan de todas las rutas, sin repetir', async () => {
+    const id = await completedAssessment(bob.id, backend);
+    const { events } = await generate(bob, {
+      assessmentId: id,
+      name: 'Para terminados',
+    });
+    const pathId = (events.at(-1)!.data as { pathId: string }).pathId;
+    const detail = (
+      (await http().get(`/v1/paths/${pathId}`).set('Cookie', bob.cookie))
+        .body as Data<PathDetail>
+    ).data;
+
+    const vacio = await http()
+      .get('/v1/paths/completed')
+      .set('Cookie', bob.cookie)
+      .expect(200);
+    expect((vacio.body as Data<{ courses: unknown[] }>).data.courses).toEqual(
+      [],
+    );
+
+    const [s0] = detail.steps;
+    await http()
+      .put(`/v1/paths/${pathId}/steps/${s0.id}/completion`)
+      .set('Cookie', bob.cookie)
+      .expect(200);
+
+    const res = await http()
+      .get('/v1/paths/completed')
+      .set('Cookie', bob.cookie)
+      .expect(200);
+    const { courses, totalHours } = (
+      res.body as Data<{
+        courses: {
+          course: { slug: string; durationHours: number };
+          completedAt: string;
+          paths: { id: string; name: string }[];
+        }[];
+        totalHours: number;
+      }>
+    ).data;
+
+    expect(courses).toHaveLength(1);
+    expect(courses[0].course.slug).toBe(s0.course.slug);
+    expect(courses[0].paths).toEqual([{ id: pathId, name: 'Para terminados' }]);
+    expect(totalHours).toBe(courses[0].course.durationHours);
+
+    // Y no se ven los de otra persona.
+    const deAlice = await http()
+      .get('/v1/paths/completed')
+      .set('Cookie', alice.cookie)
+      .expect(200);
+    expect(
+      (
+        deAlice.body as Data<{ courses: { course: { slug: string } }[] }>
+      ).data.courses.map((c) => c.course.slug),
+    ).not.toContain(s0.course.slug);
+  });
+
   it('máximo 10 rutas por usuario', async () => {
     const carol = await user('test-paths-carol');
     const [{ id: courseId }] = await db.query<{ id: string }[]>(

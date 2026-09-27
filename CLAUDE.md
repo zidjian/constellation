@@ -28,8 +28,8 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 │   └── shared/          # config, errores, formato de respuesta, puertos transversales
 │       (cada contexto: domain/ · application/ · infrastructure/ · presentation/)
 ├── web/src/
-│   ├── app/             # rutas: / · /assessment · /paths · /paths/[pathId]
-│   └── features/        # assessment/ · constellation/ · paths/ · auth/ · landing/
+│   ├── app/             # rutas: / · /entrar · /registro · /assessment · /paths · /cursos · /completados · /perfil
+│   └── features/        # assessment/ · catalog/ · constellation/ · paths/ · auth/ · landing/
 ├── tools/catalog/       # extractor offline del sitio de DevTalles + snapshot catalog.raw.json (ADR-0004)
 ├── docs/adr/
 └── specs/
