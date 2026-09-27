@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
-import { AppNav } from "@/features/auth/app-nav";
+import { AppNav, AppNavMobile } from "@/features/auth/app-nav";
 import { getCurrentUser } from "@/features/auth/get-current-user";
 import type { CurrentUser } from "@/features/auth/types";
 import { UserMenu } from "@/features/auth/user-menu";
@@ -21,14 +21,16 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-(--z-sticky) border-b border-line bg-bg/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-4 px-4">
-          <div className="flex min-w-0 items-center gap-3 sm:gap-6">
-            <BrandMark href="/paths" compact />
+          <div className="flex min-w-0 items-center gap-6">
+            <BrandMark href="/paths" />
             <AppNav />
           </div>
           <UserMenu user={user} />
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">{children}</main>
+      {/* El padding inferior deja sitio a la barra de navegación fija de móvil. */}
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-8 pb-24 sm:py-10">{children}</main>
+      <AppNavMobile />
     </div>
   );
 }

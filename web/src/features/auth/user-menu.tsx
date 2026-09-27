@@ -36,7 +36,7 @@ export function UserMenu({ user }: { user: CurrentUser }) {
           {user.username.slice(0, 1).toUpperCase()}
         </span>
       )}
-      <Link href="/perfil" className="hidden max-w-40 truncate text-sm underline-offset-4 hover:underline lg:inline">
+      <Link href="/perfil" className="hidden max-w-40 truncate text-sm underline-offset-4 hover:underline sm:inline">
         {user.username}
       </Link>
       <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
