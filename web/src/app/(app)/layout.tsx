@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
+import { AppNav } from "@/features/auth/app-nav";
 import { getCurrentUser } from "@/features/auth/get-current-user";
 import type { CurrentUser } from "@/features/auth/types";
 import { UserMenu } from "@/features/auth/user-menu";
@@ -20,16 +21,9 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-(--z-sticky) border-b border-line bg-bg/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-4 px-4">
-          <div className="flex items-center gap-6">
-            <BrandMark href="/paths" />
-            <nav aria-label="Principal" className="hidden items-center gap-1 text-sm sm:flex">
-              <Link href="/paths" className="rounded-md px-2.5 py-1.5 text-ink-muted hover:bg-surface hover:text-ink">
-                Mis rutas
-              </Link>
-              <Link href="/assessment" className="rounded-md px-2.5 py-1.5 text-ink-muted hover:bg-surface hover:text-ink">
-                Nueva ruta
-              </Link>
-            </nav>
+          <div className="flex min-w-0 items-center gap-3 sm:gap-6">
+            <BrandMark href="/paths" compact />
+            <AppNav />
           </div>
           <UserMenu user={user} />
         </div>

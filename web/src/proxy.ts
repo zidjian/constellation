@@ -15,5 +15,5 @@ export function proxy(request: NextRequest) {
 // `/perfil/confirmar-correo` queda fuera a propósito: el enlace llega al correo nuevo y se abre
 // donde no hay sesión. El token es la prueba, no la cookie.
 export const config = {
-  matcher: ["/assessment/:path*", "/paths/:path*", "/perfil"],
+  matcher: ["/assessment/:path*", "/paths/:path*", "/perfil", "/completados", "/cursos"],
 };

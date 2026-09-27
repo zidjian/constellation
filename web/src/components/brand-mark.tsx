@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 // Marca: tres puntos unidos, el tercero encendido. Es la idea del producto en miniatura.
-export function BrandMark({ href = "/" }: { href?: string }) {
+/** `compact`: en barras con navegación, el nombre se esconde en móvil y queda solo la marca. */
+export function BrandMark({ href = "/", compact = false }: { href?: string; compact?: boolean }) {
   return (
     <Link href={href} className="group inline-flex items-center gap-2.5 rounded-sm font-semibold tracking-tight">
       <svg aria-hidden width="30" height="20" viewBox="0 0 30 20">
@@ -17,9 +18,10 @@ export function BrandMark({ href = "/" }: { href?: string }) {
           className="origin-[26px_11px] transition-transform duration-200 ease-out-quint group-hover:scale-125"
         />
       </svg>
-      <span>
-        Constellation<span className="sr-only"> · DevTalles</span>
+      <span className={compact ? "hidden sm:inline" : undefined}>
+        Constellation
       </span>
+      <span className="sr-only">Constellation · DevTalles</span>
     </Link>
   );
 }
