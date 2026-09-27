@@ -65,7 +65,8 @@ jobs:
         env:
           TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          # Remitente del dominio verificado en Resend. No es secreto: el secreto lo sobrescribe.
+          MAIL_FROM: ${{ secrets.MAIL_FROM || 'Constellation <no-reply@waldirmaidana.com>' }}
         run: |
           for VAR in RESEND_API_KEY MAIL_FROM; do
             printf '%s' "${!VAR}" | ssh -i ~/.ssh/deploy_key "$TARGET" \

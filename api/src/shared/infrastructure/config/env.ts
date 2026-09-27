@@ -28,6 +28,8 @@ const envSchema = z
       .string()
       .optional()
       .transform((v) => v || undefined),
+    // En producción manda el dominio verificado (deploy.yml). onboarding@resend.dev, el valor por
+    // defecto de Resend, solo entrega a la cuenta dueña de la clave: sirve para desarrollo.
     MAIL_FROM: z
       .string()
       .min(3)
