@@ -45,3 +45,20 @@ _TEMPLATE: añade una sección por feature a medida que aterrizan. Formato suger
 - **Datos:** tabla `email_change_tokens` (`new_email`, `token_hash` único, `expires_at`, `used_at`). Migración `AddEmailChangeTokens`.
 - **Web:** `/perfil` (protegida por `proxy.ts`) y `/perfil/confirmar-correo?token=…` (pública a propósito).
 - **Punteros:** `api/src/identity/application/profile.use-cases.ts`, `web/src/features/auth/profile-forms.tsx`.
+
+## 4. Cursos terminados
+
+- **Qué:** pantalla `/completados` con todos los cursos que la persona ya encendió, de **todas** sus rutas, sin repetir: un curso que aparece en dos rutas cuenta una vez, con la fecha en que lo marcó la primera vez, y enlaza a las rutas donde está. Arriba, el total de cursos y de horas invertidas.
+- **Por qué:** el progreso solo se veía ruta por ruta; no había forma de responder «¿qué llevo hecho?».
+- **Endpoint:** `GET /v1/paths/completed`. Va declarado **antes** de `GET /v1/paths/:id`, o Nest intentaría leer `completed` como UUID.
+- **Datos:** ninguno nuevo. Se deriva de `path_steps.completed_at`, coherente con la invariante de que el progreso no se almacena agregado.
+- **Navegación:** la cabecera de la app pasa a tener «Mis rutas · Terminados · Perfil» visibles también en móvil («Nueva ruta» solo en escritorio, porque se llega desde el cielo). La marca esconde el nombre en móvil para que quepa.
+- **Punteros:** `ManagePathsUseCases.completedCourses`, `web/src/app/(app)/completados/page.tsx`.
+
+## 5. Catálogo navegable
+
+- **Qué:** pantalla `/cursos` con los 74 cursos del catálogo. Buscador por nombre, descripción o tecnología (sin tildes: «programacion» encuentra «programación»), y filtros por área, nivel y estado (todos · me faltan · terminados). El contador dice cuántos cursos y cuántas horas quedan a la vista.
+- **Dónde vive el filtrado:** en el cliente. Son 74 cursos, ya vienen en una sola respuesta de `GET /v1/catalog/courses`, y así filtrar no cuesta ni una petición.
+- **Iconos y motion:** `lucide-react` para los iconos, y entradas escalonadas con Motion en las listas (`components/ui/reveal.tsx`). La sección activa de la navegación se marca con una línea que se desplaza (`layoutId`). Todo respeta `prefers-reduced-motion`: el contenido es visible aunque no anime.
+- **Navegación:** «Mis rutas · Catálogo · Terminados · Nueva ruta · Perfil», con icono cada una. En móvil se esconden «Terminados» y «Nueva ruta» (se llega desde el cielo y desde el catálogo) y la marca deja solo el símbolo.
+- **Punteros:** `web/src/features/catalog/catalog-browser.tsx`, `web/src/app/(app)/cursos/page.tsx`, `web/src/features/auth/app-nav.tsx`.

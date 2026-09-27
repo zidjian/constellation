@@ -28,7 +28,7 @@ export function UserMenu({ user }: { user: CurrentUser }) {
   }
 
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
       {user.avatarUrl ? (
         <Image src={user.avatarUrl} alt="" width={28} height={28} className="rounded-full" />
       ) : (
@@ -36,10 +36,7 @@ export function UserMenu({ user }: { user: CurrentUser }) {
           {user.username.slice(0, 1).toUpperCase()}
         </span>
       )}
-      <Link
-        href="/perfil"
-        className="hidden max-w-40 truncate text-sm underline-offset-4 hover:underline sm:inline"
-      >
+      <Link href="/perfil" className="hidden max-w-40 truncate text-sm underline-offset-4 hover:underline lg:inline">
         {user.username}
       </Link>
       <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>

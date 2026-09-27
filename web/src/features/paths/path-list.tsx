@@ -1,5 +1,6 @@
 "use client";
 
+import { Archive, ArchiveRestore, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
@@ -254,23 +255,30 @@ function PathMenu({ path, actions }: { path: PathSummary; actions: Actions }) {
             <button
               type="button"
               onClick={() => setMode("rename")}
-              className="rounded-md px-3 py-2 text-left text-sm hover:bg-surface"
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm hover:bg-surface"
             >
+              <Pencil aria-hidden size={15} strokeWidth={1.75} />
               Renombrar
             </button>
             <button
               type="button"
               disabled={busy}
               onClick={() => run(() => actions.setStatus(path.id, path.status === "active" ? "archived" : "active"))}
-              className="rounded-md px-3 py-2 text-left text-sm hover:bg-surface"
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm hover:bg-surface"
             >
+              {path.status === "active" ? (
+                <Archive aria-hidden size={15} strokeWidth={1.75} />
+              ) : (
+                <ArchiveRestore aria-hidden size={15} strokeWidth={1.75} />
+              )}
               {path.status === "active" ? "Archivar" : "Reactivar"}
             </button>
             <button
               type="button"
               onClick={() => setMode("confirm-delete")}
-              className="rounded-md px-3 py-2 text-left text-sm text-danger hover:bg-danger-soft"
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-danger hover:bg-danger-soft"
             >
+              <Trash2 aria-hidden size={15} strokeWidth={1.75} />
               Eliminar
             </button>
           </div>

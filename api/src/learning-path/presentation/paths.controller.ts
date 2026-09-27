@@ -129,6 +129,12 @@ export class PathsController {
     return this.paths.list(userId);
   }
 
+  /** Antes de `:id`: si no, Nest intentaría leer "completed" como un UUID. */
+  @Get('completed')
+  completed(@CurrentUserId() userId: string) {
+    return this.paths.completedCourses(userId);
+  }
+
   @Get(':id')
   get(@CurrentUserId() userId: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.paths.get(userId, id);

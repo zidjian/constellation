@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { PathSummary, Progress } from "./types";
+import type { Course, PathSummary, Progress } from "./types";
 
 export const setStepCompletion = (pathId: string, stepId: string, completed: boolean) =>
   apiFetch<{ step: { id: string; completedAt: string | null }; progress: Progress }>(
@@ -11,3 +11,14 @@ export const updatePath = (id: string, changes: { name?: string; status?: PathSu
   apiFetch<PathSummary>(`/paths/${id}`, { method: "PATCH", body: JSON.stringify(changes) });
 
 export const deletePath = (id: string) => apiFetch<{ deleted: true }>(`/paths/${id}`, { method: "DELETE" });
+
+/** Cursos ya encendidos, sin repetir, de todas las rutas. */
+export const completedCourses = () =>
+  apiFetch<{
+    courses: {
+      course: Course;
+      completedAt: string;
+      paths: { id: string; name: string }[];
+    }[];
+    totalHours: number;
+  }>("/paths/completed");
