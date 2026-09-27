@@ -14,12 +14,34 @@ class InMemoryUsers implements UserRepository {
     const existing = [...this.rows.values()].find(
       (u) => u.discordId === p.discordId,
     );
-    const user = { id: existing?.id ?? `u${this.rows.size + 1}`, ...p };
+    const user = {
+      id: existing?.id ?? `u${this.rows.size + 1}`,
+      ...p,
+      email: null,
+    };
     this.rows.set(user.id, user);
     return Promise.resolve(user);
   }
   findById(id: string): Promise<User | null> {
     return Promise.resolve(this.rows.get(id) ?? null);
+  }
+  findByEmail(): Promise<(User & { passwordHash: string | null }) | null> {
+    return Promise.resolve(null);
+  }
+  createWithEmail(): Promise<User | null> {
+    return Promise.resolve(null);
+  }
+  setPasswordHash(): Promise<void> {
+    return Promise.resolve();
+  }
+  setUsername(): Promise<void> {
+    return Promise.resolve();
+  }
+  setEmail(): Promise<User | null> {
+    return Promise.resolve(null);
+  }
+  remove(): Promise<void> {
+    return Promise.resolve();
   }
 }
 
@@ -45,7 +67,13 @@ describe('CompleteDiscordLoginUseCase', () => {
       sessionToken: 'token-u1',
     });
     expect([...users.rows.values()]).toEqual([
-      { id: 'u1', discordId: '42', username: 'ada', avatarUrl: null },
+      {
+        id: 'u1',
+        discordId: '42',
+        username: 'ada',
+        avatarUrl: null,
+        email: null,
+      },
     ]);
   });
 

@@ -5,9 +5,11 @@ import { ENV } from '../shared/infrastructure/config/config.module';
 import type { Env } from '../shared/infrastructure/config/env';
 import { CompleteDiscordLoginUseCase } from './application/complete-discord-login.use-case';
 import { EmailAuthUseCases } from './application/email-auth.use-cases';
+import { ProfileUseCases } from './application/profile.use-cases';
 import { GetCurrentUserUseCase } from './application/get-current-user.use-case';
 import {
   DISCORD_OAUTH,
+  EMAIL_CHANGE_TOKENS,
   MAILER,
   PASSWORD_HASHER,
   PASSWORD_RESET_TOKENS,
@@ -20,6 +22,7 @@ import {
   SESSION_TTL_SECONDS,
 } from './infrastructure/jwt-session-tokens';
 import { ResendMailer } from './infrastructure/resend-mailer';
+import { TypeOrmEmailChangeTokens } from './infrastructure/typeorm-email-change-tokens';
 import { ScryptPasswordHasher } from './infrastructure/scrypt-password-hasher';
 import { TypeOrmPasswordResetTokens } from './infrastructure/typeorm-password-reset-tokens';
 import { TypeOrmUserRepository } from './infrastructure/typeorm-user.repository';
@@ -43,11 +46,13 @@ import { SessionGuard } from './presentation/session.guard';
     CompleteDiscordLoginUseCase,
     GetCurrentUserUseCase,
     EmailAuthUseCases,
+    ProfileUseCases,
     { provide: USER_REPOSITORY, useClass: TypeOrmUserRepository },
     { provide: DISCORD_OAUTH, useClass: DiscordOAuthClient },
     { provide: SESSION_TOKENS, useClass: JwtSessionTokens },
     { provide: PASSWORD_HASHER, useClass: ScryptPasswordHasher },
     { provide: PASSWORD_RESET_TOKENS, useClass: TypeOrmPasswordResetTokens },
+    { provide: EMAIL_CHANGE_TOKENS, useClass: TypeOrmEmailChangeTokens },
     { provide: MAILER, useClass: ResendMailer },
     { provide: APP_GUARD, useClass: SessionGuard },
   ],

@@ -21,6 +21,10 @@ export const RATE_LIMITS = {
   login: { limit: 10, ttl: 15 * 60 * 1000 },
   forgotPassword: { limit: 5, ttl: HOUR },
   resetPassword: { limit: 10, ttl: HOUR },
+  // Perfil: cambios sensibles, contados por usuario.
+  changePassword: { limit: 10, ttl: HOUR },
+  changeEmail: { limit: 5, ttl: HOUR },
+  deleteAccount: { limit: 5, ttl: HOUR },
 } as const;
 
 /** Solo por si una ruta usa el guard sin @Throttle: nunca debería ser el límite efectivo. */

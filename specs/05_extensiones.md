@@ -33,3 +33,15 @@ _TEMPLATE: añade una sección por feature a medida que aterrizan. Formato suger
 - **Datos:** `users.email` (único) y `users.password_hash`; `users.discord_id` pasa a opcional con un CHECK que exige Discord **o** correo+contraseña. Tabla `password_reset_tokens` (`token_hash` único, `expires_at`, `used_at`). Migración `AddEmailAuth`, verificada up/down/up.
 - **Web:** `/registro`, `/entrar`, `/recuperar` y `/restablecer?token=…`. La landing ofrece las dos formas de entrar.
 - **Punteros:** `api/src/identity/application/email-auth.use-cases.ts`, `infrastructure/scrypt-password-hasher.ts`, `infrastructure/resend-mailer.ts`, `web/src/features/auth/auth-forms.tsx`.
+
+## 3. Edición del perfil
+
+- **Qué:** pantalla `/perfil` con cuatro bloques: nombre visible, correo, contraseña y eliminar la cuenta.
+- **Reglas transversales:** todo cambio sensible (correo, contraseña, borrado) pide la **contraseña actual** si la cuenta tiene una, para que una sesión robada no se quede con la cuenta. Cambiar la contraseña invalida los enlaces de recuperación pendientes.
+- **Cambio de correo con verificación:** el correo nuevo **no entra** en `users` hasta confirmarlo desde él. El token va hasheado (SHA-256), caduca en 1 hora, sirve una vez y pedir otro invalida el anterior. Si Resend no acepta el envío, la petición falla y nada queda a medias.
+- **Cuentas de Discord:** pueden añadir correo (sin contraseña previa) y, una vez confirmado, ponerse contraseña. Desde ese momento entran por cualquiera de las dos vías.
+- **Eliminar la cuenta:** borra usuario, rutas, progreso y entrevistas en cascada. Con contraseña se exige la contraseña; sin ella (Discord) hay que escribir `ELIMINAR`. Se limpia la cookie de sesión.
+- **Endpoints:** `PATCH /v1/me`, `POST /v1/me/password` (10/h), `POST /v1/me/email` (5/h), `POST /v1/me/email/confirm` (**público**: el enlace se abre donde no hay sesión; el token es la prueba), `DELETE /v1/me` (5/h).
+- **Datos:** tabla `email_change_tokens` (`new_email`, `token_hash` único, `expires_at`, `used_at`). Migración `AddEmailChangeTokens`.
+- **Web:** `/perfil` (protegida por `proxy.ts`) y `/perfil/confirmar-correo?token=…` (pública a propósito).
+- **Punteros:** `api/src/identity/application/profile.use-cases.ts`, `web/src/features/auth/profile-forms.tsx`.

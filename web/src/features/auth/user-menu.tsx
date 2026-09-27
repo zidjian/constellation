@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,12 @@ export function UserMenu({ user }: { user: CurrentUser }) {
           {user.username.slice(0, 1).toUpperCase()}
         </span>
       )}
-      <span className="hidden max-w-40 truncate text-sm sm:inline">{user.username}</span>
+      <Link
+        href="/perfil"
+        className="hidden max-w-40 truncate text-sm underline-offset-4 hover:underline sm:inline"
+      >
+        {user.username}
+      </Link>
       <Button variant="ghost" size="sm" onClick={logout} loading={leaving}>
         {leaving ? "Saliendo…" : "Salir"}
       </Button>
