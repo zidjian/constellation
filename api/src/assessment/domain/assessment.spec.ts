@@ -42,6 +42,25 @@ function run(pick: (q: Question) => Record<string, unknown>): RecordedAnswer[] {
   }
   return answers;
 }
+/** Entrevista de un stack cualquiera, respondiendo bien todos los retos. */
+const enStack =
+  (area: string, stack: string, self = 1) =>
+  (q: Question) => {
+    if (q.type === 'text') return { text: 'Quiero trabajar de esto' };
+    if (q.key === 'area') return { optionId: area };
+    if (q.key === 'stack') return { optionId: stack };
+    if (q.type === 'scale')
+      return {
+        levels: Object.fromEntries(q.items.map((i) => [i.skill, self])),
+      };
+    return { optionId: correctOf(q.key) };
+  };
+
+const skillsRetados = (answers: RecordedAnswer[]) =>
+  answers
+    .filter((a) => a.questionKey.startsWith('ch:'))
+    .map((a) => CHALLENGES.find((c) => `ch:${c.id}` === a.questionKey)!.skill);
+
 const backendNode =
   (challenge: (key: string) => string, self = 1) =>
   (q: Question) => {
@@ -120,6 +139,38 @@ describe('Flujo adaptativo', () => {
       ]),
     );
     expect(skills.length).toBeLessThanOrEqual(6);
+  });
+
+  it.each([
+    ['backend', 'java', 'spring-boot', ['java'], ['python', 'csharp', 'php']],
+    ['backend', 'python', 'fastapi', ['python'], ['java', 'javascript', 'php']],
+    ['backend', 'php', 'laravel', ['php'], ['java', 'python', 'csharp']],
+    ['backend', 'dotnet', 'dotnet', ['csharp'], ['java', 'python', 'php']],
+    ['frontend', 'vue', 'vue', ['javascript'], ['react', 'angular']],
+  ])(
+    'en %s/%s los retos son de ese stack',
+    (area, stack, objetivo, esperados, ajenos) => {
+      const skills = skillsRetados(run(enStack(area, stack)));
+      expect(skills[0]).toBe(objetivo); // lo primero que se mide es a lo que aspira
+      for (const s of esperados) expect(skills).toContain(s);
+      for (const s of ajenos) expect(skills).not.toContain(s);
+    },
+  );
+
+  it('la lógica suelta no se lleva los turnos del lenguaje', () => {
+    const skills = skillsRetados(run(enStack('backend', 'java')));
+    expect(
+      skills.filter((s) => s === 'programming-basics').length,
+    ).toBeLessThanOrEqual(1);
+  });
+
+  it('un objetivo que enseñan varios stacks no mezcla lenguajes', () => {
+    // `llm-apps` lo enseñan siete cursos: antes preguntaba Dart, Java y Angular a la vez.
+    const answers = run(enStack('ia', 'llm-apps')).slice(0, 3);
+    const skills = selfAssessmentItems(answers, ctx).map((i) => i.skill);
+    expect(skills).toContain('llm-apps');
+    expect(skills).not.toContain('dart');
+    expect(skills).not.toContain('angular');
   });
 
   it('escalera: si acierta sube de dificultad; como máximo 2 retos por skill', () => {
