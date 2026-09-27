@@ -23,6 +23,15 @@ const envSchema = z
     DISCORD_CLIENT_ID: z.string().min(1),
     DISCORD_CLIENT_SECRET: z.string().min(1),
     DISCORD_CALLBACK_URL: z.url(),
+    // Correo (alta con email y recuperación de contraseña). Sin clave, el enlace va al log.
+    RESEND_API_KEY: z
+      .string()
+      .optional()
+      .transform((v) => v || undefined),
+    MAIL_FROM: z
+      .string()
+      .min(3)
+      .default('Constellation <onboarding@resend.dev>'),
     // learning-path: pausa entre eventos del stream para que la constelación se dibuje paso a paso.
     PATH_STREAM_DELAY_MS: z.coerce.number().int().min(0).max(2000).default(150),
     // IA (ADR-0001): 'rules' = sin red. 'claude' = Claude con fallback a reglas ante error o timeout.

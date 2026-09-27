@@ -45,11 +45,16 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       Ir a mis rutas
     </ButtonLink>
   ) : (
-    // Navegación completa (no fetch): el OAuth lo resuelve la API con redirecciones.
-    <a href={apiUrl("/auth/discord")} className={buttonClass("accent", "lg")}>
-      <DiscordIcon />
-      Entrar con Discord
-    </a>
+    <div className="flex flex-wrap items-center gap-3">
+      <ButtonLink href="/registro" size="lg" variant="accent">
+        Crear cuenta
+      </ButtonLink>
+      {/* Navegación completa (no fetch): el OAuth lo resuelve la API con redirecciones. */}
+      <a href={apiUrl("/auth/discord")} className={buttonClass("secondary", "lg")}>
+        <DiscordIcon />
+        Entrar con Discord
+      </a>
+    </div>
   );
 
   return (
@@ -61,9 +66,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             Mis rutas
           </ButtonLink>
         ) : (
-          <a href={apiUrl("/auth/discord")} className={buttonClass("secondary", "sm")}>
+          <ButtonLink href="/entrar" variant="secondary" size="sm">
             Entrar
-          </a>
+          </ButtonLink>
         )}
       </header>
 
@@ -84,7 +89,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             )}
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
               {cta}
-              <span className="text-sm text-ink-muted">Gratis · sin formularios largos</span>
+              <span className="text-sm text-ink-muted">Gratis · con correo o con Discord</span>
             </div>
           </div>
           <div className="flex justify-center md:justify-end">

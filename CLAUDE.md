@@ -21,7 +21,7 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 ```
 .
 ├── api/src/
-│   ├── identity/        # login Discord, sesión (JWT en cookie), usuario
+│   ├── identity/        # login Discord y con correo, sesión (JWT en cookie), usuario
 │   ├── catalog/         # cursos, skills, prerrequisitos (seed)
 │   ├── assessment/      # entrevista adaptativa → SkillProfile
 │   ├── learning-path/   # generación de rutas, pasos y progreso
@@ -42,6 +42,7 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 - **Todo el flujo obligatorio funciona sin LLM.** Si la IA falla o hace timeout, se usa el adaptador por reglas; la demo nunca depende de una API externa.
 - **Cada usuario solo ve y modifica sus propias rutas, sesiones y progreso.** El chequeo de ownership vive en los casos de uso, no solo en el controller.
 - **Nunca se exponen ni persisten tokens de Discord ni la API key del LLM.** Del perfil de Discord guardamos solo `discordId`, `username` y `avatar`.
+- **Ninguna contraseña se guarda ni se registra en claro**, y ningún endpoint revela si un correo tiene cuenta (`forgot-password` responde siempre igual; login da el mismo error en ambos casos).
 - **El progreso se deriva de los pasos** (`path_steps.completed_at`); no existe un porcentaje almacenado que pueda desincronizarse.
 - **Una evaluación completada es inmutable** (`in_progress → completed | abandoned`, sin retorno).
 - **Formato único de API:** éxito `{ "data": ... }`, error `{ "error": { "code", "message" } }`.
@@ -68,6 +69,8 @@ node --test tools/catalog/validate-catalog.test.mjs   # tests del validador
 
 ## Arquitectura (notas clave)
 
+- **Dos formas de entrar:** cuenta con **correo y contraseña** (alta, login y recuperación por enlace) o **Discord**. Una cuenta puede tener una u otra; un CHECK en `users` obliga a que tenga al menos una. Las contraseñas se guardan con **scrypt** (sal por usuario, parámetros en el propio hash) y los tokens de recuperación solo viven **hasheados** (SHA-256), caducan en 1 hora y sirven una vez.
+- **Correo con Resend** (`RESEND_API_KEY`): si no hay clave, el enlace se escribe en el log y el flujo se puede probar igual. El envío nunca bloquea la respuesta: si falla, se registra y la API responde lo mismo.
 - **Auth:** el flujo OAuth2 de Discord lo resuelve la **API**, implementado a mano con `fetch` (`identity/infrastructure/discord-oauth.client.ts`). No se usa `passport-discord`: su `state` exige `express-session` y la librería no se mantiene. El `state` anti-CSRF va en la cookie `cst_oauth_state` (httpOnly, 10 min, solo en `/v1/auth/discord`). En el callback la API emite un JWT propio (HS256, 7 días) en `cst_session` y redirige a la web. Un **guard global** exige sesión en todo salvo `@Public()`. Next lee la misma cookie en `proxy.ts` (Next 16 renombró `middleware.ts`) y en Server Components para proteger rutas (ADR-0002).
 - **IA híbrida (ADR-0001):** `SkillInterpreterPort` (LLM → `SkillProfile` estructurado) + `PathPlanner` (servicio de dominio **determinista**: skills objetivo → cursos → cierre de prerrequisitos → quitar lo dominado → orden topológico) + `RationaleWriterPort` (LLM redacta el "por qué" de cada paso). Cada puerto tiene adaptador `claude` y adaptador `rules`.
 - **Rate limit por usuario y hora** (`shared/presentation/user-throttler.guard.ts`, contadores en memoria): 5 generaciones de ruta y 20 `complete` de entrevista, porque ambas llaman al LLM. Reiniciar la API pone los contadores a cero.

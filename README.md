@@ -1,6 +1,6 @@
 # DevTalles Constellation
 
-Rutas de aprendizaje personales sobre el catálogo real de [DevTalles](https://cursos.devtalles.com). Entras con Discord, pasas una entrevista corta con mini-retos de código y obtienes una **constelación**: tus cursos en el orden que tiene sentido, con el porqué de cada paso, que vas encendiendo a medida que los completas.
+Rutas de aprendizaje personales sobre el catálogo real de [DevTalles](https://cursos.devtalles.com). Entras con tu correo o con Discord, pasas una entrevista corta con mini-retos de código y obtienes una **constelación**: tus cursos en el orden que tiene sentido, con el porqué de cada paso, que vas encendiendo a medida que los completas.
 
 Proyecto para la hackathon **Code Quest 2026** de DevTalles.
 
@@ -24,7 +24,7 @@ El catálogo tiene más de 70 cursos y nadie sabe por dónde empezar. Constellat
 ## Cómo funciona
 
 ```
-Discord OAuth ──► Entrevista adaptativa ──► SkillProfile ──► PathPlanner ──► Constelación
+Cuenta (correo o Discord) ──► Entrevista adaptativa ──► SkillProfile ──► PathPlanner ──► Constelación
                   (preguntas + retos)       (niveles y        (determinista)   (guardada, con
                                              objetivos)                         progreso)
 ```
@@ -77,7 +77,7 @@ pnpm install
 pnpm dev
 ```
 
-Para el login necesitas una app de Discord con la redirect URI `http://localhost:3001/v1/auth/discord/callback`. La IA es opcional: sin `LLM_PROVIDER=claude` todo funciona por reglas.
+Para entrar con correo no hace falta nada más: sin `RESEND_API_KEY`, el enlace de recuperación se escribe en el log de la API. Para el login con Discord necesitas una app con la redirect URI `http://localhost:3001/v1/auth/discord/callback`. La IA es opcional: sin `LLM_PROVIDER=claude` todo funciona por reglas.
 
 ### Comprobaciones
 

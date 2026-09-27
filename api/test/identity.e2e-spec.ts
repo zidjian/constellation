@@ -166,6 +166,7 @@ describe('Identidad (e2e, Postgres)', () => {
     expect(Object.keys(data).sort()).toEqual([
       'avatarUrl',
       'discordId',
+      'email',
       'id',
       'username',
     ]);

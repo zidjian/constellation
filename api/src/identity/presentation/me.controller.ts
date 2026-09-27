@@ -8,8 +8,8 @@ export class MeController {
 
   @Get()
   async me(@CurrentUserId() userId: string) {
-    const { id, discordId, username, avatarUrl } =
+    const { id, discordId, username, avatarUrl, email } =
       await this.getCurrentUser.execute(userId);
-    return { id, discordId, username, avatarUrl };
+    return { id, discordId, username, avatarUrl, email };
   }
 }
