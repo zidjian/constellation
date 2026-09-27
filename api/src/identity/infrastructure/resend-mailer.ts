@@ -49,6 +49,12 @@ export class ResendMailer implements Mailer {
         `Resend respondió ${res.status}: ${detail.slice(0, 200)}`,
       );
     }
+
+    // El id permite rastrear el envío en el panel de Resend si alguien dice que no le llegó.
+    const { id } = (await res.json().catch(() => ({}))) as { id?: string };
+    this.logger.log(
+      `Correo de recuperación aceptado por Resend: ${id ?? 'sin id'}`,
+    );
   }
 }
 
