@@ -10,6 +10,10 @@ export interface UserRepository {
   /** Null si el correo ya está tomado (lo decide el índice único, no una consulta previa). */
   createWithEmail(account: EmailAccount): Promise<User | null>;
   setPasswordHash(userId: string, passwordHash: string): Promise<void>;
+  setUsername(userId: string, username: string): Promise<void>;
+  /** Null si ese correo ya es de otra cuenta. */
+  setEmail(userId: string, email: string): Promise<User | null>;
+  remove(userId: string): Promise<void>;
 }
 
 export const DISCORD_OAUTH = Symbol('DiscordOAuth');
@@ -46,4 +50,22 @@ export interface PasswordResetTokens {
 export const MAILER = Symbol('Mailer');
 export interface Mailer {
   sendPasswordReset(to: string, resetUrl: string): Promise<void>;
+  /** Va al correo **nuevo**: confirmarlo desde ahí es la prueba de que es suyo. */
+  sendEmailChange(to: string, confirmUrl: string): Promise<void>;
+}
+
+/** Cambio de correo pendiente de confirmar. Como los de recuperación, se guardan hasheados. */
+export const EMAIL_CHANGE_TOKENS = Symbol('EmailChangeTokens');
+export interface EmailChangeTokens {
+  issue(
+    userId: string,
+    newEmail: string,
+    tokenHash: string,
+    expiresAt: Date,
+  ): Promise<void>;
+  consume(
+    tokenHash: string,
+    now: Date,
+  ): Promise<{ userId: string; newEmail: string } | null>;
+  invalidateFor(userId: string): Promise<void>;
 }

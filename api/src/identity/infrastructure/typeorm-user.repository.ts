@@ -71,6 +71,36 @@ export class TypeOrmUserRepository implements UserRepository {
     }
   }
 
+  async setUsername(userId: string, username: string): Promise<void> {
+    await this.dataSource.query(
+      `UPDATE users SET username = $2, updated_at = now() WHERE id = $1`,
+      [userId, username],
+    );
+  }
+
+  /** El correo repetido lo decide el índice único (otra cuenta pudo tomarlo mientras tanto). */
+  async setEmail(userId: string, email: string): Promise<User | null> {
+    try {
+      // CTE: `query()` devuelve [filas, contador] en un UPDATE con RETURNING.
+      const [row] = await this.dataSource.query<UserRow[]>(
+        `WITH actualizado AS (
+           UPDATE users SET email = $2, updated_at = now() WHERE id = $1
+           RETURNING ${COLUMNS}
+         )
+         SELECT * FROM actualizado`,
+        [userId, email],
+      );
+      return row ? toUser(row) : null;
+    } catch (err) {
+      if ((err as { code?: string }).code === UNIQUE_VIOLATION) return null;
+      throw err;
+    }
+  }
+
+  async remove(userId: string): Promise<void> {
+    await this.dataSource.query(`DELETE FROM users WHERE id = $1`, [userId]);
+  }
+
   async setPasswordHash(userId: string, passwordHash: string): Promise<void> {
     await this.dataSource.query(
       `UPDATE users SET password_hash = $2, updated_at = now() WHERE id = $1`,

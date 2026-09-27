@@ -28,4 +28,6 @@ Lee primero el `CLAUDE.md` raíz. Aquí solo lo específico de la API.
 - **`UPDATE ... RETURNING` con `query()` devuelve `[filas, contador]`**, igual que el DELETE del seed: `filas[0]` sería el array entero. Se envuelve en un CTE (`WITH x AS (UPDATE ... RETURNING ...) SELECT ...`). Pasó con el consumo del token de recuperación: marcaba el token usado y devolvía "no válido".
 - **Rutas públicas con rate limit por IP** (`IpThrottlerGuard`), porque todavía no hay usuario: alta 10/h, login 10 cada 15 min, recuperación 5/h. Los e2e comparten IP, así que un caso que da de alta muchas cuentas choca con el límite.
 - **Sin `RESEND_API_KEY` el enlace de recuperación va al log** (`ResendMailer`), que es como se prueba en local y en los e2e (ahí se sustituye el puerto `MAILER` por uno falso).
+- **`POST /me/email/confirm` es `@Public()` a propósito:** el enlace llega al correo nuevo y se abre donde no hay sesión. El token hasheado es la prueba, no la cookie.
+- **Resend rechaza destinatarios `@example.com`** con 422 `Invalid \`to\` field`. Para probar envíos reales usa `delivered@resend.dev` o una dirección de verdad.
 - **Postgres local:** rol y BD `constellation` (contraseña `constellation`, solo desarrollo). Ver `.env.example`.

@@ -19,6 +19,10 @@ class FakeMailer implements Mailer {
     this.enviados.push({ to, url });
     return Promise.resolve();
   }
+  sendEmailChange(to: string, url: string): Promise<void> {
+    this.enviados.push({ to, url });
+    return Promise.resolve();
+  }
 }
 
 describe('Cuenta con correo (e2e, Postgres)', () => {
@@ -179,6 +183,74 @@ describe('Cuenta con correo (e2e, Postgres)', () => {
       .send({ token, password: 'otraclave2026' })
       .expect(400);
     expect(code(repetido)).toBe('RESET_TOKEN_INVALID');
+  });
+
+  it('perfil: cambia nombre, correo y contraseña, y borra la cuenta', async () => {
+    const email = correo('perfil');
+    const alta = await http()
+      .post('/v1/auth/register')
+      .send({ email, password: clave })
+      .expect(201);
+    const cookie = cookieOf(alta)!;
+
+    // Nombre
+    const renombrada = await http()
+      .patch('/v1/me')
+      .set('Cookie', cookie)
+      .send({ username: 'Ada Lovelace' })
+      .expect(200);
+    expect((renombrada.body as Data<{ username: string }>).data.username).toBe(
+      'Ada Lovelace',
+    );
+
+    // Correo: no cambia hasta confirmarlo desde el nuevo
+    const nuevo = correo('perfil-nuevo');
+    mailer.enviados.length = 0;
+    await http()
+      .post('/v1/me/email')
+      .set('Cookie', cookie)
+      .send({ email: nuevo, password: clave })
+      .expect(202);
+    const sinConfirmar = await http()
+      .get('/v1/me')
+      .set('Cookie', cookie)
+      .expect(200);
+    expect((sinConfirmar.body as Data<{ email: string }>).data.email).toBe(
+      email,
+    );
+
+    const confirmado = await http()
+      .post('/v1/me/email/confirm')
+      .send({ token: tokenDe(mailer.enviados[0].url) })
+      .expect(200);
+    expect((confirmado.body as Data<{ email: string }>).data.email).toBe(nuevo);
+
+    // Contraseña: exige la actual
+    const mal = await http()
+      .post('/v1/me/password')
+      .set('Cookie', cookie)
+      .send({ currentPassword: 'equivocada1', newPassword: 'otraclave2026' })
+      .expect(401);
+    expect(code(mal)).toBe('INVALID_CREDENTIALS');
+
+    await http()
+      .post('/v1/me/password')
+      .set('Cookie', cookie)
+      .send({ currentPassword: clave, newPassword: 'otraclave2026' })
+      .expect(200);
+    await http()
+      .post('/v1/auth/login')
+      .send({ email: nuevo, password: 'otraclave2026' })
+      .expect(200);
+
+    // Borrado: pide la contraseña y deja la sesión inservible
+    await http().delete('/v1/me').set('Cookie', cookie).send({}).expect(401);
+    await http()
+      .delete('/v1/me')
+      .set('Cookie', cookie)
+      .send({ password: 'otraclave2026' })
+      .expect(200);
+    await http().get('/v1/me').set('Cookie', cookie).expect(401);
   });
 
   it('un token inventado no sirve', async () => {
