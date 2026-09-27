@@ -19,6 +19,19 @@ La instancia `34.200.218.45` (alias SSH `lightsail-backends`) también aloja otr
 2. `rsync` de `api/dist` + manifiestos, `web/.next/standalone` (con `public` y `.next/static` ya copiados) y `deploy/`.
 3. `reload-constellation.sh` en el servidor: dependencias de producción de la API, migraciones, seed (cuando exista), `pm2 reload` y comprobación de `/v1/health`.
 
+## Secretos que viajan desde GitHub
+
+El `.env` de la API **no** se copia en el despliegue (`--exclude .env`): vive solo en el servidor. Los secretos que sí deben llegar desde CI se guardan en el entorno **production** del repositorio y el paso «Sincronizar secretos del servidor» los escribe con `deploy/set-env-var.sh`:
+
+| Secreto | Para qué | Si falta |
+|---|---|---|
+| `RESEND_API_KEY` | Enviar el correo de recuperación de contraseña | La app funciona, pero el enlace se queda en el log de la API |
+| `MAIL_FROM` | Remitente del correo | Se usa `Constellation <onboarding@resend.dev>`, que **solo entrega a la dirección dueña de la cuenta de Resend** |
+
+El valor viaja por la entrada estándar, no como argumento: el servidor es compartido y `ps` muestra los argumentos de cualquier proceso. El script no imprime el valor y deja el `.env` en `chmod 600`.
+
+Para enviar a cualquier destinatario hay que verificar el dominio en Resend y poner `MAIL_FROM=Constellation <algo@waldirmaidana.com>`.
+
 ## Variables de producción (`/home/ubuntu/constellation/api/.env`)
 
 Obligatorias (la API no arranca sin ellas). `reload-constellation.sh` las valida **antes** de migrar y recargar, y si falta alguna aborta con la versión anterior todavía en marcha.
