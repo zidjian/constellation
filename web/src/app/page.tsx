@@ -1,6 +1,6 @@
 import { BrandMark } from "@/components/brand-mark";
 import { ButtonLink, buttonClass } from "@/components/ui/button";
-import { Star } from "@/components/ui/star";
+import { SkyMap } from "@/features/constellation/sky-map";
 import { getCurrentUser } from "@/features/auth/get-current-user";
 import { HeroConstellation } from "@/features/landing/hero-constellation";
 import { apiUrl } from "@/lib/api";
@@ -9,17 +9,20 @@ export const dynamic = "force-dynamic";
 
 const STEPS = [
   {
-    star: "available" as const,
+    // La misma constelación en tres momentos: lo cuenta la propia pieza, no tres tarjetas iguales.
+    lit: 0,
     title: "Una entrevista de 3 minutos",
     text: "Nos cuentas qué quieres lograr, o pegas una oferta de trabajo, y resuelves unos mini-retos de código. Así sabemos de dónde partes de verdad.",
   },
   {
-    star: "locked" as const,
+    lit: 0,
+    drawn: true,
     title: "Tu constelación, en vivo",
     text: "Trazamos el orden exacto de cursos del catálogo de DevTalles, respetando qué va antes de qué. Cada estrella te dice por qué está ahí.",
   },
   {
-    star: "completed" as const,
+    lit: 2,
+    drawn: true,
     title: "Enciende cada estrella",
     text: "Marca los cursos que completas y mira cómo se ilumina el camino. Puedes tener varias rutas y volver cuando quieras.",
   },
@@ -38,12 +41,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const user = await getCurrentUser().catch(() => null);
 
   const cta = user ? (
-    <ButtonLink href="/paths" size="lg">
+    <ButtonLink href="/paths" size="lg" variant="accent">
       Ir a mis rutas
     </ButtonLink>
   ) : (
     // Navegación completa (no fetch): el OAuth lo resuelve la API con redirecciones.
-    <a href={apiUrl("/auth/discord")} className={buttonClass("primary", "lg")}>
+    <a href={apiUrl("/auth/discord")} className={buttonClass("accent", "lg")}>
       <DiscordIcon />
       Entrar con Discord
     </a>
@@ -67,14 +70,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4">
         <section className="grid items-center gap-10 pt-8 pb-16 sm:pt-14 md:grid-cols-[1.05fr_1fr] md:gap-12 md:pb-24">
           <div className="flex flex-col items-start gap-6">
-            <p className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-sm font-medium text-primary-strong">
-              Para la comunidad DevTalles
-            </p>
             <h1 className="text-[2.5rem] leading-[1.05] font-semibold sm:text-[3.25rem]">
               Tu camino por DevTalles, <span className="text-primary-strong">estrella a estrella</span>.
             </h1>
             <p className="max-w-[34rem] text-lg leading-relaxed text-ink-muted">
-              Más de 70 cursos y no sabes por cuál empezar. Cuéntanos a dónde quieres llegar, resuelve unos mini-retos y
+              Para la comunidad DevTalles. Más de 70 cursos y no sabes por cuál empezar. Cuéntanos a dónde quieres llegar, resuelve unos mini-retos y
               te trazamos la ruta exacta, en el orden que tiene sentido.
             </p>
             {error === "auth" && (
@@ -98,14 +98,28 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </h2>
           <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
             {STEPS.map((s, i) => (
-              <li key={s.title} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <Star state={s.star} size={32} glow />
-                  {i < STEPS.length - 1 && <span aria-hidden className="mt-2 w-px flex-1 bg-line md:hidden" />}
+              <li key={s.title} className="flex flex-col gap-4">
+                <div className="rounded-xl border border-line bg-surface/40 px-5 py-6">
+                  <SkyMap
+                    stars={Array.from({ length: 4 }, (_, j) => ({
+                      slug: `${i}-${j}`,
+                      title: "",
+                      position: j,
+                      state: j < s.lit ? ("completed" as const) : ("locked" as const),
+                    }))}
+                    edges={[
+                      { from: `${i}-0`, to: `${i}-1` },
+                      { from: `${i}-1`, to: `${i}-2` },
+                    ]}
+                    lines={Boolean(s.drawn)}
+                    label={`Paso ${i + 1}: ${s.title}`}
+                    mini
+                    className={s.drawn ? "w-full" : "w-full opacity-60"}
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold">
-                    <span className="text-ink-muted">{i + 1}. </span>
+                    <span className="text-ink-muted tabular-nums">{i + 1}. </span>
                     {s.title}
                   </h3>
                   <p className="mt-2 leading-relaxed text-ink-muted">{s.text}</p>

@@ -13,7 +13,7 @@ App para la hackathon **Code Quest 2026 (DevTalles)** — entrega: **2026-09-28 
 | Servicio | Tecnología | Puerto local | Producción |
 |---|---|---|---|
 | `api` | NestJS 11 + TypeORM 1.x + PostgreSQL, pnpm 11, Node ≥ 24.11 | 3001 | `https://backend.constellation.waldirmaidana.com` |
-| `web` | Next.js 16 (App Router, output `standalone`), Tailwind 4, React Flow (`@xyflow/react`), Motion 13, pnpm 11 | 3000 | `https://constellation.waldirmaidana.com` |
+| `web` | Next.js 16 (App Router, output `standalone`), Tailwind 4, constelación en SVG propio, Motion 13, pnpm 11 | 3000 | `https://constellation.waldirmaidana.com` |
 | db | PostgreSQL (en la misma instancia Lightsail, solo `localhost`) | 5432 | — |
 
 Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy por subdominio) → PM2 (`api`, `web`) → PostgreSQL local. Ver ADR-0003.
@@ -29,7 +29,7 @@ Infra: **una instancia AWS Lightsail** → Nginx (TLS con certbot, reverse proxy
 │       (cada contexto: domain/ · application/ · infrastructure/ · presentation/)
 ├── web/src/
 │   ├── app/             # rutas: / · /assessment · /paths · /paths/[pathId]
-│   └── features/        # assessment/ · constellation/ · paths/ · auth/
+│   └── features/        # assessment/ · constellation/ · paths/ · auth/ · landing/
 ├── tools/catalog/       # extractor offline del sitio de DevTalles + snapshot catalog.raw.json (ADR-0004)
 ├── docs/adr/
 └── specs/

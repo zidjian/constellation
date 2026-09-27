@@ -46,7 +46,7 @@ Decisión central del proyecto ([ADR-0001](docs/adr/0001-ia-interpreta-motor-det
 
 | Servicio | Tecnología |
 |---|---|
-| `web` | Next.js 16 (App Router, `standalone`), React 19, Tailwind 4, React Flow, Motion |
+| `web` | Next.js 16 (App Router, `standalone`), React 19, Tailwind 4, constelación en SVG propio, Motion |
 | `api` | NestJS 11, TypeORM 1.x, PostgreSQL 18, Zod, JWT en cookie, SSE |
 | IA | SDK de Anthropic, `claude-opus-5` con salida estructurada, detrás de puertos con adaptador `rules` |
 | Infra | AWS Lightsail · Nginx + certbot · PM2 · GitHub Actions |
