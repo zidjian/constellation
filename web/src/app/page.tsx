@@ -1,3 +1,4 @@
+import { Sparkles } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { ButtonLink, buttonClass } from "@/components/ui/button";
 import { SkyMap } from "@/features/constellation/sky-map";
@@ -40,10 +41,17 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const { error } = await searchParams;
   const user = await getCurrentUser().catch(() => null);
 
+  // Con sesión, la acción principal sigue siendo la entrevista: es lo que produce una ruta.
+  // «Ir a mis rutas» mandaba a una lista vacía a quien aún no había hecho ninguna.
   const cta = user ? (
-    <ButtonLink href="/paths" size="lg" variant="accent">
-      Ir a mis rutas
-    </ButtonLink>
+    <div className="flex flex-wrap items-center gap-3">
+      <ButtonLink href="/assessment" size="lg" variant="accent">
+        Hacer la entrevista
+      </ButtonLink>
+      <ButtonLink href="/paths" size="lg" variant="secondary">
+        Mis rutas
+      </ButtonLink>
+    </div>
   ) : (
     <div className="flex flex-wrap items-center gap-3">
       <ButtonLink href="/registro" size="lg" variant="accent">
@@ -75,12 +83,17 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4">
         <section className="grid items-center gap-10 pt-8 pb-16 sm:pt-14 md:grid-cols-[1.05fr_1fr] md:gap-12 md:pb-24">
           <div className="flex flex-col items-start gap-6">
+            <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/40 px-3 py-1 text-sm text-ink-muted">
+              <Sparkles aria-hidden size={14} strokeWidth={1.75} className="text-accent" />
+              Entrevista con IA · 3 minutos
+            </p>
             <h1 className="text-[2.5rem] leading-[1.05] font-semibold sm:text-[3.25rem]">
               Tu camino por DevTalles, <span className="text-primary-strong">estrella a estrella</span>.
             </h1>
             <p className="max-w-[34rem] text-lg leading-relaxed text-ink-muted">
-              Para la comunidad DevTalles. Más de 70 cursos y no sabes por cuál empezar. Cuéntanos a dónde quieres llegar, resuelve unos mini-retos y
-              te trazamos la ruta exacta, en el orden que tiene sentido.
+              Para la comunidad DevTalles. Más de 70 cursos y no sabes por cuál empezar. Una
+              entrevista corta con IA te pregunta a dónde quieres llegar y mide lo que ya sabes con
+              mini-retos de código. Con eso trazamos tu ruta exacta, en el orden que tiene sentido.
             </p>
             {error === "auth" && (
               <p role="alert" className="rounded-md bg-danger-soft px-3 py-2 text-sm text-danger">
