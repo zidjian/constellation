@@ -5,11 +5,13 @@ import { BookOpen, CircleCheck, Sparkles, Stars, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// La entrevista va la segunda y con su nombre: es lo que hace distinta a la app, y como
+// «Nueva ruta» al final parecía un botón de mantenimiento entre el catálogo y el perfil.
 const ITEMS = [
   { href: "/paths", label: "Mis rutas", corto: "Rutas", Icon: Stars },
+  { href: "/assessment", label: "Entrevista", corto: "Entrevista", Icon: Sparkles },
   { href: "/cursos", label: "Catálogo", corto: "Catálogo", Icon: BookOpen },
   { href: "/completados", label: "Terminados", corto: "Hechos", Icon: CircleCheck },
-  { href: "/assessment", label: "Nueva ruta", corto: "Nueva", Icon: Sparkles },
   { href: "/perfil", label: "Perfil", corto: "Perfil", Icon: User },
 ];
 
